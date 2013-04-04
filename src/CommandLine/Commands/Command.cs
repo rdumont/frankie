@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using CommandLine;
 
 namespace RDumont.Frankie.CommandLine.Commands
@@ -6,6 +7,8 @@ namespace RDumont.Frankie.CommandLine.Commands
     public abstract class Command<TOptions> : ICommand
     {
         public abstract string Name { get; }
+
+        public abstract void ExecuteCommand(TOptions options);
 
         public void ExecuteCommand(string[] args)
         {
@@ -24,6 +27,11 @@ namespace RDumont.Frankie.CommandLine.Commands
             ExecuteCommand(options);
         }
 
-        public abstract void ExecuteCommand(TOptions options);
+        public string GetAbsolutePath(string relativePath)
+        {
+            var current = Directory.GetCurrentDirectory();
+            var actual = Path.Combine(current, relativePath);
+            return Path.GetFullPath(actual);
+        }
     }
 }

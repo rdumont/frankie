@@ -11,7 +11,7 @@ namespace RDumont.Frankie.CommandLine
             {
                 new RunCommand(),
                 new ServeCommand(),
-                new WatchCommand(),
+                new WatchCommand(new Generator()),
             };
 
         static void Main(string[] args)

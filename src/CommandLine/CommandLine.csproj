@@ -53,6 +53,7 @@
     <Compile Include="Commands\ServeOptions.cs" />
     <Compile Include="Commands\WatchCommand.cs" />
     <Compile Include="Commands\WatchOptions.cs" />
+    <Compile Include="Generator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
