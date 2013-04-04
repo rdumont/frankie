@@ -14,6 +14,9 @@ namespace RDumont.Frankie.CommandLine.Commands
         [Option('w', "watch", DefaultValue = false, HelpText = "Whether file changes should be automatically detected")]
         public bool Watch { get; set; }
 
+        [Option('s', "source", DefaultValue = @".\", HelpText = "The path from where to serve files")]
+        public string Source { get; set; }
+
         [HelpOption('h', "help")]
         public string GetUsage()
         {
