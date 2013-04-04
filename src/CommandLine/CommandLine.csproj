@@ -64,6 +64,12 @@
   <ItemGroup>
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\RunCommand.cs" />
+    <Compile Include="Commands\RunOptions.cs" />
+    <Compile Include="Commands\ServeCommand.cs" />
+    <Compile Include="Commands\ServeOptions.cs" />
+    <Compile Include="Commands\WatchCommand.cs" />
+    <Compile Include="Commands\WatchOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

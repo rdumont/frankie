@@ -1,18 +1,29 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
+using CommandLine;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
     public abstract class Command<TOptions> : ICommand
     {
-        public void ExecuteCommand(IEnumerable<string> args, TextWriter output)
+        public abstract string Name { get; }
+
+        public void ExecuteCommand(string[] args)
         {
             var options = Activator.CreateInstance<TOptions>();
+            var commandLineParser = new Parser(settings =>
+                {
+                    settings.HelpWriter = Console.Out;
+                    settings.CaseSensitive = true;
+                });
 
-            ExecuteCommand(options, output);
+            if (!commandLineParser.ParseArguments(args, options))
+            {
+                Environment.Exit(1);
+            }
+
+            ExecuteCommand(options);
         }
 
-        public abstract void ExecuteCommand(TOptions options, TextWriter output);
+        public abstract void ExecuteCommand(TOptions options);
     }
 }

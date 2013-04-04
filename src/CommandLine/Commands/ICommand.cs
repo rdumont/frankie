@@ -5,6 +5,8 @@ namespace RDumont.Frankie.CommandLine.Commands
 {
     public interface ICommand
     {
-        void ExecuteCommand(IEnumerable<string> args, TextWriter output);
+        string Name { get; }
+
+        void ExecuteCommand(string[] args);
     }
 }
