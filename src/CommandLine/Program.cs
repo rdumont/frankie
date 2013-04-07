@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RDumont.Frankie.CommandLine.Commands;
+using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine
 {

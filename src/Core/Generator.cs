@@ -1,7 +1,6 @@
-using System;
 using System.IO;
 
-namespace RDumont.Frankie.CommandLine
+namespace RDumont.Frankie.Core
 {
     public class Generator
     {

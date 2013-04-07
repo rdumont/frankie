@@ -1,7 +1,7 @@
 using System.IO;
 using YamlDotNet.RepresentationModel.Serialization;
 
-namespace RDumont.Frankie.CommandLine
+namespace RDumont.Frankie.Core
 {
     public class SiteConfiguration
     {
@@ -14,6 +14,14 @@ namespace RDumont.Frankie.CommandLine
 
             var serializer = new YamlSerializer<SiteConfiguration>();
             return serializer.Deserialize(reader);
+        }
+
+        public string Serialize()
+        {
+            var yamlSerializer = new Serializer();
+            var stringWriter = new StringWriter();
+            yamlSerializer.Serialize(stringWriter, this);
+            return stringWriter.GetStringBuilder().ToString();
         }
     }
 }

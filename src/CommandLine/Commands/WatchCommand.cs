@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {

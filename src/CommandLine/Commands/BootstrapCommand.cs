@@ -1,9 +1,7 @@
 ﻿using System.IO;
-using System.Reflection;
-using RDumont.Frankie.CommandLine.Commands;
-using YamlDotNet.RepresentationModel.Serialization;
+using RDumont.Frankie.Core;
 
-namespace RDumont.Frankie.CommandLine
+namespace RDumont.Frankie.CommandLine.Commands
 {
     public class BootstrapCommand : Command<BootstrapOptions>
     {
@@ -61,11 +59,9 @@ namespace RDumont.Frankie.CommandLine
                 {
                     Permalink = ":year/:month/:day/:title"
                 };
-            var yamlSerializer = new Serializer();
-            var stringWriter = new StringWriter();
-            yamlSerializer.Serialize(stringWriter, defaultConfig);
+            var yaml = defaultConfig.Serialize();
 
-            File.WriteAllText(Path.Combine(root, "config.yaml"), stringWriter.GetStringBuilder().ToString());
+            File.WriteAllText(Path.Combine(root, "config.yaml"), yaml);
         }
     }
 
