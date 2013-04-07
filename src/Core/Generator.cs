@@ -30,9 +30,11 @@ namespace RDumont.Frankie.Core
             var allFiles = Directory.GetFiles(templatesFolder, "*.cshtml", SearchOption.AllDirectories);
             foreach (var file in allFiles)
             {
-                var name = file.Remove(0, root.Length + 1);
+                var name = file.Remove(0, root.Length + 1).Replace(Path.DirectorySeparatorChar, '|');
                 var contents = File.ReadAllText(file);
                 RazorEngine.Razor.Compile(contents, name);
+
+                Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
             }
         }
 
@@ -40,9 +42,11 @@ namespace RDumont.Frankie.Core
         {
             foreach (var file in pages)
             {
-                var name = file.Remove(0, root.Length + 1);
+                var name = file.Remove(0, root.Length + 1).Replace(Path.DirectorySeparatorChar, '|'); ;
                 var contents = File.ReadAllText(file);
                 RazorEngine.Razor.Compile(contents, name);
+
+                Logger.Current.Log(LoggingLevel.Debug, "Compiled page: {0}", name);
             }
         }
 

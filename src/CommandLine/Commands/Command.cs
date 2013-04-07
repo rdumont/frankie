@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using CommandLine;
+using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
@@ -23,6 +24,8 @@ namespace RDumont.Frankie.CommandLine.Commands
             {
                 Environment.Exit(1);
             }
+
+            Logger.Start(LoggingLevel.Debug);
 
             ExecuteCommand(options);
         }
