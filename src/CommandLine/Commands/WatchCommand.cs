@@ -21,7 +21,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         public override void ExecuteCommand(WatchOptions options)
         {
             var path = GetAbsolutePath(options.Source);
-            this.generator.Init(path);
+            this.generator.Init(options.LocationPath, options.OutputPath);
 
             var watcher = new FileSystemWatcher(path);
             watcher.IncludeSubdirectories = true;

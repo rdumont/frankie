@@ -13,14 +13,14 @@ namespace RDumont.Frankie.Core
 
         protected SiteConfiguration Configuration { get; set; }
 
-        public void Init(string path)
+        public void Init(string locationPath, string outputPath)
         {
-            this.basePath = path;
-            this.postsPath = Path.Combine(path, "_posts");
-            this.templatesPath = Path.Combine(path, "_templates");
-            this.sitePath = Path.Combine(path, "_site");
+            this.basePath = locationPath;
+            this.postsPath = Path.Combine(locationPath, "_posts");
+            this.templatesPath = Path.Combine(locationPath, "_templates");
+            this.sitePath = outputPath;
 
-            var configPath = Path.Combine(path, "config.yaml");
+            var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
         }
 

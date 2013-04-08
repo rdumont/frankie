@@ -1,6 +1,6 @@
 ﻿namespace RDumont.Frankie.CommandLine.Commands
 {
-    public class RunOptions
+    public class RunOptions : BaseOptions
     {
     }
 }

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BaseOptions.cs" />
     <Compile Include="Commands\BootstrapCommand.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\ICommand.cs" />
