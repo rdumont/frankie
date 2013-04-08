@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="Generator.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="PageModel.cs" />
+    <Compile Include="PageTemplate.cs" />
     <Compile Include="Post.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteConfiguration.cs" />

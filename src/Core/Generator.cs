@@ -1,6 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
+using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 
 namespace RDumont.Frankie.Core
 {
@@ -22,6 +23,12 @@ namespace RDumont.Frankie.Core
 
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
+
+
+            Razor.SetTemplateService(new TemplateService(new TemplateServiceConfiguration
+            {
+                BaseTemplateType = typeof(PageTemplate<>)
+            }));
         }
 
         public void CompileTemplates(string root)
@@ -30,23 +37,11 @@ namespace RDumont.Frankie.Core
             var allFiles = Directory.GetFiles(templatesFolder, "*.cshtml", SearchOption.AllDirectories);
             foreach (var file in allFiles)
             {
-                var name = file.Remove(0, root.Length + 1).Replace(Path.DirectorySeparatorChar, '|');
+                var name = file.Remove(0, templatesFolder.Length + 1).Replace(".cshtml", "");
                 var contents = File.ReadAllText(file);
-                RazorEngine.Razor.Compile(contents, name);
+                Razor.Compile(contents, name);
 
                 Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
-            }
-        }
-
-        public void CompilePages(string root, IEnumerable<string> pages)
-        {
-            foreach (var file in pages)
-            {
-                var name = file.Remove(0, root.Length + 1).Replace(Path.DirectorySeparatorChar, '|'); ;
-                var contents = File.ReadAllText(file);
-                RazorEngine.Razor.Compile(contents, name);
-
-                Logger.Current.Log(LoggingLevel.Debug, "Compiled page: {0}", name);
             }
         }
 
@@ -56,6 +51,17 @@ namespace RDumont.Frankie.Core
 
         public void AddFile(string fullPath)
         {
+            Logger.Current.Log(LoggingLevel.Debug, "Adding file: {0}", fullPath);
+            if (fullPath.EndsWith(".cshtml"))
+            {
+                var contents = File.ReadAllText(fullPath, System.Text.Encoding.UTF8);
+
+                var model = new Page {Foo = "bar"};
+                var result = Razor.Parse(contents, model);
+
+                var finalPath = fullPath.Replace(basePath, sitePath).Replace(".cshtml", ".html");
+                File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
+            }
         }
     }
 }

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
     public class RunCommand : Command<RunOptions>
     {
-        private Generator generator;
+        private readonly Generator generator;
 
         private readonly string[] exclude = new[]
             {
@@ -33,13 +32,20 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         public override void ExecuteCommand(RunOptions options)
         {
-            var root = Directory.GetCurrentDirectory();
+            var root = options.LocationPath;
+            var output = options.OutputPath;
+
+            this.generator.Init(root, output);
 
             this.generator.CompileTemplates(root);
 
+            // Transform posts
+
             var allEntries = FindAllEntries(root);
-            var pages = allEntries.Where(entry => entry.EndsWith(".cshtml"));
-            this.generator.CompilePages(root, pages);
+            foreach (var file in allEntries)
+            {
+                this.generator.AddFile(file);
+            }
         }
 
         private IEnumerable<string> FindAllEntries(string root)
