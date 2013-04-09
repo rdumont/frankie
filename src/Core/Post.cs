@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RDumont.Frankie.Core
@@ -7,7 +8,7 @@ namespace RDumont.Frankie.Core
     {
         public const string POSTS_FOLDER = "_posts";
         private static readonly Regex PostFileRegex = new Regex(@"^.+(\\|/)" + POSTS_FOLDER
-            + @"(\\|/)(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-(?<title>.+)\.(?<ext>.+)$",
+            + @"(\\|/)((?<category>.+?)(\\|/))*(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-(?<title>.+)\.(?<ext>.+)$",
             RegexOptions.Compiled);
 
         private readonly string absoluteFilePath;
@@ -17,6 +18,7 @@ namespace RDumont.Frankie.Core
         public int Day { get; set; }
         public string Title { get; set; }
         public string Extension { get; set; }
+        public string[] Category { get; set; }
 
         protected Post()
         {
@@ -26,7 +28,7 @@ namespace RDumont.Frankie.Core
         {
             this.absoluteFilePath = absoluteFilePath;
             var match = PostFileRegex.Match(absoluteFilePath);
-            if(!match.Success)
+            if (!match.Success)
                 throw new ArgumentException("Invalid post file path");
 
             this.Year = int.Parse(match.Groups["year"].Value);
@@ -34,6 +36,8 @@ namespace RDumont.Frankie.Core
             this.Day = int.Parse(match.Groups["day"].Value);
             this.Title = match.Groups["title"].Value;
             this.Extension = match.Groups["ext"].Value;
+            this.Category = match.Groups["category"].Captures
+                .Cast<Capture>().Select(c => c.Value).ToArray();
         }
 
         public string ResolvePermalink(string template)
@@ -43,6 +47,18 @@ namespace RDumont.Frankie.Core
                 .Replace(":month", this.Month.ToString("00"))
                 .Replace(":day", this.Day.ToString("00"))
                 .Replace(":title", this.Title);
+        }
+
+        public static Post FromFile(string path)
+        {
+            try
+            {
+                return new Post(path);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
         }
     }
 }

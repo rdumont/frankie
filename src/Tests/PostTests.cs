@@ -24,6 +24,39 @@ namespace RDumont.Frankie.Tests
         }
 
         [Test]
+        public void Create_post_from_file_path_with_category()
+        {
+            // Arrange
+            var path = @"C:\something\_posts\something else\blog\_posts\Cat1\2013-02-23-some-nice-article.md";
+
+            // Act
+            var post = new Post(path);
+
+            // Assert
+            Assert.That(post.Category, Is.EqualTo(new[]
+                {
+                    "Cat1"
+                }));
+        }
+
+        [Test]
+        public void Create_post_from_file_path_with_many_categories()
+        {
+            // Arrange
+            var path = @"C:\something\_posts\something else\blog\_posts\Cat1\sub cat\2013-02-23-some-nice-article.md";
+
+            // Act
+            var post = new Post(path);
+
+            // Assert
+            Assert.That(post.Category, Is.EqualTo(new[]
+                {
+                    "Cat1",
+                    "sub cat"
+                }));
+        }
+
+        [Test]
         public void Create_post_from_file_path_in_unix()
         {
             // Arrange
