@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using MarkdownDeep;
+using RazorEngine;
 
 namespace RDumont.Frankie.Core
 {
@@ -15,6 +17,7 @@ namespace RDumont.Frankie.Core
 
         private readonly string absoluteFilePath;
         private static Markdown markdownEngine;
+        private readonly NameValueCollection metadata = new NameValueCollection();
 
         public int Year { get; set; }
         public int Month { get; set; }
@@ -69,12 +72,30 @@ namespace RDumont.Frankie.Core
         {
             var contents = File.ReadAllText(this.absoluteFilePath);
             this.Body = contents;
+
+            ReadMetadata();
+        }
+
+        private void ReadMetadata()
+        {
+            var reader = new StringReader(this.Body);
+            var line = reader.ReadLine();
+            while (line != null && line.StartsWith("@"))
+            {
+                var match = Regex.Match(line, @"@(?<key>\w+)\s+(?<value>.+)$");
+                if (match.Success)
+                    this.metadata.Add(match.Groups["key"].Value, match.Groups["value"].Value);
+
+                line = reader.ReadLine();
+            }
         }
 
         public void ExecuteTransformationPipeline()
         {
             if (this.Extension == "md" || this.Extension == "markdown")
                 this.TransformMarkdown();
+
+            this.ParseTemplate();
         }
 
         private void TransformMarkdown()
@@ -86,6 +107,23 @@ namespace RDumont.Frankie.Core
                 };
 
             this.Body = markdownEngine.Transform(this.Body);
+        }
+
+        private void ParseTemplate()
+        {
+            var templateName = metadata["template"] ?? "_post";
+
+            try
+            {
+                this.Body = Razor.Run(templateName, this);
+            }
+            catch (InvalidOperationException exception)
+            {
+                if (!exception.Message.StartsWith("No template exists")) throw;
+
+                Logger.Current.LogError("{0}\n  No template exists with name '{1}'",
+                    this.absoluteFilePath, templateName);
+            }
         }
     }
 }
