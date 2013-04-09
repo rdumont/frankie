@@ -38,6 +38,8 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             this.generator.Init(root, output);
 
+            this.CleanDirectory(output);
+
             this.generator.CompileTemplates(root);
 
             var postFiles = FindPostPaths(root);
@@ -51,6 +53,17 @@ namespace RDumont.Frankie.CommandLine.Commands
             }
             sw.Stop();
             Logger.Current.Log(LoggingLevel.Debug, "Time: {0} ms", sw.ElapsedMilliseconds);
+        }
+
+        private void CleanDirectory(string path)
+        {
+            var folders = Directory.GetDirectories(path);
+            foreach (var folder in folders)
+                Directory.Delete(folder, true);
+
+            var files = Directory.GetFiles(path).Where(f => !f.EndsWith(".gitignore"));
+            foreach (var file in files)
+                File.Delete(file);
         }
 
         private IEnumerable<string> FindPostPaths(string root)
