@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -19,6 +20,7 @@ namespace RDumont.Frankie.Core
         public string Title { get; set; }
         public string Extension { get; set; }
         public string[] Category { get; set; }
+        public string Body { get; set; }
 
         protected Post()
         {
@@ -59,6 +61,16 @@ namespace RDumont.Frankie.Core
             {
                 return null;
             }
+        }
+
+        public void LoadFile()
+        {
+            var contents = File.ReadAllText(this.absoluteFilePath);
+            this.Body = contents;
+        }
+
+        public void ExecuteTransformationPipeline()
+        {
         }
     }
 }

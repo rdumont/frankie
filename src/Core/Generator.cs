@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using RazorEngine;
 using RazorEngine.Configuration;
@@ -11,6 +12,7 @@ namespace RDumont.Frankie.Core
         private string postsPath;
         private string templatesPath;
         private string sitePath;
+        private List<Post> posts;
 
         protected SiteConfiguration Configuration { get; set; }
 
@@ -24,11 +26,12 @@ namespace RDumont.Frankie.Core
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
 
-
             Razor.SetTemplateService(new TemplateService(new TemplateServiceConfiguration
             {
                 BaseTemplateType = typeof(PageTemplate<>)
             }));
+
+            this.posts = new List<Post>();
         }
 
         public void CompileTemplates(string root)
@@ -73,6 +76,34 @@ namespace RDumont.Frankie.Core
             {
                 var finalPath = fullPath.Replace(this.basePath, this.sitePath);
                 File.Copy(fullPath, finalPath, true);
+            }
+        }
+
+        public void LoadPosts(IEnumerable<string> files)
+        {
+            foreach (var file in files)
+            {
+                var post = Post.FromFile(file);
+                if (post == null) continue;
+
+                Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
+                post.LoadFile();
+                post.ExecuteTransformationPipeline();
+
+                this.posts.Add(post);
+            }
+        }
+
+        public void WriteAllPosts(string root, string outputPath)
+        {
+            foreach (var post in posts)
+            {
+                var permalink = post.ResolvePermalink(this.Configuration.Permalink);
+                var folderPath = Path.Combine(this.sitePath, permalink);
+                var filePath = Path.Combine(folderPath, "index.html");
+
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                File.WriteAllText(filePath, post.Body);
             }
         }
     }

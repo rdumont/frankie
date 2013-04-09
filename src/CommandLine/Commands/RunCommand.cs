@@ -40,7 +40,9 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             this.generator.CompileTemplates(root);
 
-            // Transform posts
+            var postFiles = FindPostPaths(root);
+            this.generator.LoadPosts(postFiles);
+            this.generator.WriteAllPosts(root, output);
 
             var allEntries = FindAllEntries(root);
             foreach (var file in allEntries)
@@ -49,6 +51,12 @@ namespace RDumont.Frankie.CommandLine.Commands
             }
             sw.Stop();
             Logger.Current.Log(LoggingLevel.Debug, "Time: {0} ms", sw.ElapsedMilliseconds);
+        }
+
+        private IEnumerable<string> FindPostPaths(string root)
+        {
+            var folder = Path.Combine(root, Post.POSTS_FOLDER);
+            return Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories);
         }
 
         private IEnumerable<string> FindAllEntries(string root)
