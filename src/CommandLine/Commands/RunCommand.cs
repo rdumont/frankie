@@ -32,6 +32,7 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         public override void ExecuteCommand(RunOptions options)
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var root = options.LocationPath;
             var output = options.OutputPath;
 
@@ -46,6 +47,8 @@ namespace RDumont.Frankie.CommandLine.Commands
             {
                 this.generator.AddFile(file);
             }
+            sw.Stop();
+            Logger.Current.Log(LoggingLevel.Debug, "Time: {0} ms", sw.ElapsedMilliseconds);
         }
 
         private IEnumerable<string> FindAllEntries(string root)

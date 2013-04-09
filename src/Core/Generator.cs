@@ -52,6 +52,13 @@ namespace RDumont.Frankie.Core
         public void AddFile(string fullPath)
         {
             Logger.Current.Log(LoggingLevel.Debug, "Adding file: {0}", fullPath);
+            var destination = fullPath.Replace(this.basePath, this.sitePath);
+            var destinationFolder = Path.GetDirectoryName(destination);
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
             if (fullPath.EndsWith(".cshtml"))
             {
                 var contents = File.ReadAllText(fullPath, System.Text.Encoding.UTF8);
@@ -59,8 +66,13 @@ namespace RDumont.Frankie.Core
                 var model = new Page {Foo = "bar"};
                 var result = Razor.Parse(contents, model);
 
-                var finalPath = fullPath.Replace(basePath, sitePath).Replace(".cshtml", ".html");
+                var finalPath = destination.Replace(".cshtml", ".html");
                 File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
+            }
+            else
+            {
+                var finalPath = fullPath.Replace(this.basePath, this.sitePath);
+                File.Copy(fullPath, finalPath, true);
             }
         }
     }
