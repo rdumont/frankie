@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MarkdownDeep;
 
 namespace RDumont.Frankie.Core
 {
@@ -13,6 +14,7 @@ namespace RDumont.Frankie.Core
             RegexOptions.Compiled);
 
         private readonly string absoluteFilePath;
+        private static Markdown markdownEngine;
 
         public int Year { get; set; }
         public int Month { get; set; }
@@ -71,6 +73,19 @@ namespace RDumont.Frankie.Core
 
         public void ExecuteTransformationPipeline()
         {
+            if (this.Extension == "md" || this.Extension == "markdown")
+                this.TransformMarkdown();
+        }
+
+        private void TransformMarkdown()
+        {
+            markdownEngine = markdownEngine ?? new Markdown
+                {
+                    ExtraMode = true,
+                    AutoHeadingIDs = true
+                };
+
+            this.Body = markdownEngine.Transform(this.Body);
         }
     }
 }
