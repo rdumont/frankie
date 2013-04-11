@@ -17,15 +17,13 @@ namespace RDumont.Frankie.Core
 
         private readonly string absoluteFilePath;
         private static Markdown markdownEngine;
-        private readonly NameValueCollection metadata = new NameValueCollection();
 
-        public int Year { get; set; }
-        public int Month { get; set; }
-        public int Day { get; set; }
+        public DateTime Date { get; set; }
         public string Title { get; set; }
         public string Extension { get; set; }
         public string[] Category { get; set; }
         public string Body { get; set; }
+        public NameValueCollection Metadata { get; private set; }
 
         protected Post()
         {
@@ -38,9 +36,11 @@ namespace RDumont.Frankie.Core
             if (!match.Success)
                 throw new ArgumentException("Invalid post file path");
 
-            this.Year = int.Parse(match.Groups["year"].Value);
-            this.Month = int.Parse(match.Groups["month"].Value);
-            this.Day = int.Parse(match.Groups["day"].Value);
+            var year = int.Parse(match.Groups["year"].Value);
+            var month = int.Parse(match.Groups["month"].Value);
+            var day = int.Parse(match.Groups["day"].Value);
+
+            this.Date = new DateTime(year, month, day);
             this.Title = match.Groups["title"].Value;
             this.Extension = match.Groups["ext"].Value;
             this.Category = match.Groups["category"].Captures
@@ -50,9 +50,9 @@ namespace RDumont.Frankie.Core
         public string ResolvePermalink(string template)
         {
             return template
-                .Replace(":year", this.Year.ToString("0000"))
-                .Replace(":month", this.Month.ToString("00"))
-                .Replace(":day", this.Day.ToString("00"))
+                .Replace(":year", this.Date.Year.ToString("0000"))
+                .Replace(":month", this.Date.Month.ToString("00"))
+                .Replace(":day", this.Date.Day.ToString("00"))
                 .Replace(":title", this.Title);
         }
 
@@ -76,18 +76,21 @@ namespace RDumont.Frankie.Core
             ReadMetadata();
         }
 
-        private void ReadMetadata()
+        protected virtual void ReadMetadata()
         {
+            this.Metadata = new NameValueCollection();
             var reader = new StringReader(this.Body);
             var line = reader.ReadLine();
             while (line != null && line.StartsWith("@"))
             {
                 var match = Regex.Match(line, @"@(?<key>\w+)\s+(?<value>.+)$");
                 if (match.Success)
-                    this.metadata.Add(match.Groups["key"].Value, match.Groups["value"].Value);
+                    this.Metadata.Add(match.Groups["key"].Value, match.Groups["value"].Value);
 
                 line = reader.ReadLine();
             }
+
+            this.Body = line + reader.ReadToEnd();
         }
 
         public void ExecuteTransformationPipeline()
@@ -111,7 +114,7 @@ namespace RDumont.Frankie.Core
 
         private void ParseTemplate()
         {
-            var templateName = metadata["template"] ?? "_post";
+            var templateName = this.Metadata["template"] ?? "_post";
 
             try
             {
