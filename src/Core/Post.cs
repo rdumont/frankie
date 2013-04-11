@@ -19,10 +19,11 @@ namespace RDumont.Frankie.Core
         private static Markdown markdownEngine;
 
         public DateTime Date { get; set; }
-        public string Title { get; set; }
+        public string Slug { get; set; }
         public string Extension { get; set; }
         public string[] Category { get; set; }
         public string Body { get; set; }
+        public string Permalink { get; protected set; }
         public NameValueCollection Metadata { get; private set; }
 
         protected Post()
@@ -41,19 +42,19 @@ namespace RDumont.Frankie.Core
             var day = int.Parse(match.Groups["day"].Value);
 
             this.Date = new DateTime(year, month, day);
-            this.Title = match.Groups["title"].Value;
+            this.Slug = match.Groups["title"].Value;
             this.Extension = match.Groups["ext"].Value;
             this.Category = match.Groups["category"].Captures
                 .Cast<Capture>().Select(c => c.Value).ToArray();
         }
 
-        public string ResolvePermalink(string template)
+        protected virtual string ResolvePermalink(string template)
         {
-            return template
+            return "/" + template
                 .Replace(":year", this.Date.Year.ToString("0000"))
                 .Replace(":month", this.Date.Month.ToString("00"))
                 .Replace(":day", this.Date.Day.ToString("00"))
-                .Replace(":title", this.Title);
+                .Replace(":title", this.Slug);
         }
 
         public static Post FromFile(string path)
@@ -68,10 +69,12 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        public void LoadFile()
+        public void LoadFile(SiteConfiguration configuration)
         {
             var contents = File.ReadAllText(this.absoluteFilePath);
             this.Body = contents;
+
+            this.Permalink = ResolvePermalink(configuration.Permalink);
 
             ReadMetadata();
         }
@@ -93,7 +96,7 @@ namespace RDumont.Frankie.Core
             this.Body = line + reader.ReadToEnd();
         }
 
-        public void ExecuteTransformationPipeline()
+        public void ExecuteTransformationPipeline(SiteConfiguration configuration)
         {
             if (this.Extension == "md" || this.Extension == "markdown")
                 this.TransformMarkdown();

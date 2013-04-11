@@ -22,7 +22,7 @@ namespace RDumont.Frankie.Tests
 
                 // Assert
                 Assert.That(post.Date, Is.EqualTo(new DateTime(2013, 2, 23)));
-                Assert.That(post.Title, Is.EqualTo("some-nice-article"));
+                Assert.That(post.Slug, Is.EqualTo("some-nice-article"));
                 Assert.That(post.Extension, Is.EqualTo("md"));
             }
 
@@ -71,7 +71,7 @@ namespace RDumont.Frankie.Tests
 
                 // Assert
                 Assert.That(post.Date, Is.EqualTo(new DateTime(2013, 2, 23)));
-                Assert.That(post.Title, Is.EqualTo("some-nice-article"));
+                Assert.That(post.Slug, Is.EqualTo("some-nice-article"));
                 Assert.That(post.Extension, Is.EqualTo("md"));
             }
 
@@ -82,14 +82,14 @@ namespace RDumont.Frankie.Tests
                 var post = new TestablePost
                     {
                         Date = new DateTime(2012, 7, 22),
-                        Title = "my-other-post"
+                        Slug = "my-other-post"
                     };
 
                 // Act
                 var permalink = post.ResolvePermalink(":year/:month/:day/:title");
 
                 // Assert
-                Assert.That(permalink, Is.EqualTo("2012/07/22/my-other-post"));
+                Assert.That(permalink, Is.EqualTo("/2012/07/22/my-other-post"));
             }
         }
 
@@ -122,6 +122,11 @@ this is the body"
 
     public class TestablePost : Post
     {
+        public new string ResolvePermalink(string template)
+        {
+            return base.ResolvePermalink(template);
+        }
+
         public new void ReadMetadata()
         {
             base.ReadMetadata();

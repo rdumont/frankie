@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
@@ -13,8 +15,19 @@ namespace RDumont.Frankie.Core
         private string templatesPath;
         private string sitePath;
         private List<Post> posts;
+        private readonly SiteContext siteContext;
 
         protected SiteConfiguration Configuration { get; set; }
+
+        public Generator() : this(SiteContext.Current)
+        {
+            
+        }
+
+        private Generator(SiteContext siteContext)
+        {
+            this.siteContext = siteContext;
+        }
 
         public void Init(string locationPath, string outputPath)
         {
@@ -87,18 +100,20 @@ namespace RDumont.Frankie.Core
                 if (post == null) continue;
 
                 Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
-                post.LoadFile();
-                post.ExecuteTransformationPipeline();
+                post.LoadFile(Configuration);
+                post.ExecuteTransformationPipeline(Configuration);
 
                 this.posts.Add(post);
             }
+
+            this.siteContext.Posts = this.posts.OrderBy(p => p.Date).ToList().AsReadOnly();
         }
 
         public void WriteAllPosts(string root, string outputPath)
         {
             foreach (var post in posts)
             {
-                var permalink = post.ResolvePermalink(this.Configuration.Permalink);
+                var permalink = post.Permalink.Substring(1);
                 var folderPath = Path.Combine(this.sitePath, permalink);
                 var filePath = Path.Combine(folderPath, "index.html");
 
