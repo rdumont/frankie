@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using MarkdownDeep;
-using RazorEngine;
 
 namespace RDumont.Frankie.Core
 {
@@ -96,12 +95,13 @@ namespace RDumont.Frankie.Core
             this.Body = line + reader.ReadToEnd();
         }
 
-        public void ExecuteTransformationPipeline(SiteConfiguration configuration)
+        public void ExecuteTransformationPipeline(string rootPath, SiteConfiguration configuration)
         {
             if (this.Extension == "md" || this.Extension == "markdown")
                 this.TransformMarkdown();
 
-            this.ParseTemplate();
+            var postPath = absoluteFilePath.Remove(0, rootPath.Length + 1);
+            this.ParseTemplate(postPath);
         }
 
         private void TransformMarkdown()
@@ -115,13 +115,13 @@ namespace RDumont.Frankie.Core
             this.Body = markdownEngine.Transform(this.Body);
         }
 
-        private void ParseTemplate()
+        private void ParseTemplate(string postPath)
         {
             var templateName = this.Metadata["template"] ?? "_post";
 
             try
             {
-                this.Body = Razor.Run(templateName, this);
+                this.Body = TemplateManager.RenderPost(postPath, templateName, this);
             }
             catch (InvalidOperationException exception)
             {

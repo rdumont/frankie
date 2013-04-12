@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RazorEngine;
-using RazorEngine.Configuration;
-using RazorEngine.Templating;
 
 namespace RDumont.Frankie.Core
 {
@@ -31,31 +28,27 @@ namespace RDumont.Frankie.Core
 
         public void Init(string locationPath, string outputPath)
         {
-            this.basePath = locationPath;
+            this.basePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
             this.postsPath = Path.Combine(locationPath, "_posts");
             this.templatesPath = Path.Combine(locationPath, "_templates");
-            this.sitePath = outputPath;
+            this.sitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
 
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
 
-            Razor.SetTemplateService(new TemplateService(new TemplateServiceConfiguration
-            {
-                BaseTemplateType = typeof(PageTemplate<>)
-            }));
+            TemplateManager.Init();
 
             this.posts = new List<Post>();
         }
 
         public void CompileTemplates(string root)
         {
-            var templatesFolder = Path.Combine(root, "_templates");
-            var allFiles = Directory.GetFiles(templatesFolder, "*.cshtml", SearchOption.AllDirectories);
+            var allFiles = Directory.GetFiles(templatesPath, "*.cshtml", SearchOption.AllDirectories);
             foreach (var file in allFiles)
             {
-                var name = file.Remove(0, templatesFolder.Length + 1).Replace(".cshtml", "");
+                var name = file.Remove(0, templatesPath.Length + 1).Replace(".cshtml", "");
                 var contents = File.ReadAllText(file);
-                Razor.Compile(contents, name);
+                TemplateManager.CompileTemplate(file.Remove(0, basePath.Length + 1), contents);
 
                 Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
             }
@@ -82,7 +75,7 @@ namespace RDumont.Frankie.Core
                 var contents = File.ReadAllText(fullPath, System.Text.Encoding.UTF8);
 
                 var model = new Page {Foo = "bar"};
-                var result = Razor.Parse(contents, model);
+                var result = TemplateManager.RenderPage(fullPath.Remove(0, basePath.Length + 1), contents, model);
 
                 var finalPath = destination.Replace(".cshtml", ".html");
                 File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
@@ -108,7 +101,7 @@ namespace RDumont.Frankie.Core
 
                 Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
                 post.LoadFile(Configuration);
-                post.ExecuteTransformationPipeline(Configuration);
+                post.ExecuteTransformationPipeline(this.basePath, Configuration);
 
                 this.posts.Add(post);
             }
