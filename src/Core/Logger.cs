@@ -25,7 +25,7 @@ namespace RDumont.Frankie.Core
 
         public void Log(LoggingLevel level, string message, params object[] args)
         {
-            if(level <= this.Level)
+            if(level >= this.Level)
                 Console.WriteLine(message, args);
         }
 

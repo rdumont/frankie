@@ -52,7 +52,7 @@ namespace RDumont.Frankie.CommandLine.Commands
                 this.generator.AddFile(file);
             }
             sw.Stop();
-            Logger.Current.Log(LoggingLevel.Debug, "Time: {0} ms", sw.ElapsedMilliseconds);
+            Logger.Current.LogWarning("Time: {0} ms", sw.ElapsedMilliseconds);
         }
 
         private void CleanDirectory(string path)
