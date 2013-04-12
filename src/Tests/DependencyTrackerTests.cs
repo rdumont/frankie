@@ -150,6 +150,24 @@ namespace RDumont.Frankie.Tests
                 Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("some post"));
                 Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("another post"));
             }
+
+            [Test]
+            public void Add_two_dependencies_for_a_file()
+            {
+                // Arrange
+                var tracker = new TestableDependencyTracker();
+
+                // Act
+                tracker.Add("some post", "layout 1");
+                tracker.Add("some post", "some component");
+
+                // Assert
+                Assert.That(tracker.FileDependencies["some post"],
+                    Is.EquivalentTo(new HashSet<string> {"layout 1", "some component"}));
+
+                Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("some post"));
+                Assert.That(tracker.DependentFiles["some component"], Contains.Item("some post"));
+            }
         }
 
         public class Remove

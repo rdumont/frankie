@@ -52,13 +52,15 @@ namespace RDumont.Frankie.Core
         public void Add(string dependentFile, string dependency)
         {
             if (dependency == null) return;
-            try
+
+            HashSet<string> dependencies;
+            if (!FileDependencies.TryGetValue(dependentFile, out dependencies))
             {
                 this.FileDependencies.Add(dependentFile, new HashSet<string> {dependency});
             }
-            catch (ArgumentException)
+            else
             {
-                return;
+                dependencies.Add(dependency);
             }
 
             HashSet<string> dependentFiles;
