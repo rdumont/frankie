@@ -6,7 +6,7 @@ namespace RDumont.Frankie.Core
 {
     public class DependencyTracker
     {
-        protected Dictionary<string, string> FileDependencies = new Dictionary<string, string>();
+        protected Dictionary<string, HashSet<string>> FileDependencies = new Dictionary<string, HashSet<string>>();
         protected Dictionary<string, HashSet<string>> DependentFiles = new Dictionary<string, HashSet<string>>();
 
         private static DependencyTracker _instance;
@@ -37,10 +37,10 @@ namespace RDumont.Frankie.Core
         /// Finds the resource on which this file depends
         /// </summary>
         /// <param name="name">The dependent file</param>
-        public string FindFileDependencies(string name)
+        public string[] FindFileDependencies(string name)
         {
-            string dependency;
-            if (FileDependencies.TryGetValue(name, out dependency)) return dependency;
+            HashSet<string> dependencies;
+            if (FileDependencies.TryGetValue(name, out dependencies)) return dependencies.ToArray();
             return null;
         }
 
@@ -54,7 +54,7 @@ namespace RDumont.Frankie.Core
             if (dependency == null) return;
             try
             {
-                this.FileDependencies.Add(dependentFile, dependency);
+                this.FileDependencies.Add(dependentFile, new HashSet<string> {dependency});
             }
             catch (ArgumentException)
             {
@@ -74,12 +74,12 @@ namespace RDumont.Frankie.Core
 
         public void Remove(string name)
         {
-            string dependsOn;
+            HashSet<string> dependsOn;
             if (!FileDependencies.TryGetValue(name, out dependsOn)) return;
 
-            var dependentFiles = DependentFiles[dependsOn];
+            var dependentFiles = DependentFiles[dependsOn.First()];
             dependentFiles.Remove(name);
-            if (!dependentFiles.Any()) DependentFiles.Remove(dependsOn);
+            if (!dependentFiles.Any()) DependentFiles.Remove(dependsOn.First());
 
             FileDependencies.Remove(name);
         }

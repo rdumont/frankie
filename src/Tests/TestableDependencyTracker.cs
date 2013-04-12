@@ -5,7 +5,7 @@ namespace RDumont.Frankie.Tests
 {
     public class TestableDependencyTracker : DependencyTracker
     {
-        public new Dictionary<string, string> FileDependencies
+        public new Dictionary<string, HashSet<string>> FileDependencies
         {
             get { return base.FileDependencies; }
         }

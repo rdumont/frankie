@@ -56,13 +56,13 @@ namespace RDumont.Frankie.Tests
             {
                 // Arrange
                 var tracker = new TestableDependencyTracker();
-                tracker.FileDependencies.Add("some post", "layout 1");
+                tracker.FileDependencies.Add("some post", new HashSet<string> {"layout 1"});
 
                 // Act
                 var dependency = tracker.FindFileDependencies("some post");
 
                 // Assert
-                Assert.That(dependency, Is.EqualTo("layout 1"));
+                Assert.That(dependency, Is.EquivalentTo(new HashSet<string> {"layout 1"}));
             }
 
             [Test]
@@ -105,7 +105,8 @@ namespace RDumont.Frankie.Tests
                 tracker.Add("some post", "layout 1");
 
                 // Assert
-                Assert.That(tracker.FileDependencies, Contains.Item(NameValue("some post", "layout 1")));
+                Assert.That(tracker.FileDependencies["some post"],
+                    Is.EquivalentTo(new HashSet<string> {"layout 1"}));
 
                 Assert.That(tracker.DependentFiles.Keys, Contains.Item("layout 1"));
                 Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("some post"));
@@ -122,7 +123,8 @@ namespace RDumont.Frankie.Tests
                 tracker.Add("some post", "layout 1");
 
                 // Assert
-                Assert.That(tracker.FileDependencies, Contains.Item(NameValue("some post", "layout 1")));
+                Assert.That(tracker.FileDependencies["some post"],
+                    Is.EquivalentTo(new HashSet<string> {"layout 1"}));
 
                 Assert.That(tracker.DependentFiles.Keys, Contains.Item("layout 1"));
                 Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("some post"));
@@ -139,8 +141,10 @@ namespace RDumont.Frankie.Tests
                 tracker.Add("another post", "layout 1");
 
                 // Assert
-                Assert.That(tracker.FileDependencies, Contains.Item(NameValue("some post", "layout 1")));
-                Assert.That(tracker.FileDependencies, Contains.Item(NameValue("another post", "layout 1")));
+                Assert.That(tracker.FileDependencies["some post"],
+                    Is.EquivalentTo(new HashSet<string> {"layout 1"}));
+                Assert.That(tracker.FileDependencies["another post"],
+                    Is.EquivalentTo(new HashSet<string> {"layout 1"}));
 
                 Assert.That(tracker.DependentFiles.Keys, Contains.Item("layout 1"));
                 Assert.That(tracker.DependentFiles["layout 1"], Contains.Item("some post"));
@@ -155,7 +159,7 @@ namespace RDumont.Frankie.Tests
             {
                 // Arrange
                 var tracker = new TestableDependencyTracker();
-                tracker.FileDependencies.Add("some post", "layout 1");
+                tracker.FileDependencies.Add("some post", new HashSet<string> {"layout 1"});
                 tracker.DependentFiles.Add("layout 1", new HashSet<string>{"some post"});
 
                 // Act
@@ -172,8 +176,8 @@ namespace RDumont.Frankie.Tests
                 // Arrange
                 var tracker = new TestableDependencyTracker();
 
-                tracker.FileDependencies.Add("some post", "layout 1");
-                tracker.FileDependencies.Add("another post", "layout 1");
+                tracker.FileDependencies.Add("some post", new HashSet<string> {"layout 1"});
+                tracker.FileDependencies.Add("another post", new HashSet<string> {"layout 1"});
                 tracker.DependentFiles.Add("layout 1", new HashSet<string>
                     {
                         "some post",
@@ -201,9 +205,9 @@ namespace RDumont.Frankie.Tests
             }
         }
 
-        public static KeyValuePair<string, string> NameValue(string name, string value)
+        public static KeyValuePair<string, HashSet<string>> NameValue(string name, string value)
         {
-            return new KeyValuePair<string, string>(name, value);
+            return new KeyValuePair<string, HashSet<string>>(name, new HashSet<string> {value});
         } 
     }
 }
