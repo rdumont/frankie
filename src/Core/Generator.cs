@@ -67,6 +67,8 @@ namespace RDumont.Frankie.Core
 
         public void AddFile(string fullPath)
         {
+            if (IsIgnored(fullPath)) return;
+
             Logger.Current.Log(LoggingLevel.Debug, "Adding file: {0}", fullPath);
             var destination = fullPath.Replace(this.basePath, this.sitePath);
             var destinationFolder = Path.GetDirectoryName(destination);
@@ -90,6 +92,11 @@ namespace RDumont.Frankie.Core
                 var finalPath = fullPath.Replace(this.basePath, this.sitePath);
                 File.Copy(fullPath, finalPath, true);
             }
+        }
+
+        private bool IsIgnored(string fullPath)
+        {
+            return Configuration.Ignore.Any(fullPath.EndsWith);
         }
 
         public void LoadPosts(IEnumerable<string> files)

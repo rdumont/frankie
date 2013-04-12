@@ -7,6 +7,8 @@ namespace RDumont.Frankie.Core
     {
         public string Permalink { get; set; }
 
+        public string[] Ignore { get; set; }
+
         public static SiteConfiguration Load(string filePath)
         {
             var stream = File.OpenRead(filePath);
