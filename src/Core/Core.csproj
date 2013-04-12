@@ -58,6 +58,7 @@
     <Compile Include="..\CommandLine\Properties\SharedAssemblyVersion.cs">
       <Link>Properties\SharedAssemblyVersion.cs</Link>
     </Compile>
+    <Compile Include="DependencyTracker.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PageModel.cs" />
