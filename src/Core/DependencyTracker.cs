@@ -85,5 +85,21 @@ namespace RDumont.Frankie.Core
 
             FileDependencies.Remove(name);
         }
+
+        public string[] FindAllDependentFiles(string path)
+        {
+            var files = new List<string>();
+            var stack = new Stack<string>();
+            stack.Push(path);
+            do
+            {
+                var next = stack.Pop();
+                var sons = FindDependentFiles(next);
+                files.AddRange(sons);
+                foreach (var son in sons.Reverse()) stack.Push(son);
+            } while (stack.Any());
+
+            return files.ToArray();
+        }
     }
 }

@@ -79,6 +79,36 @@ namespace RDumont.Frankie.Tests
             }
         }
 
+        public class FindAllDependentFiles
+        {
+            [Test]
+            public void Find_recursively()
+            {
+                // Arrange
+                var tracker = new TestableDependencyTracker();
+                tracker.DependentFiles.Add("base layout", new HashSet<string> {"layout 1", "layout 2"});
+                tracker.DependentFiles.Add("layout 1", new HashSet<string> {"A", "B"});
+                tracker.DependentFiles.Add("layout 2", new HashSet<string> {"C"});
+
+                var expectedOrder = new string[]
+                    {
+                        "layout 1",
+                        "layout 2",
+                        "A",
+                        "B",
+                        "C"
+                    };
+
+                // Act
+                var files = tracker.FindAllDependentFiles("base layout");
+
+                // Assert
+                Assert.That(files, Is.EquivalentTo(expectedOrder));
+                for (int i = 0; i < expectedOrder.Length; i++)
+                    Assert.That(files[i], Is.EqualTo(expectedOrder[i]));
+            }
+        }
+
         public class Add
         {
             [Test]

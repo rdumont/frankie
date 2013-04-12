@@ -25,15 +25,22 @@ namespace RDumont.Frankie.Core
         {
             var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".cshtml", "");
             var type = Razor.GetTemplate(contents, name).GetType();
-            TemplatePathsByType.Add(type, name);
+            try
+            {
+                TemplatePathsByType.Add(type, name);
+            }
+            catch (ArgumentException)
+            {
+                // ok, template is already registered
+            }
         }
 
         public static string RenderPage(string pagePath, string contents, Page model)
         {
             var template = Razor.CreateTemplate(contents, model);
-            var name = pagePath.Replace(".cshtml", "");
-            TemplatePathsByType.Add(template.GetType(), name);
-            return _templateService.Run(template, new DynamicViewBag());
+            var viewBag = new DynamicViewBag();
+            viewBag.AddValue("PagePath", pagePath);
+            return _templateService.Run(template, viewBag);
         }
 
         public static string RenderPost(string postPath, string templateName, Post model)

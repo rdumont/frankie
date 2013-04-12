@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace RDumont.Frankie.Core
 {
@@ -46,12 +47,47 @@ namespace RDumont.Frankie.Core
             var allFiles = Directory.GetFiles(templatesPath, "*.cshtml", SearchOption.AllDirectories);
             foreach (var file in allFiles)
             {
-                var name = file.Remove(0, templatesPath.Length + 1).Replace(".cshtml", "");
-                var contents = File.ReadAllText(file);
-                TemplateManager.CompileTemplate(file.Remove(0, basePath.Length + 1), contents);
-
-                Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
+                CompileTemplate(file);
             }
+        }
+
+        private void HandleTemplateChange(string file)
+        {
+            var path = file.Remove(0, basePath.Length + 1);
+            var dependentFiles = DependencyTracker.Current.FindAllDependentFiles(path);
+
+            foreach (var dependentFile in dependentFiles)
+            {
+                ReAddDependentFile(dependentFile);
+            }
+
+            CompileTemplate(file);
+        }
+
+        private void ReAddDependentFile(string file)
+        {
+            var fullPath = Path.Combine(basePath, file);
+            if (file.StartsWith(TemplateManager.TEMPLATES_FOLDER))
+            {
+                CompileTemplate(fullPath);
+            }
+            else if (file.StartsWith(Post.POSTS_FOLDER))
+            {
+                // handle post
+            }
+            else
+            {
+                AddFile(fullPath);
+            }
+        }
+
+        private void CompileTemplate(string file)
+        {
+            var name = file.Remove(0, templatesPath.Length + 1).Replace(".cshtml", "");
+            var contents = ReadTextFile(file);
+            TemplateManager.CompileTemplate(file.Remove(0, basePath.Length + 1), contents);
+
+            Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
 
         public void RemoveFile(string fullPath)
@@ -61,6 +97,12 @@ namespace RDumont.Frankie.Core
         public void AddFile(string fullPath)
         {
             if (IsIgnored(fullPath)) return;
+
+            if (IsTemplate(fullPath))
+            {
+                HandleTemplateChange(fullPath);
+                return;
+            }
 
             if (!IsSiteContent(fullPath)) return;
 
@@ -84,6 +126,11 @@ namespace RDumont.Frankie.Core
             }
         }
 
+        private bool IsTemplate(string fullPath)
+        {
+            return fullPath.StartsWith(this.templatesPath);
+        }
+
         private void HandleMarkdownPage(string originPath, string destinationPath)
         {
             // TODO
@@ -91,13 +138,35 @@ namespace RDumont.Frankie.Core
 
         private void HandleRazorPage(string originPath, string destinationPath)
         {
-            var contents = File.ReadAllText(originPath, System.Text.Encoding.UTF8);
+            var contents = ReadTextFile(originPath);
 
             var model = new Page();
             var result = TemplateManager.RenderPage(originPath.Remove(0, basePath.Length + 1), contents, model);
 
             var finalPath = destinationPath.Replace(".cshtml", ".html");
             File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
+        }
+
+        private string ReadTextFile(string originPath)
+        {
+            var maxAttempts = 5;
+            var baseInterval = 3;
+            var interval = baseInterval;
+            var attempt = 1;
+            while (true)
+            {
+                try
+                {
+                    return File.ReadAllText(originPath, System.Text.Encoding.UTF8);
+                }
+                catch (IOException)
+                {
+                    if (attempt == maxAttempts) throw;
+                    interval = baseInterval ^ attempt;
+                    attempt++;
+                    Thread.Sleep(interval);
+                }
+            }
         }
 
         private string GetFileDestinationPath(string fullPath)

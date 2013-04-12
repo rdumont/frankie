@@ -19,26 +19,24 @@ namespace RDumont.Frankie.Core
 
         protected override ITemplate ResolveLayout(string name)
         {
-            var thisTemplatePath = TemplateManager.GetTemplatePath(this.GetType());
-            if (thisTemplatePath != null)
-            {
-                var layoutFilePath = TemplateManager.GetFullPath(name);
-                DependencyTracker.Current.Add(thisTemplatePath, layoutFilePath);
-            }
-
+            TrackDependency(name);
             return base.ResolveLayout(name);
         }
 
         public override TemplateWriter Include(string cacheName, object model = null)
         {
-            var thisTemplatePath = TemplateManager.GetTemplatePath(this.GetType());
+            TrackDependency(cacheName);
+            return base.Include(cacheName, model);
+        }
+
+        private void TrackDependency(string name)
+        {
+            var thisTemplatePath = ViewBag.PagePath ?? TemplateManager.GetTemplatePath(this.GetType());
             if (thisTemplatePath != null)
             {
-                var layoutFilePath = TemplateManager.GetFullPath(cacheName);
+                var layoutFilePath = TemplateManager.GetFullPath(name);
                 DependencyTracker.Current.Add(thisTemplatePath, layoutFilePath);
             }
-
-            return base.Include(cacheName, model);
         }
     }
 }

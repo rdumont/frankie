@@ -42,25 +42,21 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         private void OnFileDeleted(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("DELETED: " + e.FullPath);
             this.generator.RemoveFile(e.FullPath);
         }
 
         private void OnFileCreated(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("CREATED: " + e.FullPath);
             this.generator.AddFile(e.FullPath);
         }
 
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("CHANGED: " + e.FullPath);
             this.generator.AddFile(e.FullPath);
         }
 
         private void OnFileRenamed(object sender, RenamedEventArgs e)
         {
-            Console.WriteLine("RENAMED: " + e.FullPath);
             this.generator.RemoveFile(e.OldFullPath);
             this.generator.AddFile(e.FullPath);
         }
