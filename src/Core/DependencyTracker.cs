@@ -9,6 +9,16 @@ namespace RDumont.Frankie.Core
         protected Dictionary<string, string> FileDependencies = new Dictionary<string, string>();
         protected Dictionary<string, HashSet<string>> DependentFiles = new Dictionary<string, HashSet<string>>();
 
+        private static DependencyTracker _instance;
+        public static DependencyTracker Current
+        {
+            get { return _instance ?? (_instance = new DependencyTracker()); }
+        }
+
+        protected DependencyTracker()
+        {
+        }
+
         /// <summary>
         /// Finds files that depend on a resource
         /// </summary>
