@@ -8,15 +8,17 @@ namespace RDumont.Frankie.Core
 {
     public static class TemplateManager
     {
+        private static TemplateService _templateService;
         private static readonly Dictionary<Type, string> TemplatePathsByType = new Dictionary<Type, string>();
         public const string TEMPLATES_FOLDER = "_templates";
 
         public static void Init()
         {
-            Razor.SetTemplateService(new TemplateService(new TemplateServiceConfiguration
-            {
-                BaseTemplateType = typeof(PageTemplate<>)
-            }));
+            _templateService = new TemplateService(new TemplateServiceConfiguration
+                {
+                    BaseTemplateType = typeof (PageTemplate<>)
+                });
+            Razor.SetTemplateService(_templateService);
         }
 
         public static void CompileTemplate(string templatePath, string contents)
@@ -28,8 +30,10 @@ namespace RDumont.Frankie.Core
 
         public static string RenderPage(string pagePath, string contents, Page model)
         {
+            var template = Razor.CreateTemplate(contents, model);
             var name = pagePath.Replace(".cshtml", "");
-            return Razor.Parse(contents, model, new DynamicViewBag(), name);
+            TemplatePathsByType.Add(template.GetType(), name);
+            return _templateService.Run(template, new DynamicViewBag());
         }
 
         public static string RenderPost(string postPath, string templateName, Post model)
