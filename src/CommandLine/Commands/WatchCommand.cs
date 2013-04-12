@@ -24,7 +24,6 @@ namespace RDumont.Frankie.CommandLine.Commands
             runCommand.ExecuteCommand(options);
 
             var path = GetAbsolutePath(options.Location);
-            this.generator.Init(options.LocationPath, options.OutputPath);
 
             var watcher = new FileSystemWatcher(path);
             watcher.IncludeSubdirectories = true;
@@ -56,7 +55,6 @@ namespace RDumont.Frankie.CommandLine.Commands
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine("CHANGED: " + e.FullPath);
-            this.generator.RemoveFile(e.FullPath);
             this.generator.AddFile(e.FullPath);
         }
 
