@@ -62,29 +62,61 @@ namespace RDumont.Frankie.Core
         {
             if (IsIgnored(fullPath)) return;
 
-            Logger.Current.Log(LoggingLevel.Debug, "Adding file: {0}", fullPath);
+            if (!IsSiteContent(fullPath)) return;
+
+            var destination = GetFileDestinationPath(fullPath);
+            var relativeOrigin = fullPath.Remove(0, this.basePath.Length + 1);
+
+            if (fullPath.EndsWith(".cshtml"))
+            {
+                HandleRazorPage(fullPath, destination);
+                Logger.Current.Log(LoggingLevel.Debug, "Razor: {0}", relativeOrigin);
+            }
+            else if (fullPath.EndsWith(".markdown") || fullPath.EndsWith(".md"))
+            {
+                HandleMarkdownPage(fullPath, destination);
+                Logger.Current.Log(LoggingLevel.Debug, "Markdown: {0}", relativeOrigin);
+            }
+            else
+            {
+                File.Copy(fullPath, destination, true);
+                Logger.Current.Log(LoggingLevel.Debug, "Content: {0}", relativeOrigin);
+            }
+        }
+
+        private void HandleMarkdownPage(string originPath, string destinationPath)
+        {
+            // TODO
+        }
+
+        private void HandleRazorPage(string originPath, string destinationPath)
+        {
+            var contents = File.ReadAllText(originPath, System.Text.Encoding.UTF8);
+
+            var model = new Page();
+            var result = TemplateManager.RenderPage(originPath.Remove(0, basePath.Length + 1), contents, model);
+
+            var finalPath = destinationPath.Replace(".cshtml", ".html");
+            File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
+        }
+
+        private string GetFileDestinationPath(string fullPath)
+        {
             var destination = fullPath.Replace(this.basePath, this.sitePath);
             var destinationFolder = Path.GetDirectoryName(destination);
             if (!Directory.Exists(destinationFolder))
             {
                 Directory.CreateDirectory(destinationFolder);
             }
+            return destination;
+        }
 
-            if (fullPath.EndsWith(".cshtml"))
-            {
-                var contents = File.ReadAllText(fullPath, System.Text.Encoding.UTF8);
-
-                var model = new Page {Foo = "bar"};
-                var result = TemplateManager.RenderPage(fullPath.Remove(0, basePath.Length + 1), contents, model);
-
-                var finalPath = destination.Replace(".cshtml", ".html");
-                File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
-            }
-            else
-            {
-                var finalPath = fullPath.Replace(this.basePath, this.sitePath);
-                File.Copy(fullPath, finalPath, true);
-            }
+        private bool IsSiteContent(string fullPath)
+        {
+            if (fullPath.StartsWith(this.templatesPath)) return false;
+            if (fullPath.StartsWith(this.sitePath)) return false;
+            if (fullPath.StartsWith(this.postsPath)) return false;
+            return true;
         }
 
         private bool IsIgnored(string fullPath)
