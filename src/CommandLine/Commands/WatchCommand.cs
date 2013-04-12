@@ -20,7 +20,10 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         public override void ExecuteCommand(WatchOptions options)
         {
-            var path = GetAbsolutePath(options.Source);
+            var runCommand = new RunCommand(this.generator);
+            runCommand.ExecuteCommand(options);
+
+            var path = GetAbsolutePath(options.Location);
             this.generator.Init(options.LocationPath, options.OutputPath);
 
             var watcher = new FileSystemWatcher(path);
@@ -34,7 +37,7 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             watcher.EnableRaisingEvents = true;
 
-            Console.WriteLine("Monitoring file changes in " + path);
+            Logger.Current.Log(LoggingLevel.Minimal, "\nNow monitoring file changes in {0}", path);
             while (Console.Read() != 'q') continue;
         }
 

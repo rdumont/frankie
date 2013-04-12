@@ -6,7 +6,7 @@ using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
-    public class RunCommand : Command<RunOptions>
+    public class RunCommand : Command<BaseOptions>
     {
         private readonly Generator generator;
 
@@ -30,8 +30,12 @@ namespace RDumont.Frankie.CommandLine.Commands
             this.generator = generator;
         }
 
-        public override void ExecuteCommand(RunOptions options)
+        public override void ExecuteCommand(BaseOptions options)
         {
+            Logger.Current.Log(LoggingLevel.Minimal, "Running Frankie...");
+            Logger.Current.Log(LoggingLevel.Minimal, "Source: {0}", options.LocationPath);
+            Logger.Current.Log(LoggingLevel.Minimal, "Target: {0}\n", options.OutputPath);
+
             var sw = System.Diagnostics.Stopwatch.StartNew();
             var root = options.LocationPath;
             var output = options.OutputPath;
@@ -52,7 +56,8 @@ namespace RDumont.Frankie.CommandLine.Commands
                 this.generator.AddFile(file);
             }
             sw.Stop();
-            Logger.Current.LogWarning("Time: {0} ms", sw.ElapsedMilliseconds);
+
+            Logger.Current.Log(LoggingLevel.Minimal, "\nFINISHED! Took {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void CleanDirectory(string path)
