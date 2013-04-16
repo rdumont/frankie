@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
+using Path = System.IO.Path;
 using System.Linq;
-using System.Threading;
 
 namespace RDumont.Frankie.Core
 {
@@ -15,18 +13,18 @@ namespace RDumont.Frankie.Core
         private List<Post> posts;
         private readonly SiteContext siteContext;
 
+        protected Io Io { get; set; }
         protected SiteConfiguration Configuration { get; set; }
 
         public Generator() : this(SiteContext.Current)
         {
-            
         }
 
         private Generator(SiteContext siteContext)
         {
             this.siteContext = siteContext;
         }
-
+        
         public void Init(string locationPath, string outputPath)
         {
             this.basePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
@@ -44,7 +42,7 @@ namespace RDumont.Frankie.Core
 
         public void CompileTemplates(string root)
         {
-            var allFiles = Directory.GetFiles(templatesPath, "*.cshtml", SearchOption.AllDirectories);
+            var allFiles = Io.FindFilesRecursively(templatesPath, "*.cshtml");
             foreach (var file in allFiles)
             {
                 CompileTemplate(file);
@@ -84,7 +82,7 @@ namespace RDumont.Frankie.Core
         private void CompileTemplate(string file)
         {
             var name = file.Remove(0, templatesPath.Length + 1).Replace(".cshtml", "");
-            var contents = ReadTextFile(file);
+            var contents = Io.ReadFile(file, 5);
             TemplateManager.CompileTemplate(file.Remove(0, basePath.Length + 1), contents);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
@@ -121,7 +119,7 @@ namespace RDumont.Frankie.Core
             }
             else
             {
-                File.Copy(fullPath, destination, true);
+                Io.CopyFile(fullPath, destination, true);
                 Logger.Current.Log(LoggingLevel.Debug, "Content: {0}", relativeOrigin);
             }
         }
@@ -138,44 +136,22 @@ namespace RDumont.Frankie.Core
 
         private void HandleRazorPage(string originPath, string destinationPath)
         {
-            var contents = ReadTextFile(originPath);
+            var contents = Io.ReadFile(originPath, 5);
 
             var model = new Page();
             var result = TemplateManager.RenderPage(originPath.Remove(0, basePath.Length + 1), contents, model);
 
             var finalPath = destinationPath.Replace(".cshtml", ".html");
-            File.WriteAllText(finalPath, result, System.Text.Encoding.UTF8);
-        }
-
-        private string ReadTextFile(string originPath)
-        {
-            var maxAttempts = 5;
-            var baseInterval = 3;
-            var interval = baseInterval;
-            var attempt = 1;
-            while (true)
-            {
-                try
-                {
-                    return File.ReadAllText(originPath, System.Text.Encoding.UTF8);
-                }
-                catch (IOException)
-                {
-                    if (attempt == maxAttempts) throw;
-                    interval = baseInterval ^ attempt;
-                    attempt++;
-                    Thread.Sleep(interval);
-                }
-            }
+            Io.WriteFile(finalPath, result);
         }
 
         private string GetFileDestinationPath(string fullPath)
         {
             var destination = fullPath.Replace(this.basePath, this.sitePath);
             var destinationFolder = Path.GetDirectoryName(destination);
-            if (!Directory.Exists(destinationFolder))
+            if (!Io.DirectoryExists(destinationFolder))
             {
-                Directory.CreateDirectory(destinationFolder);
+                Io.CreateDirectory(destinationFolder);
             }
             return destination;
         }
@@ -218,8 +194,8 @@ namespace RDumont.Frankie.Core
                 var folderPath = Path.Combine(this.sitePath, permalink);
                 var filePath = Path.Combine(folderPath, "index.html");
 
-                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-                File.WriteAllText(filePath, post.Body);
+                if (!Io.DirectoryExists(folderPath)) Io.CreateDirectory(folderPath);
+                Io.WriteFile(filePath, post.Body);
             }
         }
     }
