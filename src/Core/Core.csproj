@@ -75,6 +75,7 @@
     <Compile Include="SiteContext.cs" />
     <Compile Include="TemplateManager.cs" />
     <Compile Include="TemplateNotFoundException.cs" />
+    <Compile Include="TemplatesFileSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

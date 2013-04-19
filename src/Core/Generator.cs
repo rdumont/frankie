@@ -38,7 +38,7 @@ namespace RDumont.Frankie.Core
 
             TemplateManager.SetTemplateManager(new LiquidTemplateManager());
 
-            TemplateManager.Current.Init();
+            TemplateManager.Current.Init(this.BasePath);
 
             this.posts = new List<Post>();
         }

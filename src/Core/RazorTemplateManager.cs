@@ -11,7 +11,7 @@ namespace RDumont.Frankie.Core
         private static TemplateService _templateService;
         private static readonly Dictionary<Type, string> TemplatePathsByType = new Dictionary<Type, string>();
 
-        public override void Init()
+        public override void Init(string basePath)
         {
             _templateService = new TemplateService(new TemplateServiceConfiguration
                 {

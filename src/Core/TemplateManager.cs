@@ -13,7 +13,7 @@ namespace RDumont.Frankie.Core
             Current = templateManager;
         }
 
-        public abstract void Init();
+        public abstract void Init(string basePath);
 
         public abstract void CompileTemplate(string templatePath, string contents);
 

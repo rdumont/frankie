@@ -7,8 +7,9 @@ namespace RDumont.Frankie.Core
     {
         private readonly Dictionary<string, Template> templatesByName = new Dictionary<string, Template>();
 
-        public override void Init()
+        public override void Init(string basePath)
         {
+            Template.FileSystem = new TemplatesFileSystem(basePath);
         }
 
         public override void CompileTemplate(string templatePath, string contents)
