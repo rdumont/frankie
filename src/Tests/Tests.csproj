@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="DependencyTrackerTests.cs" />
     <Compile Include="ExtensionHelpers.cs" />
+    <Compile Include="GeneratorTests.cs" />
     <Compile Include="PostTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestableDependencyTracker.cs" />
+    <Compile Include="TestableGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

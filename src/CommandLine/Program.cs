@@ -22,9 +22,9 @@ namespace RDumont.Frankie.CommandLine
 
         private static readonly IList<ICommand> Commands = new List<ICommand>
             {
-                new RunCommand(new Generator()),
+                new RunCommand(),
                 new ServeCommand(),
-                new WatchCommand(new Generator()),
+                new WatchCommand(),
                 new BootstrapCommand()
             };
 

@@ -6,31 +6,32 @@ namespace RDumont.Frankie.Core
 {
     public class Generator
     {
-        private string basePath;
-        private string postsPath;
-        private string templatesPath;
-        private string sitePath;
+        protected string BasePath;
+        protected string PostsPath;
+        protected string TemplatesPath;
+        protected string SitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
 
         protected Io Io { get; set; }
         protected SiteConfiguration Configuration { get; set; }
 
-        public Generator() : this(SiteContext.Current)
+        protected Generator()
         {
         }
 
-        private Generator(SiteContext siteContext)
+        public Generator(SiteContext siteContext)
         {
+            this.Io = new Io();
             this.siteContext = siteContext;
         }
         
         public void Init(string locationPath, string outputPath)
         {
-            this.basePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
-            this.postsPath = Path.Combine(locationPath, "_posts");
-            this.templatesPath = Path.Combine(locationPath, "_templates");
-            this.sitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
+            this.BasePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
+            this.PostsPath = Path.Combine(locationPath, "_posts");
+            this.TemplatesPath = Path.Combine(locationPath, "_templates");
+            this.SitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
 
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
@@ -42,7 +43,7 @@ namespace RDumont.Frankie.Core
 
         public void CompileTemplates(string root)
         {
-            var allFiles = Io.FindFilesRecursively(templatesPath, "*.cshtml");
+            var allFiles = Io.FindFilesRecursively(TemplatesPath, "*.html");
             foreach (var file in allFiles)
             {
                 CompileTemplate(file);
@@ -51,7 +52,7 @@ namespace RDumont.Frankie.Core
 
         private void HandleTemplateChange(string file)
         {
-            var path = file.Remove(0, basePath.Length + 1);
+            var path = file.Remove(0, BasePath.Length + 1);
             var dependentFiles = DependencyTracker.Current.FindAllDependentFiles(path);
 
             foreach (var dependentFile in dependentFiles)
@@ -64,7 +65,7 @@ namespace RDumont.Frankie.Core
 
         private void ReAddDependentFile(string file)
         {
-            var fullPath = Path.Combine(basePath, file);
+            var fullPath = Path.Combine(BasePath, file);
             if (file.StartsWith(TemplateManager.TEMPLATES_FOLDER))
             {
                 CompileTemplate(fullPath);
@@ -81,15 +82,23 @@ namespace RDumont.Frankie.Core
 
         private void CompileTemplate(string file)
         {
-            var name = file.Remove(0, templatesPath.Length + 1).Replace(".cshtml", "");
+            var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".cshtml", "");
             var contents = Io.ReadFile(file, 5);
-            TemplateManager.CompileTemplate(file.Remove(0, basePath.Length + 1), contents);
+            TemplateManager.CompileTemplate(file.Remove(0, BasePath.Length + 1), contents);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
 
         public void RemoveFile(string fullPath)
         {
+            var destination = GetFileDestinationPath(fullPath);
+            Io.DeleteFile(destination);
+            Logger.Current.Log(LoggingLevel.Debug, "Removed file: {0}", GetRelativePath(fullPath));
+        }
+
+        private string GetRelativePath(string fullPath)
+        {
+            return fullPath.Remove(0, BasePath.Length + 1);
         }
 
         public void AddFile(string fullPath)
@@ -105,7 +114,8 @@ namespace RDumont.Frankie.Core
             if (!IsSiteContent(fullPath)) return;
 
             var destination = GetFileDestinationPath(fullPath);
-            var relativeOrigin = fullPath.Remove(0, this.basePath.Length + 1);
+            EnsureDirectoryExists(destination);
+            var relativeOrigin = fullPath.Remove(0, this.BasePath.Length + 1);
 
             if (fullPath.EndsWith(".cshtml"))
             {
@@ -126,7 +136,7 @@ namespace RDumont.Frankie.Core
 
         private bool IsTemplate(string fullPath)
         {
-            return fullPath.StartsWith(this.templatesPath);
+            return fullPath.StartsWith(this.TemplatesPath);
         }
 
         private void HandleMarkdownPage(string originPath, string destinationPath)
@@ -139,28 +149,43 @@ namespace RDumont.Frankie.Core
             var contents = Io.ReadFile(originPath, 5);
 
             var model = new Page();
-            var result = TemplateManager.RenderPage(originPath.Remove(0, basePath.Length + 1), contents, model);
+            var result = TemplateManager.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
 
             var finalPath = destinationPath.Replace(".cshtml", ".html");
             Io.WriteFile(finalPath, result);
         }
 
-        private string GetFileDestinationPath(string fullPath)
+        protected string GetFileDestinationPath(string fullPath)
         {
-            var destination = fullPath.Replace(this.basePath, this.sitePath);
-            var destinationFolder = Path.GetDirectoryName(destination);
+            if (fullPath.StartsWith(this.PostsPath))
+            {
+                var post = Post.FromFile(fullPath);
+                var relativePath = post.GetDestinationFilePath(this.Configuration);
+                return Path.GetFullPath(Path.Combine(this.SitePath, relativePath));
+            }
+
+            var destination = fullPath.Replace(this.BasePath, this.SitePath);
+
+            if (destination.EndsWith(".md"))
+                destination = destination.Replace(".md", ".html");
+
+            return destination;
+        }
+
+        protected void EnsureDirectoryExists(string fullPath)
+        {
+            var destinationFolder = Path.GetDirectoryName(fullPath);
             if (!Io.DirectoryExists(destinationFolder))
             {
                 Io.CreateDirectory(destinationFolder);
             }
-            return destination;
         }
 
         private bool IsSiteContent(string fullPath)
         {
-            if (fullPath.StartsWith(this.templatesPath)) return false;
-            if (fullPath.StartsWith(this.sitePath)) return false;
-            if (fullPath.StartsWith(this.postsPath)) return false;
+            if (fullPath.StartsWith(this.TemplatesPath)) return false;
+            if (fullPath.StartsWith(this.SitePath)) return false;
+            if (fullPath.StartsWith(this.PostsPath)) return false;
             return true;
         }
 
@@ -178,7 +203,7 @@ namespace RDumont.Frankie.Core
 
                 Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
                 post.LoadFile(Configuration);
-                post.ExecuteTransformationPipeline(this.basePath, Configuration);
+                post.ExecuteTransformationPipeline(this.BasePath, Configuration);
 
                 this.posts.Add(post);
             }
@@ -191,7 +216,7 @@ namespace RDumont.Frankie.Core
             foreach (var post in posts)
             {
                 var permalink = post.Permalink.Substring(1);
-                var folderPath = Path.Combine(this.sitePath, permalink);
+                var folderPath = Path.Combine(this.SitePath, permalink);
                 var filePath = Path.Combine(folderPath, "index.html");
 
                 if (!Io.DirectoryExists(folderPath)) Io.CreateDirectory(folderPath);

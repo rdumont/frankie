@@ -13,9 +13,9 @@ namespace RDumont.Frankie.CommandLine.Commands
             get { return "watch"; }
         }
 
-        public WatchCommand(Generator generator)
+        public WatchCommand()
         {
-            this.generator = generator;
+            this.generator = new Generator(SiteContext.Current);
         }
 
         public override void ExecuteCommand(WatchOptions options)

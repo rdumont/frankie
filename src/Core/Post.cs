@@ -131,5 +131,15 @@ namespace RDumont.Frankie.Core
                     this.absoluteFilePath, templateName);
             }
         }
+
+        public string GetDestinationFilePath(SiteConfiguration configuration)
+        {
+            var permalink = this.ResolvePermalink(configuration.Permalink).TrimStart('/');
+            if (!(permalink.EndsWith(".html") || permalink.EndsWith(".htm")))
+            {
+                permalink = Path.Combine(permalink, "index.html");
+            }
+            return permalink;
+        }
     }
 }

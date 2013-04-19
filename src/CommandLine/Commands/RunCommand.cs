@@ -25,6 +25,10 @@ namespace RDumont.Frankie.CommandLine.Commands
             get { return "run"; }
         }
 
+        public RunCommand() : this(new Generator(SiteContext.Current))
+        {
+        }
+
         public RunCommand(Generator generator)
         {
             this.generator = generator;
