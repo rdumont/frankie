@@ -23,7 +23,7 @@ namespace RDumont.Frankie.Core
 
         public static void CompileTemplate(string templatePath, string contents)
         {
-            var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".cshtml", "");
+            var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
             var type = Razor.GetTemplate(contents, name).GetType();
             try
             {
@@ -59,7 +59,7 @@ namespace RDumont.Frankie.Core
 
         public static string GetFullPath(string name)
         {
-            return TEMPLATES_FOLDER + "\\" + name + ".cshtml";
+            return TEMPLATES_FOLDER + "\\" + name + ".html";
         }
     }
 }

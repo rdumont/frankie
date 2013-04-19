@@ -82,7 +82,7 @@ namespace RDumont.Frankie.Core
 
         private void CompileTemplate(string file)
         {
-            var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".cshtml", "");
+            var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".html", "");
             var contents = Io.ReadFile(file, 5);
             TemplateManager.CompileTemplate(file.Remove(0, BasePath.Length + 1), contents);
 
@@ -117,20 +117,20 @@ namespace RDumont.Frankie.Core
             EnsureDirectoryExists(destination);
             var relativeOrigin = fullPath.Remove(0, this.BasePath.Length + 1);
 
-            if (fullPath.EndsWith(".cshtml"))
+            if (fullPath.EndsWith(".html"))
             {
-                HandleRazorPage(fullPath, destination);
-                Logger.Current.Log(LoggingLevel.Debug, "Razor: {0}", relativeOrigin);
+                HandleHtmlPage(fullPath, destination);
+                Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativeOrigin);
             }
-            else if (fullPath.EndsWith(".markdown") || fullPath.EndsWith(".md"))
+            else if (fullPath.EndsWith(".md"))
             {
                 HandleMarkdownPage(fullPath, destination);
-                Logger.Current.Log(LoggingLevel.Debug, "Markdown: {0}", relativeOrigin);
+                Logger.Current.Log(LoggingLevel.Debug, "Markdown page: {0}", relativeOrigin);
             }
             else
             {
                 Io.CopyFile(fullPath, destination, true);
-                Logger.Current.Log(LoggingLevel.Debug, "Content: {0}", relativeOrigin);
+                Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativeOrigin);
             }
         }
 
@@ -144,15 +144,14 @@ namespace RDumont.Frankie.Core
             // TODO
         }
 
-        private void HandleRazorPage(string originPath, string destinationPath)
+        private void HandleHtmlPage(string originPath, string destinationPath)
         {
             var contents = Io.ReadFile(originPath, 5);
 
             var model = new Page();
             var result = TemplateManager.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
 
-            var finalPath = destinationPath.Replace(".cshtml", ".html");
-            Io.WriteFile(finalPath, result);
+            Io.WriteFile(destinationPath, result);
         }
 
         protected string GetFileDestinationPath(string fullPath)

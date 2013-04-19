@@ -27,10 +27,10 @@ namespace RDumont.Frankie.CommandLine.Commands
         {
             var baseType = typeof (Program);
             var contentStream = baseType.Assembly.GetManifestResourceStream(
-                baseType.Namespace + ".Bootstrap.index.cshtml");
+                baseType.Namespace + ".Bootstrap.index.html");
 
             var text = new StreamReader(contentStream).ReadToEnd();
-            var filePath = Path.Combine(root, "index.cshtml");
+            var filePath = Path.Combine(root, "index.html");
             File.WriteAllText(filePath, text);
         }
 
