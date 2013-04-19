@@ -121,7 +121,7 @@ namespace RDumont.Frankie.Core
 
             try
             {
-                this.Body = TemplateManager.RenderPost(postPath, templateName, this);
+                this.Body = TemplateManager.Current.RenderPost(postPath, templateName, this);
             }
             catch (InvalidOperationException exception)
             {

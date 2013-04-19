@@ -36,7 +36,9 @@ namespace RDumont.Frankie.Core
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
 
-            TemplateManager.Init();
+            TemplateManager.SetTemplateManager(new RazorTemplateManager());
+
+            TemplateManager.Current.Init();
 
             this.posts = new List<Post>();
         }
@@ -84,7 +86,7 @@ namespace RDumont.Frankie.Core
         {
             var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".html", "");
             var contents = Io.ReadFile(file, 5);
-            TemplateManager.CompileTemplate(file.Remove(0, BasePath.Length + 1), contents);
+            TemplateManager.Current.CompileTemplate(file.Remove(0, BasePath.Length + 1), contents);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
@@ -149,7 +151,7 @@ namespace RDumont.Frankie.Core
             var contents = Io.ReadFile(originPath, 5);
 
             var model = new Page();
-            var result = TemplateManager.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
+            var result = TemplateManager.Current.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
 
             Io.WriteFile(destinationPath, result);
         }

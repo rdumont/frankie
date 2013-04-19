@@ -31,7 +31,7 @@ namespace RDumont.Frankie.Core
 
         private void TrackDependency(string name)
         {
-            var thisTemplatePath = ViewBag.PagePath ?? TemplateManager.GetTemplatePath(this.GetType());
+            var thisTemplatePath = ViewBag.PagePath ?? ((RazorTemplateManager)TemplateManager.Current).GetTemplatePath(this.GetType());
             if (thisTemplatePath != null)
             {
                 var layoutFilePath = TemplateManager.GetFullPath(name);
