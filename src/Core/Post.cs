@@ -3,11 +3,12 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DotLiquid;
 using MarkdownDeep;
 
 namespace RDumont.Frankie.Core
 {
-    public class Post
+    public class Post : ILiquidizable
     {
         public const string POSTS_FOLDER = "_posts";
         private static readonly Regex PostFileRegex = new Regex(@"^.+(\\|/)" + POSTS_FOLDER
@@ -140,6 +141,18 @@ namespace RDumont.Frankie.Core
                 permalink = Path.Combine(permalink, "index.html");
             }
             return permalink;
+        }
+
+        public object ToLiquid()
+        {
+            return new
+                {
+                    date = Date,
+                    slug = Slug,
+                    category = Category,
+                    permalink = Permalink,
+                    metadata = Metadata
+                };
         }
     }
 }

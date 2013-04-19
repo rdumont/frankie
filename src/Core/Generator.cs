@@ -36,7 +36,7 @@ namespace RDumont.Frankie.Core
             var configPath = Path.Combine(locationPath, "config.yaml");
             this.Configuration = SiteConfiguration.Load(configPath);
 
-            TemplateManager.SetTemplateManager(new RazorTemplateManager());
+            TemplateManager.SetTemplateManager(new LiquidTemplateManager());
 
             TemplateManager.Current.Init();
 
@@ -204,9 +204,15 @@ namespace RDumont.Frankie.Core
 
                 Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
                 post.LoadFile(Configuration);
-                post.ExecuteTransformationPipeline(this.BasePath, Configuration);
-
-                this.posts.Add(post);
+                try
+                {
+                    post.ExecuteTransformationPipeline(this.BasePath, Configuration);
+                    this.posts.Add(post);
+                }
+                catch (TemplateNotFoundException exception)
+                {
+                    Logger.Current.LogError(exception.Message);
+                }
             }
 
             this.siteContext.Posts = this.posts.OrderBy(p => p.Date).ToList().AsReadOnly();

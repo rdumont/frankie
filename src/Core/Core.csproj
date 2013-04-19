@@ -64,6 +64,7 @@
     <Compile Include="DependencyTracker.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Io.cs" />
+    <Compile Include="LiquidTemplateManager.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PageModel.cs" />
     <Compile Include="PageTemplate.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="SiteConfiguration.cs" />
     <Compile Include="SiteContext.cs" />
     <Compile Include="TemplateManager.cs" />
+    <Compile Include="TemplateNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
