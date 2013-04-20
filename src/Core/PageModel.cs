@@ -1,7 +1,22 @@
+using System.IO;
+
 namespace RDumont.Frankie.Core
 {
-    public class Page
+    public class Page : ContentFile
     {
-        public string Foo { get; set; }
+        private readonly string absoluteFilePath;
+
+        public Page(string absoluteFilePath)
+        {
+            this.absoluteFilePath = absoluteFilePath;
+        }
+
+        public void LoadFile(SiteConfiguration configuration)
+        {
+            var contents = File.ReadAllText(this.absoluteFilePath);
+            this.Body = contents;
+
+            ExtractMetadata();
+        }
     }
 }

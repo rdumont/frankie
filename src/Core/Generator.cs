@@ -150,7 +150,7 @@ namespace RDumont.Frankie.Core
         {
             var contents = Io.ReadFile(originPath, 5);
 
-            var model = new Page();
+            var model = new Page(originPath);
             var result = TemplateManager.Current.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
 
             Io.WriteFile(destinationPath, result);

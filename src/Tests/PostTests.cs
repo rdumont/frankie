@@ -93,10 +93,10 @@ namespace RDumont.Frankie.Tests
             }
         }
 
-        public class ReadMetaData
+        public class ExtractMetadata
         {
             [Test]
-            public void Read_metadata()
+            public void Extract_metadata()
             {
                 // Arrange
                 var post = new TestablePost
@@ -107,7 +107,7 @@ this is the body"
                     };
 
                 // Act
-                post.ReadMetadata();
+                post.ExtractMetadata();
 
                 // Assert
                 Assert.That(post.Metadata.AsDictionary(), Is.EquivalentTo(new Dictionary<string, string>
@@ -127,9 +127,9 @@ this is the body"
             return base.ResolvePermalink(template);
         }
 
-        public new void ReadMetadata()
+        public new void ExtractMetadata()
         {
-            base.ReadMetadata();
+            base.ExtractMetadata();
         }
     }
 }

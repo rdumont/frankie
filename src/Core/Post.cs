@@ -8,7 +8,7 @@ using MarkdownDeep;
 
 namespace RDumont.Frankie.Core
 {
-    public class Post : ILiquidizable
+    public class Post : ContentFile, ILiquidizable
     {
         public const string POSTS_FOLDER = "_posts";
         private static readonly Regex PostFileRegex = new Regex(@"^.+(\\|/)" + POSTS_FOLDER
@@ -22,9 +22,7 @@ namespace RDumont.Frankie.Core
         public string Slug { get; set; }
         public string Extension { get; set; }
         public string[] Category { get; set; }
-        public string Body { get; set; }
         public string Permalink { get; protected set; }
-        public NameValueCollection Metadata { get; private set; }
 
         protected Post()
         {
@@ -76,24 +74,7 @@ namespace RDumont.Frankie.Core
 
             this.Permalink = ResolvePermalink(configuration.Permalink);
 
-            ReadMetadata();
-        }
-
-        protected virtual void ReadMetadata()
-        {
-            this.Metadata = new NameValueCollection();
-            var reader = new StringReader(this.Body);
-            var line = reader.ReadLine();
-            while (line != null && line.StartsWith("@"))
-            {
-                var match = Regex.Match(line, @"@(?<key>\w+)\s+(?<value>.+)$");
-                if (match.Success)
-                    this.Metadata.Add(match.Groups["key"].Value, match.Groups["value"].Value);
-
-                line = reader.ReadLine();
-            }
-
-            this.Body = line + reader.ReadToEnd();
+            ExtractMetadata();
         }
 
         public void ExecuteTransformationPipeline(string rootPath, SiteConfiguration configuration)
