@@ -132,7 +132,8 @@ namespace RDumont.Frankie.Core
                     slug = Slug,
                     category = Category,
                     permalink = Permalink,
-                    metadata = Metadata
+                    metadata = Metadata,
+                    body = Body
                 };
         }
     }
