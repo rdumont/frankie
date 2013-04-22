@@ -17,7 +17,7 @@ namespace RDumont.Frankie.Core
 
         public void LoadFile(SiteConfiguration configuration)
         {
-            var contents = _io.ReadFile(_absoluteFilePath); ;
+            var contents = _io.ReadFile(_absoluteFilePath, 3); ;
             this.Body = contents;
 
             ExtractMetadata();
