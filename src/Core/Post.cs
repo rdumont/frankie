@@ -22,6 +22,7 @@ namespace RDumont.Frankie.Core
         public string Slug { get; set; }
         public string Extension { get; set; }
         public string[] Category { get; set; }
+        public string[] Tags { get; private set; }
         public string Permalink { get; protected set; }
 
         protected Post()
@@ -75,6 +76,16 @@ namespace RDumont.Frankie.Core
             this.Permalink = ResolvePermalink(configuration.Permalink);
 
             ExtractMetadata();
+            this.Tags = LoadTags();
+        }
+
+        protected string[] LoadTags()
+        {
+            var tagsDefinition = Metadata["tags"];
+            if(tagsDefinition == null) return new string[0];
+
+            return tagsDefinition.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                .Select(tag => tag.Trim()).ToArray();
         }
 
         public void ExecuteTransformationPipeline(string rootPath, SiteConfiguration configuration)

@@ -119,6 +119,28 @@ this is the body"
             }
         }
 
+        [Test]
+        public void Load_tags()
+        {
+            // Arrange
+            var post = new TestablePost();
+            post.Metadata = new NameValueCollection
+                {
+                    {"tags", "life, stuff, more stuff"}
+                };
+
+            // Act
+            var tags = post.LoadTags();
+
+            // Assert
+            Assert.That(tags, Is.EquivalentTo(new[]
+                {
+                    "life",
+                    "stuff",
+                    "more stuff",
+                }));
+        }
+
         public class RetrieveTitle
         {
             [Test]
@@ -184,6 +206,12 @@ this is the body"
 
     public class TestablePost : Post
     {
+        public new NameValueCollection Metadata
+        {
+            get { return base.Metadata; }
+            set { base.Metadata = value; }
+        }
+
         public new string ResolvePermalink(string template)
         {
             return base.ResolvePermalink(template);
@@ -197,6 +225,11 @@ this is the body"
         public new void RetrieveTitle()
         {
             base.RetrieveTitle();
+        }
+
+        public new string[] LoadTags()
+        {
+            return base.LoadTags();
         }
     }
 }
