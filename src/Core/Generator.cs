@@ -85,8 +85,7 @@ namespace RDumont.Frankie.Core
         private void CompileTemplate(string file)
         {
             var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".html", "");
-            var contents = Io.ReadFile(file, 5);
-            TemplateManager.Current.CompileTemplate(file.Remove(0, BasePath.Length + 1), contents);
+            TemplateManager.Current.CompileTemplate(file.Remove(0, BasePath.Length + 1));
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }

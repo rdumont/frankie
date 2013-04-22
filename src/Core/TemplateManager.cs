@@ -16,7 +16,7 @@ namespace RDumont.Frankie.Core
 
         public abstract void Init(string basePath);
 
-        public abstract void CompileTemplate(string templatePath, string contents);
+        public abstract void CompileTemplate(string templatePath);
 
         public abstract string RenderPage(string pagePath, Page model);
 

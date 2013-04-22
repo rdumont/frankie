@@ -21,10 +21,11 @@ namespace RDumont.Frankie.Core
             Razor.SetTemplateService(_templateService);
         }
 
-        public override void CompileTemplate(string templatePath, string contents)
+        public override void CompileTemplate(string templatePath)
         {
             var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
-            var type = Razor.GetTemplate(contents, name).GetType();
+            var fullPath = GetFullPath(templatePath);
+            var type = Razor.GetTemplate(fullPath, name).GetType();
             try
             {
                 TemplatePathsByType.Add(type, name);

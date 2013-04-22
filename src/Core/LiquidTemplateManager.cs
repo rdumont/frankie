@@ -13,9 +13,11 @@ namespace RDumont.Frankie.Core
             Template.FileSystem = new TemplatesFileSystem(basePath);
         }
 
-        public override void CompileTemplate(string templatePath, string contents)
+        public override void CompileTemplate(string templatePath)
         {
             var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            var context = new Context();
+            var contents = Template.FileSystem.ReadTemplateFile(context, name);
             templatesByName[name] = Template.Parse(contents);
         }
 
