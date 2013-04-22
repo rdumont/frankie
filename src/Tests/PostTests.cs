@@ -118,6 +118,68 @@ this is the body"
                 Assert.That(post.Body, Is.EqualTo(@"this is the body" + Environment.NewLine));
             }
         }
+
+        public class RetrieveTitle
+        {
+            [Test]
+            public void Retrieve_post_title()
+            {
+                // Arrange
+                var post = new TestablePost();
+                post.Body = @"
+<h1>This is the title</h1>
+<p>This is a paragraph</p>";
+
+                // Act
+                post.RetrieveTitle();
+
+                // Assert
+                Assert.That(post.Title, Is.EqualTo("This is the title"));
+                Assert.That(post.Body, Is.EqualTo(@"
+
+<p>This is a paragraph</p>"));
+            }
+
+            [Test]
+            public void Retrieve_post_title_when_h1_has_attributes()
+            {
+                // Arrange
+                var post = new TestablePost();
+                post.Body = @"
+<h1 id=""this-is-the-title"">This is the title</h1>
+<p>This is a paragraph</p>";
+
+                // Act
+                post.RetrieveTitle();
+
+                // Assert
+                Assert.That(post.Title, Is.EqualTo("This is the title"));
+                Assert.That(post.Body, Is.EqualTo(@"
+
+<p>This is a paragraph</p>"));
+            }
+
+            [Test]
+            public void Retrieve_post_title_with_many_h1_elements()
+            {
+                // Arrange
+                var post = new TestablePost();
+                post.Body = @"
+<h1>This is the title</h1>
+<h1>This is not the title</h1>
+<p>This is a paragraph</p>";
+
+                // Act
+                post.RetrieveTitle();
+
+                // Assert
+                Assert.That(post.Title, Is.EqualTo("This is the title"));
+                Assert.That(post.Body, Is.EqualTo(@"
+
+<h1>This is not the title</h1>
+<p>This is a paragraph</p>"));
+            }
+        }
     }
 
     public class TestablePost : Post
@@ -130,6 +192,11 @@ this is the body"
         public new void ExtractMetadata()
         {
             base.ExtractMetadata();
+        }
+
+        public new void RetrieveTitle()
+        {
+            base.RetrieveTitle();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace RDumont.Frankie.Core
 
         private readonly string absoluteFilePath;
 
+        public string Title { get; set; }
         public DateTime Date { get; set; }
         public string Slug { get; set; }
         public string Extension { get; set; }
@@ -81,8 +82,20 @@ namespace RDumont.Frankie.Core
             if (this.Extension == "md" || this.Extension == "markdown")
                 this.TransformMarkdown();
 
+            this.RetrieveTitle();
+
             var postPath = absoluteFilePath.Remove(0, rootPath.Length + 1);
             this.ParseTemplate(postPath);
+        }
+
+        protected void RetrieveTitle()
+        {
+            var titleRegex = new Regex(@"<h1(?:.+)?>(.+)</h1>", RegexOptions.Compiled);
+            Body = titleRegex.Replace(Body, match =>
+                {
+                    Title = match.Groups[1].Value;
+                    return "";
+                }, 1);
         }
 
         private void ParseTemplate(string postPath)

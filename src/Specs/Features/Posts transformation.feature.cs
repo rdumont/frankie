@@ -98,15 +98,43 @@ this.FeatureBackground();
  testRunner.Given("the configuration file", ((string)(null)), table1, "Given ");
 #line hidden
 #line 18
-  testRunner.And("the \'_posts/2013-04-25-some-nice-post.md\' text file", "# This is a nice post\r\n\r\nAnd here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 24
+  testRunner.And("the \'_posts/2013-04-25-some-nice-post.md\' text file", "Here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 22
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 25
+#line 23
  testRunner.Then("a post with slug \"some-nice-post\" should be registered", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 26
-  testRunner.And("there should be a \'2013/04/25/some-nice-post/index.html\' text file", "<h1 id=\"this-is-a-nice-post\">This is a nice post</h1>\r\n<p>And here is a paragraph" +
-                    ".</p>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 24
+  testRunner.And("there should be a \'2013/04/25/some-nice-post/index.html\' text file", "<p>Here is a paragraph.</p>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Extract title from post")]
+        public virtual void ExtractTitleFromPost()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Extract title from post", ((string[])(null)));
+#line 29
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table2.AddRow(new string[] {
+                        "Permalink",
+                        ":year/:month/:day/:title"});
+#line 30
+ testRunner.Given("the configuration file", ((string)(null)), table2, "Given ");
+#line hidden
+#line 33
+  testRunner.And("the \'_posts/2013-04-25-some-nice-post.md\' text file", "# This is a nice post\r\n\r\nAnd here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 39
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 40
+ testRunner.Then("a post called \"This is a nice post\" should be registered", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

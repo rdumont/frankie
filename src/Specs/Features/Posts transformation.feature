@@ -17,14 +17,24 @@ Scenario: Transform a post
 		| Permalink | :year/:month/:day/:title |
 	 And the '_posts/2013-04-25-some-nice-post.md' text file
 		"""
-		# This is a nice post
-
-		And here is a paragraph.
+		Here is a paragraph.
 		"""
 	When I run Frankie
 	Then a post with slug "some-nice-post" should be registered
 	 And there should be a '2013/04/25/some-nice-post/index.html' text file
          """
-         <h1 id="this-is-a-nice-post">This is a nice post</h1>
-		 <p>And here is a paragraph.</p>
+		 <p>Here is a paragraph.</p>
          """
+
+Scenario: Extract title from post
+	Given the configuration file
+		| Field     | Value                    |
+		| Permalink | :year/:month/:day/:title |
+	 And the '_posts/2013-04-25-some-nice-post.md' text file
+		"""
+		# This is a nice post
+
+		And here is a paragraph.
+		"""
+	When I run Frankie
+	Then a post called "This is a nice post" should be registered
