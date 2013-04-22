@@ -16,7 +16,6 @@ namespace RDumont.Frankie.Core
             RegexOptions.Compiled);
 
         private readonly string absoluteFilePath;
-        private static Markdown markdownEngine;
 
         public DateTime Date { get; set; }
         public string Slug { get; set; }
@@ -84,17 +83,6 @@ namespace RDumont.Frankie.Core
 
             var postPath = absoluteFilePath.Remove(0, rootPath.Length + 1);
             this.ParseTemplate(postPath);
-        }
-
-        private void TransformMarkdown()
-        {
-            markdownEngine = markdownEngine ?? new Markdown
-                {
-                    ExtraMode = true,
-                    AutoHeadingIDs = true
-                };
-
-            this.Body = markdownEngine.Transform(this.Body);
         }
 
         private void ParseTemplate(string postPath)

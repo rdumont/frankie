@@ -2,12 +2,14 @@
 using System.Collections.Specialized;
 using System.IO;
 using System.Text.RegularExpressions;
+using MarkdownDeep;
 
 namespace RDumont.Frankie.Core
 {
     public class ContentFile
     {
         public string Body { get; set; }
+        private static Markdown markdownEngine;
         public NameValueCollection Metadata { get; protected set; }
 
         public static NameValueCollection GetMetadata(ref string contents)
@@ -28,6 +30,17 @@ namespace RDumont.Frankie.Core
             contents = line + Environment.NewLine + reader.ReadToEnd();
 
             return metadata;
+        }
+
+        public void TransformMarkdown()
+        {
+            markdownEngine = markdownEngine ?? new Markdown
+            {
+                ExtraMode = true,
+                AutoHeadingIDs = true
+            };
+
+            this.Body = markdownEngine.Transform(this.Body);
         }
 
         protected void ExtractMetadata()
