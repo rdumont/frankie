@@ -70,10 +70,19 @@ namespace RDumont.Frankie.Specs.Features
 #line 6
 #line 7
  testRunner.Given("the default directory structure", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table1.AddRow(new string[] {
+                        "Permalink",
+                        ":year/:month/:day/:title"});
 #line 8
+  testRunner.And("the configuration file", ((string)(null)), table1, "And ");
+#line 11
   testRunner.And("the in-memory logger", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 9
+#line 12
   testRunner.And("the \'_post\' template", "{{ post.body }}", ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
         }
@@ -83,22 +92,13 @@ namespace RDumont.Frankie.Specs.Features
         public virtual void TransformAPost()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Transform a post", ((string[])(null)));
-#line 14
+#line 17
 this.ScenarioSetup(scenarioInfo);
 #line 6
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Value"});
-            table1.AddRow(new string[] {
-                        "Permalink",
-                        ":year/:month/:day/:title"});
-#line 15
- testRunner.Given("the configuration file", ((string)(null)), table1, "Given ");
-#line hidden
 #line 18
-  testRunner.And("the \'_posts/2013-04-25-some-nice-post.md\' text file", "Here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("the \'_posts/2013-04-25-some-nice-post.md\' text file", "Here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 22
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 23
@@ -120,21 +120,64 @@ this.ScenarioSetup(scenarioInfo);
 #line 6
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Field",
-                        "Value"});
-            table2.AddRow(new string[] {
-                        "Permalink",
-                        ":year/:month/:day/:title"});
 #line 30
- testRunner.Given("the configuration file", ((string)(null)), table2, "Given ");
-#line hidden
-#line 33
-  testRunner.And("the \'_posts/2013-04-25-some-nice-post.md\' text file", "# This is a nice post\r\n\r\nAnd here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 39
+ testRunner.Given("the \'_posts/2013-04-25-some-nice-post.md\' text file", "# This is a nice post\r\n\r\nAnd here is a paragraph.", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 36
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 40
+#line 37
  testRunner.Then("a post called \"This is a nice post\" should be registered", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("A post with a category")]
+        public virtual void APostWithACategory()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A post with a category", ((string[])(null)));
+#line 39
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 40
+ testRunner.Given("the \'_posts/Food for Thought/2013-04-25-some-nice-post.md\' text file", "This is a post", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 44
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Category"});
+            table2.AddRow(new string[] {
+                        "Food for Thought"});
+#line 45
+ testRunner.Then("the post \'some-nice-post\' should have the categories", ((string)(null)), table2, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("A post with many categories")]
+        public virtual void APostWithManyCategories()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("A post with many categories", ((string[])(null)));
+#line 49
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 50
+ testRunner.Given("the \'_posts/Food for Thought/Acentuação/2013-04-25-some-nice-post.md\' text file", "This is a post", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 54
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Category"});
+            table3.AddRow(new string[] {
+                        "Food for Thought"});
+            table3.AddRow(new string[] {
+                        "Acentuação"});
+#line 55
+ testRunner.Then("the post \'some-nice-post\' should have the categories", ((string)(null)), table3, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

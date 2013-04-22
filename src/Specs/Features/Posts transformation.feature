@@ -5,6 +5,9 @@
 
 Background:
 	Given the default directory structure
+	 And the configuration file
+		| Field     | Value                    |
+		| Permalink | :year/:month/:day/:title |
 	 And the in-memory logger
 	 And the '_post' template
 		"""
@@ -12,10 +15,7 @@ Background:
 		"""
 
 Scenario: Transform a post
-	Given the configuration file
-		| Field     | Value                    |
-		| Permalink | :year/:month/:day/:title |
-	 And the '_posts/2013-04-25-some-nice-post.md' text file
+	Given the '_posts/2013-04-25-some-nice-post.md' text file
 		"""
 		Here is a paragraph.
 		"""
@@ -27,10 +27,7 @@ Scenario: Transform a post
          """
 
 Scenario: Extract title from post
-	Given the configuration file
-		| Field     | Value                    |
-		| Permalink | :year/:month/:day/:title |
-	 And the '_posts/2013-04-25-some-nice-post.md' text file
+	Given the '_posts/2013-04-25-some-nice-post.md' text file
 		"""
 		# This is a nice post
 
@@ -38,3 +35,25 @@ Scenario: Extract title from post
 		"""
 	When I run Frankie
 	Then a post called "This is a nice post" should be registered
+
+Scenario: A post with a category
+	Given the '_posts/Food for Thought/2013-04-25-some-nice-post.md' text file
+		"""
+		This is a post
+		"""
+	When I run Frankie
+	Then the post 'some-nice-post' should have the categories
+		| Category         |
+		| Food for Thought |
+
+Scenario: A post with many categories
+	Given the '_posts/Food for Thought/Acentuação/2013-04-25-some-nice-post.md' text file
+		"""
+		This is a post
+		"""
+	When I run Frankie
+	Then the post 'some-nice-post' should have the categories
+		| Category         |
+		| Food for Thought |
+		| Acentuação       |
+
