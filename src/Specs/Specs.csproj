@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DotLiquid, Version=1.7.0.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotLiquid.1.7.0\lib\NET40\DotLiquid.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -50,8 +54,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Markdown page transformation.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\Posts transformation.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Posts transformation.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\LoggerSteps.cs" />
+    <Compile Include="Steps\PostSteps.cs" />
     <Compile Include="Steps\SharedSteps.cs" />
     <Compile Include="Steps\StepsBase.cs" />
     <Compile Include="Steps\TemplateSteps.cs" />
@@ -62,6 +72,10 @@
     <None Include="Features\Markdown page transformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Markdown page transformation.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Posts transformation.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Posts transformation.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
