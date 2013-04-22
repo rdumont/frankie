@@ -1,4 +1,5 @@
-﻿using RDumont.Frankie.Specs.Testables;
+﻿using NUnit.Framework;
+using RDumont.Frankie.Specs.Testables;
 using TechTalk.SpecFlow;
 
 namespace RDumont.Frankie.Specs.Steps
@@ -17,6 +18,8 @@ namespace RDumont.Frankie.Specs.Steps
         [Then(@"no errors should be logged")]
         public void Then_no_errors_should_be_logged()
         {
+            var errorCount = Logger.Errors.Count;
+            Assert.That(errorCount, Is.EqualTo(0));
         }
     }
 }

@@ -48,7 +48,7 @@ namespace RDumont.Frankie.Specs.Steps
 
         public string Trimmed(string contents)
         {
-            return contents.Trim('\r', '\n', ' ');
+            return contents.Replace("\r\n", "\n").Trim('\r', '\n', ' ');
         }
     }
 }

@@ -76,10 +76,10 @@ namespace RDumont.Frankie.Specs.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Transform a markdown page with default template")]
-        public virtual void TransformAMarkdownPageWithDefaultTemplate()
+        [NUnit.Framework.DescriptionAttribute("Page with default template")]
+        public virtual void PageWithDefaultTemplate()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Transform a markdown page with default template", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Page with default template", ((string[])(null)));
 #line 10
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -96,6 +96,87 @@ this.FeatureBackground();
 #line 21
  testRunner.Then("there should be a \'my-page.html\' text file", "This is a page.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 26
+  testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Page with custom template")]
+        public virtual void PageWithCustomTemplate()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Page with custom template", ((string[])(null)));
+#line 28
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 29
+ testRunner.Given("the \'layout\' template", "This is the layout.\r\n{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 34
+  testRunner.And("the \'my-page.md\' text file", "@template layout\r\n**My page**", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 39
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 40
+ testRunner.Then("there should be a \'my-page.html\' text file", "This is the layout.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 45
+  testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Page inside folder")]
+        public virtual void PageInsideFolder()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Page inside folder", ((string[])(null)));
+#line 47
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 48
+ testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 52
+  testRunner.And("the \'about/me.md\' text file", "# About me", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 56
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 57
+ testRunner.Then("there should be a \'about/me.html\' text file", "<h1 id=\"about-me\">About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 61
+  testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Page with embedded liquid syntax")]
+        public virtual void PageWithEmbeddedLiquidSyntax()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Page with embedded liquid syntax", ((string[])(null)));
+#line 63
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 64
+ testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 68
+  testRunner.And("the \'gravatar\' template", "This is a **gravatar** include", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 72
+  testRunner.And("the \'liquid-page.md\' text file", "The page.\r\n\r\n{% include gravatar %}", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 78
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 79
+ testRunner.Then("there should be a \'liquid-page.html\' text file", "<p>The page.</p>\r\n<p>This is a <strong>gravatar</strong> include</p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 84
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
