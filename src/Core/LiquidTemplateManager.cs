@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using DotLiquid;
 
 namespace RDumont.Frankie.Core
@@ -18,14 +19,30 @@ namespace RDumont.Frankie.Core
             templatesByName[name] = Template.Parse(contents);
         }
 
-        public override string RenderPage(string pagePath, string contents, Page model)
+        public override string RenderPage(string pagePath, Page model)
         {
+            WrapWithTemplate(model);
+
             var hash = Hash.FromAnonymousObject(new
                 {
                     path = pagePath,
                     posts = SiteContext.Current.Posts
                 });
-            return Template.Parse(contents).Render(hash);
+            return Template.Parse(model.Body).Render(hash);
+        }
+
+        protected virtual void WrapWithTemplate(Page model)
+        {
+            var template = model.Metadata["template"];
+            if (template == null) return;
+
+            var bodyWriter = new StringWriter();
+            bodyWriter.WriteLine("{{% extends {0} %}}", template);
+            bodyWriter.WriteLine("{% block contents %}");
+            bodyWriter.WriteLine(model.Body);
+            bodyWriter.WriteLine("{% endblock %}");
+
+            model.Body = bodyWriter.ToString();
         }
 
         public override string RenderPost(string postPath, string templateName, Post model)

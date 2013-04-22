@@ -7,7 +7,7 @@ namespace RDumont.Frankie.Core
     public class ContentFile
     {
         public string Body { get; set; }
-        public NameValueCollection Metadata { get; private set; }
+        public NameValueCollection Metadata { get; protected set; }
 
         protected void ExtractMetadata()
         {

@@ -34,9 +34,9 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        public override string RenderPage(string pagePath, string contents, Page model)
+        public override string RenderPage(string pagePath, Page model)
         {
-            var template = Razor.CreateTemplate(contents, model);
+            var template = Razor.CreateTemplate(model.Body, model);
             var viewBag = new DynamicViewBag();
             viewBag.AddValue("PagePath", pagePath);
             return _templateService.Run(template, viewBag);

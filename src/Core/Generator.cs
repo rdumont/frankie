@@ -148,10 +148,10 @@ namespace RDumont.Frankie.Core
 
         private void HandleHtmlPage(string originPath, string destinationPath)
         {
-            var contents = Io.ReadFile(originPath, 5);
-
             var model = new Page(originPath);
-            var result = TemplateManager.Current.RenderPage(originPath.Remove(0, BasePath.Length + 1), contents, model);
+            model.LoadFile(Configuration);
+
+            var result = TemplateManager.Current.RenderPage(originPath.Remove(0, BasePath.Length + 1), model);
 
             Io.WriteFile(destinationPath, result);
         }
