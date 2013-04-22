@@ -24,7 +24,11 @@ namespace RDumont.Frankie.Core
             DependencyTracker.Current.Add(pagePath, templatePath);
 
             var templateFullPath = Path.Combine(this.basePath, templatePath);
-            return Io.ReadFile(templateFullPath, 3);
+            var contents = Io.ReadFile(templateFullPath, 3);
+
+            contents = TemplateManager.Current.PrepareTemplateContents(contents, context, templateName);
+
+            return contents;
         }
     }
 }

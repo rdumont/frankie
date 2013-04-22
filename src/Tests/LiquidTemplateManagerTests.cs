@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using DotLiquid;
 using NUnit.Framework;
 
 namespace RDumont.Frankie.Tests
@@ -22,10 +23,28 @@ namespace RDumont.Frankie.Tests
 
             // Assert
             Assert.That(page.Body, Is.EqualTo(@"{% extends some_template %}
-{% block contents %}
+{% block some_template_contents %}
 Some body
 {% endblock %}
 "));
+        }
+
+        [Test]
+        public void Prepare_template_contents()
+        {
+            // Arrange
+            var manager = new TestableLiquidTemplateManager();
+            var context = new Context();
+
+            // Act
+            var result = manager.PrepareTemplateContents(@"a
+{{ contents }}
+b", context, "layout");
+
+            // Assert
+            Assert.That(result, Is.EqualTo(@"a
+{% block layout_contents %}{% endblock %}
+b"));
         }
     }
 }

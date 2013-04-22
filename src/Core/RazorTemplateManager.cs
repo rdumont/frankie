@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DotLiquid;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
@@ -46,6 +47,11 @@ namespace RDumont.Frankie.Core
         {
             DependencyTracker.Current.Add(postPath, GetFullPath(templateName));
             return Razor.Run(templateName, model, new DynamicViewBag());
+        }
+
+        public override string PrepareTemplateContents(string contents, Context context, string templateName)
+        {
+            return contents;
         }
 
         public string GetTemplatePath(Type templateType)

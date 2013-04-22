@@ -1,4 +1,5 @@
 ﻿using System;
+using DotLiquid;
 
 namespace RDumont.Frankie.Core
 {
@@ -25,5 +26,7 @@ namespace RDumont.Frankie.Core
         {
             return TEMPLATES_FOLDER + "\\" + name + ".html";
         }
+
+        public abstract string PrepareTemplateContents(string contents, Context context, string templateName);
     }
 }
