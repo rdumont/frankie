@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Path = System.IO.Path;
 using System.Linq;
@@ -142,7 +143,24 @@ namespace RDumont.Frankie.Core
 
         private void HandleMarkdownPage(string originPath, string destinationPath)
         {
-            // TODO
+            var page = new Page(originPath);
+            page.LoadFile(Configuration);
+
+            var template = page.Metadata["template"] ?? "_page";
+
+            try
+            {
+                page.Body = TemplateManager.Current.RenderMarkdownPage(originPath, template, page);
+            }
+            catch (InvalidOperationException exception)
+            {
+                if (!exception.Message.StartsWith("No template exists")) throw;
+
+                Logger.Current.LogError("{0}\n  No template exists with name '{1}'",
+                    originPath, template);
+            }
+
+            Io.WriteFile(destinationPath, page.Body);
         }
 
         private void HandleHtmlPage(string originPath, string destinationPath)

@@ -61,6 +61,24 @@ namespace RDumont.Frankie.Core
             return template.Render(hash);
         }
 
+        public override string RenderMarkdownPage(string pagePath, string templateName, Page page)
+        {
+            DependencyTracker.Current.Add(pagePath, GetFullPath(templateName));
+
+            var siteContext = SiteContext.Current;
+
+            var hash = Hash.FromAnonymousObject(new
+                {
+                    posts = siteContext.Posts
+                });
+
+            page.Body = Template.Parse(page.Body).Render(hash);
+            page.TransformMarkdown();
+            WrapWithTemplate(page);
+
+            return Template.Parse(page.Body).Render(hash);
+        }
+
         public override string PrepareTemplateContents(string contents, Context context, string templateName)
         {
             var templatePage = new TemplatePage(contents);

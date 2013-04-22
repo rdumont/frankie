@@ -55,6 +55,11 @@ namespace RDumont.Frankie.Core
             return contents;
         }
 
+        public override string RenderMarkdownPage(string pagePath, string template, Page page)
+        {
+            throw new NotImplementedException();
+        }
+
         public string GetTemplatePath(Type templateType)
         {
             string name;
