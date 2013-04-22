@@ -4,26 +4,26 @@ namespace RDumont.Frankie.Core
 {
     public class Logger
     {
-        public static Logger Current { get; private set; }
+        public static Logger Current { get; protected set; }
 
-        public LoggingLevel Level { get; private set; }
+        public LoggingLevel Level { get; protected set; }
 
         public static void Start(LoggingLevel level)
         {
             Current = new Logger {Level = level};
         }
 
-        public void LogError(string message, params object[] args)
+        public virtual void LogError(string message, params object[] args)
         {
             WriteColor(ConsoleColor.Red, message, args);
         }
 
-        public void LogWarning(string message, params object[] args)
+        public virtual void LogWarning(string message, params object[] args)
         {
             WriteColor(ConsoleColor.Yellow, message, args);
         }
 
-        public void Log(LoggingLevel level, string message, params object[] args)
+        public virtual void Log(LoggingLevel level, string message, params object[] args)
         {
             if(level >= this.Level)
                 Console.WriteLine(message, args);

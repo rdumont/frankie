@@ -45,11 +45,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\Markdown page transformation.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Markdown page transformation.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\LoggerSteps.cs" />
+    <Compile Include="Steps\SharedSteps.cs" />
+    <Compile Include="Steps\StepsBase.cs" />
+    <Compile Include="Steps\TemplateSteps.cs" />
+    <Compile Include="Testables\TestLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Features\Markdown page transformation.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Markdown page transformation.feature.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommandLine\CommandLine.csproj">
+      <Project>{F27D039C-5022-4585-9FC4-F0D76203B4CE}</Project>
+      <Name>CommandLine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{1CC6D0F1-B0A6-4265-88FC-B9F12FEF07C2}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

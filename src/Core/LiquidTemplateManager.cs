@@ -38,9 +38,14 @@ namespace RDumont.Frankie.Core
             var template = model.Metadata["template"];
             if (template == null) return;
 
+            WrapWithTemplate(model, template);
+        }
+
+        protected virtual void WrapWithTemplate(ContentFile model, string templateName)
+        {
             var bodyWriter = new StringWriter();
-            bodyWriter.WriteLine("{{% extends {0} -%}}", template);
-            bodyWriter.WriteLine("{{% block {0}_contents -%}}", template);
+            bodyWriter.WriteLine("{{% extends {0} -%}}", templateName);
+            bodyWriter.WriteLine("{{% block {0}_contents -%}}", templateName);
             bodyWriter.WriteLine(model.Body);
             bodyWriter.WriteLine("{% endblock -%}");
 
@@ -74,7 +79,7 @@ namespace RDumont.Frankie.Core
 
             page.Body = Template.Parse(page.Body).Render(hash);
             page.TransformMarkdown();
-            WrapWithTemplate(page);
+            WrapWithTemplate(page, templateName);
 
             return Template.Parse(page.Body).Render(hash);
         }
