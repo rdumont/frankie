@@ -145,7 +145,8 @@ namespace RDumont.Frankie.Core
                     category = Category,
                     permalink = Permalink,
                     metadata = Metadata,
-                    body = Body
+                    body = Body,
+                    title = Title
                 };
         }
     }
