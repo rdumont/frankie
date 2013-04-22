@@ -115,7 +115,7 @@ this is the body"
                         {"template", "some-template"},
                         {"otherValue", "ok"}
                     }));
-                Assert.That(post.Body, Is.EqualTo(@"this is the body"));
+                Assert.That(post.Body, Is.EqualTo(@"this is the body" + Environment.NewLine));
             }
         }
     }

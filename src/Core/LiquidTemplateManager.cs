@@ -31,16 +31,16 @@ namespace RDumont.Frankie.Core
             return Template.Parse(model.Body).Render(hash);
         }
 
-        protected virtual void WrapWithTemplate(Page model)
+        protected virtual void WrapWithTemplate(ContentFile model)
         {
             var template = model.Metadata["template"];
             if (template == null) return;
 
             var bodyWriter = new StringWriter();
-            bodyWriter.WriteLine("{{% extends {0} %}}", template);
-            bodyWriter.WriteLine("{{% block {0}_contents %}}", template);
+            bodyWriter.WriteLine("{{% extends {0} -%}}", template);
+            bodyWriter.WriteLine("{{% block {0}_contents -%}}", template);
             bodyWriter.WriteLine(model.Body);
-            bodyWriter.WriteLine("{% endblock %}");
+            bodyWriter.WriteLine("{% endblock -%}");
 
             model.Body = bodyWriter.ToString();
         }
@@ -61,8 +61,14 @@ namespace RDumont.Frankie.Core
 
         public override string PrepareTemplateContents(string contents, Context context, string templateName)
         {
-            return contents.Replace("{{ contents }}",
-                string.Format("{{% block {0}_contents %}}{{% endblock %}}", templateName));
+            var templatePage = new TemplatePage(contents);
+
+            templatePage.Body = templatePage.Body.Replace("{{ contents }}",
+                string.Format("{{% block {0}_contents -%}}{{% endblock -%}}", templateName));
+
+            WrapWithTemplate(templatePage);
+
+            return templatePage.Body;
         }
     }
 }

@@ -22,10 +22,10 @@ namespace RDumont.Frankie.Tests
             manager.WrapWithTemplate(page);
 
             // Assert
-            Assert.That(page.Body, Is.EqualTo(@"{% extends some_template %}
-{% block some_template_contents %}
+            Assert.That(page.Body, Is.EqualTo(@"{% extends some_template -%}
+{% block some_template_contents -%}
 Some body
-{% endblock %}
+{% endblock -%}
 "));
         }
 
@@ -43,8 +43,31 @@ b", context, "layout");
 
             // Assert
             Assert.That(result, Is.EqualTo(@"a
-{% block layout_contents %}{% endblock %}
+{% block layout_contents -%}{% endblock -%}
 b"));
+        }
+
+        [Test]
+        public void Prepare_subtemplate_contents()
+        {
+            // Arrange
+            var manager = new TestableLiquidTemplateManager();
+            var context = new Context();
+
+            // Act
+            var result = manager.PrepareTemplateContents(@"@template base
+a
+{{ contents }}
+b", context, "layout");
+
+            // Assert
+            Assert.That(result, Is.EqualTo(@"{% extends base -%}
+{% block base_contents -%}
+a
+{% block layout_contents -%}{% endblock -%}
+b
+{% endblock -%}
+"));
         }
     }
 }
