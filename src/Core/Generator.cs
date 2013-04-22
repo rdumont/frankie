@@ -147,10 +147,11 @@ namespace RDumont.Frankie.Core
             page.LoadFile(Configuration);
 
             var template = page.Metadata["template"] ?? "_page";
+            var relativeOrigin = originPath.Remove(0, this.BasePath.Length + 1);
 
             try
             {
-                page.Body = TemplateManager.Current.RenderMarkdownPage(originPath, template, page);
+                page.Body = TemplateManager.Current.RenderMarkdownPage(relativeOrigin, template, page);
             }
             catch (InvalidOperationException exception)
             {
