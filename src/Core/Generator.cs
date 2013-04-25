@@ -137,7 +137,9 @@ namespace RDumont.Frankie.Core
 
         private bool IsIgnored(string fullPath)
         {
-            return Configuration.Ignore.Any(fullPath.EndsWith);
+            if (Configuration.Ignore.Any(fullPath.EndsWith)) return true;
+            var relativePath = GetRelativePath(fullPath);
+            return relativePath.StartsWith(".") || relativePath.Contains(Path.DirectorySeparatorChar + ".");
         }
 
         private bool IsSiteContent(string fullPath)
@@ -150,6 +152,7 @@ namespace RDumont.Frankie.Core
 
         public void RemoveFile(string fullPath)
         {
+            if (IsIgnored(fullPath)) return;
             if (!IsSiteContent(fullPath)) return;
 
             var destination = GetFileDestinationPath(fullPath);
