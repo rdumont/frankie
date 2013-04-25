@@ -20,9 +20,12 @@ namespace RDumont.Frankie.Core
         public string ReadTemplateFile(Context context, string templateName)
         {
             var templatePath = TemplateManager.GetFullPath(templateName);
-            var pagePath = context["path"] as string;
-            if (pagePath != null)
-                DependencyTracker.Current.Add(pagePath, templatePath);
+            var dependantPath = context["dependantPath"] as string;
+            if (dependantPath != null)
+            {
+                DependencyTracker.Current.Add(dependantPath, templatePath);
+                context["dependantPath"] = null;
+            }
 
             var templateFullPath = Path.Combine(this.basePath, templatePath);
             var contents = Io.ReadFile(templateFullPath, 3);

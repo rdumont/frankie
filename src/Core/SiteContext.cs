@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RDumont.Frankie.Core
 {
@@ -6,7 +8,7 @@ namespace RDumont.Frankie.Core
     {
         private static SiteContext instance;
 
-        public ReadOnlyCollection<Post> Posts { get; internal set; }
+        public ReadOnlyCollection<Post> Posts { get; private set; }
 
         public static SiteContext Current
         {
@@ -15,6 +17,11 @@ namespace RDumont.Frankie.Core
 
         protected SiteContext()
         {
+        }
+
+        internal void UpdatePostsCollection(IEnumerable<Post> posts)
+        {
+            Posts = posts.OrderBy(p => p.Date).ToList().AsReadOnly();
         }
     }
 }

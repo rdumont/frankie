@@ -28,6 +28,7 @@ namespace RDumont.Frankie.Core
 
             var hash = Hash.FromAnonymousObject(new
                 {
+                    dependantPath = pagePath,
                     path = pagePath,
                     posts = SiteContext.Current.Posts
                 });
@@ -62,6 +63,8 @@ namespace RDumont.Frankie.Core
 
             var hash = Hash.FromAnonymousObject(new
                 {
+                    dependantPath = postPath,
+                    path = postPath,
                     post = model
                 });
             return template.Render(hash);
@@ -75,6 +78,8 @@ namespace RDumont.Frankie.Core
 
             var hash = Hash.FromAnonymousObject(new
                 {
+                    dependantPath = pagePath,
+                    path = pagePath,
                     posts = siteContext.Posts
                 });
 

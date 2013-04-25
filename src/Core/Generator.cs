@@ -16,6 +16,7 @@ namespace RDumont.Frankie.Core
         protected string SitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
+        private bool _postsAreDirty;
 
         protected Io Io { get; set; }
         protected SiteConfiguration Configuration { get; set; }
@@ -66,36 +67,50 @@ namespace RDumont.Frankie.Core
         {
             foreach (var file in files)
             {
-                var post = Post.FromFile(file);
-                if (post == null) continue;
-
-                Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
-                post.LoadFile(Configuration);
-                try
-                {
-                    post.ExecuteTransformationPipeline(this.BasePath, Configuration);
-                    this.posts.Add(post);
-                }
-                catch (TemplateNotFoundException exception)
-                {
-                    Logger.Current.LogError(exception.Message);
-                }
+                LoadSinglePost(file);
             }
 
-            this.siteContext.Posts = this.posts.OrderBy(p => p.Date).ToList().AsReadOnly();
+            siteContext.UpdatePostsCollection(posts);
+            _postsAreDirty = false;
+        }
+
+        private Post LoadSinglePost(string file)
+        {
+            var post = Post.FromFile(file);
+            if (post == null) return null;
+
+            Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
+            post.LoadFile(Configuration);
+            try
+            {
+                post.ExecuteTransformationPipeline(this.BasePath, Configuration);
+                posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
+                posts.Add(post);
+            }
+            catch (TemplateNotFoundException exception)
+            {
+                Logger.Current.LogError(exception.Message);
+            }
+            _postsAreDirty = true;
+            return post;
         }
 
         public void WriteAllPosts(string root, string outputPath)
         {
             foreach (var post in posts)
             {
-                var permalink = post.Permalink.Substring(1);
-                var folderPath = Path.Combine(this.SitePath, permalink);
-                var filePath = Path.Combine(folderPath, "index.html");
-
-                if (!Io.DirectoryExists(folderPath)) Io.CreateDirectory(folderPath);
-                Io.WriteFile(filePath, post.Body);
+                WritePost(post);
             }
+        }
+
+        private void WritePost(Post post)
+        {
+            var permalink = post.Permalink.Substring(1);
+            var folderPath = Path.Combine(this.SitePath, permalink);
+            var filePath = Path.Combine(folderPath, "index.html");
+
+            if (!Io.DirectoryExists(folderPath)) Io.CreateDirectory(folderPath);
+            Io.WriteFile(filePath, post.Body);
         }
 
         public void AddFile(string fullPath)
@@ -180,11 +195,6 @@ namespace RDumont.Frankie.Core
             var path = GetRelativePath(file);
             var dependentFiles = DependencyTracker.Current.FindAllDependentFiles(path);
 
-            foreach (var dependentFile in dependentFiles)
-            {
-                ReAddDependentFile(dependentFile);
-            }
-
             try
             {
                 CompileTemplate(file);
@@ -192,6 +202,17 @@ namespace RDumont.Frankie.Core
             catch (FileNotFoundException)
             {
                 // ok, probably a temp file
+            }
+
+            foreach (var dependentFile in dependentFiles)
+            {
+                ReAddDependentFile(dependentFile);
+            }
+
+            if (_postsAreDirty)
+            {
+                siteContext.UpdatePostsCollection(posts);
+                _postsAreDirty = false;
             }
         }
 
@@ -204,7 +225,8 @@ namespace RDumont.Frankie.Core
             }
             else if (file.StartsWith(Post.POSTS_FOLDER))
             {
-                // handle post
+                var post = LoadSinglePost(fullPath);
+                WritePost(post);
             }
             else
             {
