@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Path = System.IO.Path;
 using System.Linq;
 
@@ -117,8 +118,15 @@ namespace RDumont.Frankie.Core
             }
             else
             {
-                Io.CopyFile(fullPath, destination, true);
-                Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativeOrigin);
+                try
+                {
+                    Io.CopyFile(fullPath, destination, true);
+                    Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativeOrigin);
+                }
+                catch (FileNotFoundException)
+                {
+                    // ok, probably a temp file
+                }
             }
         }
 
@@ -142,9 +150,18 @@ namespace RDumont.Frankie.Core
 
         public void RemoveFile(string fullPath)
         {
+            if (!IsSiteContent(fullPath)) return;
+
             var destination = GetFileDestinationPath(fullPath);
-            Io.DeleteFile(destination);
-            Logger.Current.Log(LoggingLevel.Debug, "Removed file: {0}", GetRelativePath(fullPath));
+            try
+            {
+                Io.DeleteFile(destination);
+                Logger.Current.Log(LoggingLevel.Debug, "Removed file: {0}", GetRelativePath(fullPath));
+            }
+            catch (FileNotFoundException)
+            {
+                // ok, probably a temp file
+            }
         }
 
         private void HandleTemplateChange(string file)
