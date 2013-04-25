@@ -7,6 +7,8 @@ namespace RDumont.Frankie.Core
     {
         public string Permalink { get; set; }
 
+        public string Culture { get; set; }
+
         public string[] Ignore { get; set; }
 
         public SiteConfiguration()

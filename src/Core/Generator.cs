@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using Path = System.IO.Path;
 using System.Linq;
 
@@ -36,7 +38,13 @@ namespace RDumont.Frankie.Core
             this.SitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
 
             var configPath = Path.Combine(locationPath, "config.yaml");
-            this.Configuration = SiteConfiguration.Load(configPath);
+            Configuration = SiteConfiguration.Load(configPath);
+
+            if (Configuration.Culture != null)
+            {
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture
+                    = CultureInfo.GetCultureInfo(Configuration.Culture);
+            }
 
             TemplateManager.SetTemplateManager(new LiquidTemplateManager());
 
