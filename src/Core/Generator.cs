@@ -185,7 +185,14 @@ namespace RDumont.Frankie.Core
                 ReAddDependentFile(dependentFile);
             }
 
-            CompileTemplate(file);
+            try
+            {
+                CompileTemplate(file);
+            }
+            catch (FileNotFoundException)
+            {
+                // ok, probably a temp file
+            }
         }
 
         private void ReAddDependentFile(string file)
