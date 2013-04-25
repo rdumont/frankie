@@ -58,6 +58,7 @@
     <Compile Include="DependencyTracker.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Io.cs" />
+    <Compile Include="LiquidFilters.cs" />
     <Compile Include="LiquidTemplateManager.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PageModel.cs" />

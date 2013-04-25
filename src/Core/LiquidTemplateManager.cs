@@ -11,6 +11,7 @@ namespace RDumont.Frankie.Core
         public override void Init(string basePath)
         {
             Template.FileSystem = new TemplatesFileSystem(basePath);
+            Template.RegisterFilter(typeof(LiquidFilters));
         }
 
         public override void CompileTemplate(string templatePath)
