@@ -82,3 +82,25 @@ Scenario: Page with embedded liquid syntax
 		<p>This is a <strong>gravatar</strong> include</p>
 		"""
 	 And no errors should be logged
+
+Scenario: Code block with language
+	Given the '_page' template
+		"""
+		{{ contents }}
+		"""
+	And the 'code-page.md' text file
+		"""
+		Some code.
+
+		```csharp
+		public class Foo { }
+		```
+		"""
+	When I run Frankie
+	Then there should be a 'code-page.html' text file
+		"""
+		<p>Some code.</p>
+		<pre><code data-language="csharp">public class Foo { }
+		</code></pre>
+		"""
+	 And no errors should be logged

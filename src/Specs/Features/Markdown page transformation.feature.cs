@@ -181,6 +181,33 @@ this.FeatureBackground();
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Code block with language")]
+        public virtual void CodeBlockWithLanguage()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Code block with language", ((string[])(null)));
+#line 86
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 87
+ testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 91
+ testRunner.And("the \'code-page.md\' text file", "Some code.\r\n\r\n```csharp\r\npublic class Foo { }\r\n```", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 99
+ testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 100
+ testRunner.Then("there should be a \'code-page.html\' text file", "<p>Some code.</p>\r\n<pre><code data-language=\"csharp\">public class Foo { }\r\n</code" +
+                    "></pre>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 106
+  testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

@@ -37,7 +37,8 @@ namespace RDumont.Frankie.Core
             markdownEngine = markdownEngine ?? new Markdown
             {
                 ExtraMode = true,
-                AutoHeadingIDs = true
+                AutoHeadingIDs = true,
+                CodeBlockLanguageAttr = " data-language=\"{0}\""
             };
 
             this.Body = markdownEngine.Transform(this.Body);
