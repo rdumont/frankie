@@ -43,7 +43,7 @@ namespace RDumont.Frankie.Core
 
             if (Configuration.Culture != null)
             {
-                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture
+                Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture
                     = CultureInfo.GetCultureInfo(Configuration.Culture);
             }
 
