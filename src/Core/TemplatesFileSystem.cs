@@ -28,7 +28,7 @@ namespace RDumont.Frankie.Core
             }
 
             var templateFullPath = Path.Combine(this.basePath, templatePath);
-            var contents = Io.ReadFile(templateFullPath, 3);
+            var contents = Io.ReadFile(templateFullPath, 5);
 
             contents = TemplateManager.Current.PrepareTemplateContents(contents, context, templateName);
 
