@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using DotLiquid;
 
 namespace RDumont.Frankie.Core
 {
     public class LiquidTemplateManager : TemplateManager
     {
+        private readonly Regex _titleRegex = new Regex(@"<h1(?:.+)?>(.+)</h1>", RegexOptions.Compiled);
         private readonly Dictionary<string, Template> templatesByName = new Dictionary<string, Template>();
 
         public override void Init(string basePath)
@@ -28,6 +30,7 @@ namespace RDumont.Frankie.Core
 
             var hash = Hash.FromAnonymousObject(new
                 {
+                    title = _titleRegex.Match(model.Body).Groups[1].Value,
                     dependantPath = pagePath,
                     path = pagePath,
                     posts = SiteContext.Current.Posts
@@ -63,6 +66,7 @@ namespace RDumont.Frankie.Core
 
             var hash = Hash.FromAnonymousObject(new
                 {
+                    title = model.Title,
                     dependantPath = postPath,
                     path = postPath,
                     post = model
@@ -86,6 +90,8 @@ namespace RDumont.Frankie.Core
             page.Body = Template.Parse(page.Body).Render(hash);
             page.TransformMarkdown();
             WrapWithTemplate(page, templateName);
+
+            hash.Add("title", _titleRegex.Match(page.Body).Groups[1].Value);
 
             return Template.Parse(page.Body).Render(hash);
         }
