@@ -24,6 +24,7 @@ namespace RDumont.Frankie.Tests
                 Assert.That(post.Date, Is.EqualTo(new DateTime(2013, 2, 23)));
                 Assert.That(post.Slug, Is.EqualTo("some-nice-article"));
                 Assert.That(post.Extension, Is.EqualTo("md"));
+                Assert.That(post.OriginalPath, Is.EqualTo("_posts/2013-02-23-some-nice-article.md"));
             }
 
             [Test]

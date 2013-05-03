@@ -24,6 +24,7 @@ namespace RDumont.Frankie.Core
         public string[] Category { get; set; }
         public string[] Tags { get; private set; }
         public string Permalink { get; protected set; }
+        public string OriginalPath { get; protected set; }
 
         protected Post()
         {
@@ -45,6 +46,9 @@ namespace RDumont.Frankie.Core
             this.Extension = match.Groups["ext"].Value;
             this.Category = match.Groups["category"].Captures
                 .Cast<Capture>().Select(c => c.Value).ToArray();
+
+            this.OriginalPath = absoluteFilePath.Substring(absoluteFilePath.LastIndexOf(POSTS_FOLDER))
+                .Replace('\\', '/');
         }
 
         protected virtual string ResolvePermalink(string template)
@@ -146,7 +150,8 @@ namespace RDumont.Frankie.Core
                     permalink = Permalink,
                     metadata = Metadata,
                     body = Body,
-                    title = Title
+                    title = Title,
+                    original_path = OriginalPath
                 };
         }
     }
