@@ -115,7 +115,8 @@ namespace RDumont.Frankie.Core
 
         public void AddFile(string fullPath)
         {
-            if (IsIgnored(fullPath)) return;
+            var relativeOrigin = GetRelativePath(fullPath);
+            if (Configuration.IsExcluded(relativeOrigin)) return;
 
             if (IsTemplate(fullPath))
             {
@@ -127,7 +128,6 @@ namespace RDumont.Frankie.Core
 
             var destination = GetFileDestinationPath(fullPath);
             EnsureDirectoryExists(destination);
-            var relativeOrigin = GetRelativePath(fullPath);
 
             if (fullPath.EndsWith(".html"))
             {
@@ -157,14 +157,6 @@ namespace RDumont.Frankie.Core
         {
             return fullPath.StartsWith(this.TemplatesPath);
         }
-
-        private bool IsIgnored(string fullPath)
-        {
-            if (Configuration.Ignore.Any(fullPath.EndsWith)) return true;
-            var relativePath = GetRelativePath(fullPath);
-            return relativePath.StartsWith(".") || relativePath.Contains(Path.DirectorySeparatorChar + ".");
-        }
-
         private bool IsSiteContent(string fullPath)
         {
             if (fullPath.StartsWith(this.TemplatesPath)) return false;
@@ -175,7 +167,9 @@ namespace RDumont.Frankie.Core
 
         public void RemoveFile(string fullPath)
         {
-            if (IsIgnored(fullPath)) return;
+            var relativeOrigin = GetRelativePath(fullPath);
+            if (Configuration.IsExcluded(relativeOrigin)) return;
+
             if (!IsSiteContent(fullPath)) return;
 
             var destination = GetFileDestinationPath(fullPath);
