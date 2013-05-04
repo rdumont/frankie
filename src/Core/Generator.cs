@@ -57,7 +57,8 @@ namespace RDumont.Frankie.Core
 
             _assetHandlers = new IAssetHandler[]
                 {
-                    new TemplateHandler(this) 
+                    new TemplateHandler(this),
+                    new PostHandler(this),
                 };
         }
 
@@ -81,7 +82,7 @@ namespace RDumont.Frankie.Core
             _postsAreDirty = false;
         }
 
-        private Post LoadSinglePost(string file)
+        public Post LoadSinglePost(string file)
         {
             var post = Post.FromFile(file);
             if (post == null) return null;
@@ -110,7 +111,7 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        private void WritePost(Post post)
+        public void WritePost(Post post)
         {
             var permalink = post.Permalink.Substring(1);
             var folderPath = Path.Combine(this.SitePath, permalink);
@@ -133,9 +134,6 @@ namespace RDumont.Frankie.Core
                 handler.Handle(path);
                 return;
             }
-
-            else if (IsPost(path))
-                HandlePostChange(path);
 
             else if (IsGeneratedContent(path))
                 return;
@@ -173,11 +171,6 @@ namespace RDumont.Frankie.Core
             return relativePath.EndsWith(".md");
         }
 
-        private bool IsPost(string relativePath)
-        {
-            return relativePath.StartsWith(Post.POSTS_FOLDER);
-        }
-
         private bool IsGeneratedContent(string relativePath)
         {
             return relativePath.StartsWith(this.RelativeSitePath);
@@ -200,12 +193,6 @@ namespace RDumont.Frankie.Core
             {
                 // ok, probably a temp file
             }
-        }
-
-        private void HandlePostChange(string file)
-        {
-            var post = LoadSinglePost(file);
-            WritePost(post);
         }
 
         public void ReAddDependentFile(string file)
