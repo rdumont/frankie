@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using RDumont.Frankie.Core.Handlers;
 using Path = System.IO.Path;
 
 namespace RDumont.Frankie.Core
@@ -14,6 +16,7 @@ namespace RDumont.Frankie.Core
         private List<Post> posts;
         private readonly SiteContext siteContext;
         private bool _postsAreDirty;
+        private IAssetHandler[] _assetHandlers;
 
         protected Io Io { get; set; }
         protected SiteConfiguration Configuration { get; set; }
@@ -49,6 +52,10 @@ namespace RDumont.Frankie.Core
             TemplateManager.Current.Init(this.BasePath);
 
             this.posts = new List<Post>();
+
+            _assetHandlers = new IAssetHandler[]
+                {
+                };
         }
 
         public void CompileTemplates(string root)
@@ -116,6 +123,13 @@ namespace RDumont.Frankie.Core
 
             if (Configuration.IsExcluded(path))
                 return;
+
+            var handler = _assetHandlers.FirstOrDefault(h => h.Matches(path));
+            if (handler != null)
+            {
+                handler.Handle(path);
+                return;
+            }
 
             if (IsTemplate(path))
                 HandleTemplateChange(path);

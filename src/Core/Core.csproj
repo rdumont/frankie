@@ -59,6 +59,7 @@
     <Compile Include="ContentFile.cs" />
     <Compile Include="DependencyTracker.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="Handlers\IAssetHandler.cs" />
     <Compile Include="Io.cs" />
     <Compile Include="LiquidFilters.cs" />
     <Compile Include="LiquidTemplateManager.cs" />
