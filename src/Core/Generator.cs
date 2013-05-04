@@ -13,11 +13,11 @@ namespace RDumont.Frankie.Core
     {
         protected string BasePath;
         protected string SitePath;
-        protected string RelativeSitePath;
+        public string RelativeSitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
         private bool _postsAreDirty;
-        private IAssetHandler[] _assetHandlers;
+        private AssetHandlerManager _contentHandlers;
 
         protected Io Io { get; set; }
         protected SiteConfiguration Configuration { get; set; }
@@ -55,11 +55,7 @@ namespace RDumont.Frankie.Core
 
             this.posts = new List<Post>();
 
-            _assetHandlers = new IAssetHandler[]
-                {
-                    new TemplateHandler(this),
-                    new PostHandler(this),
-                };
+            _contentHandlers = new AssetHandlerManager(this);
         }
 
         public void CompileTemplates(string root)
@@ -128,15 +124,12 @@ namespace RDumont.Frankie.Core
             if (Configuration.IsExcluded(path))
                 return;
 
-            var handler = _assetHandlers.FirstOrDefault(h => h.Matches(path));
+            var handler = _contentHandlers.AllHandlers.FirstOrDefault(h => h.Matches(path));
             if (handler != null)
             {
                 handler.Handle(path);
                 return;
             }
-
-            else if (IsGeneratedContent(path))
-                return;
 
             else if (IsMarkdown(path))
                 HandleMarkdownPage(path);
@@ -171,17 +164,12 @@ namespace RDumont.Frankie.Core
             return relativePath.EndsWith(".md");
         }
 
-        private bool IsGeneratedContent(string relativePath)
-        {
-            return relativePath.StartsWith(this.RelativeSitePath);
-        }
-
         public void RemoveFile(string fullPath)
         {
             var relativePath = GetRelativePath(fullPath);
             if (Configuration.IsExcluded(relativePath)) return;
 
-            if (IsGeneratedContent(fullPath)) return;
+            if (_contentHandlers.GeneratedContentHandler.Matches(fullPath)) return;
 
             var destination = GetFileDestinationPath(relativePath);
             try
