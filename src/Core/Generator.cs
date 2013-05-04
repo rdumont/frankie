@@ -121,7 +121,7 @@ namespace RDumont.Frankie.Core
                 HandleTemplateChange(path);
 
             else if (IsPost(path))
-                HandlePostChange(fullPath);
+                HandlePostChange(path);
 
             else if (IsGeneratedContent(path))
                 return;
