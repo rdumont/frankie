@@ -13,6 +13,7 @@ namespace RDumont.Frankie.Core
     {
         protected string BasePath;
         protected string SitePath;
+        protected string RelativeSitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
         private bool _postsAreDirty;
@@ -35,6 +36,7 @@ namespace RDumont.Frankie.Core
         {
             this.BasePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
             this.SitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
+            this.RelativeSitePath = this.SitePath.Remove(0, this.BasePath.Length + 1);
 
             var configPath = Path.Combine(locationPath, "config.yaml");
             Configuration = SiteConfiguration.Load(configPath);
@@ -55,6 +57,7 @@ namespace RDumont.Frankie.Core
 
             _assetHandlers = new IAssetHandler[]
                 {
+                    new TemplateHandler(this) 
                 };
         }
 
@@ -131,9 +134,6 @@ namespace RDumont.Frankie.Core
                 return;
             }
 
-            if (IsTemplate(path))
-                HandleTemplateChange(path);
-
             else if (IsPost(path))
                 HandlePostChange(path);
 
@@ -178,14 +178,9 @@ namespace RDumont.Frankie.Core
             return relativePath.StartsWith(Post.POSTS_FOLDER);
         }
 
-        private bool IsTemplate(string relativePath)
-        {
-            return relativePath.StartsWith(TemplateManager.TEMPLATES_FOLDER);
-        }
-
         private bool IsGeneratedContent(string relativePath)
         {
-            return relativePath.StartsWith(this.SitePath);
+            return relativePath.StartsWith(this.RelativeSitePath);
         }
 
         public void RemoveFile(string fullPath)
@@ -213,32 +208,7 @@ namespace RDumont.Frankie.Core
             WritePost(post);
         }
 
-        private void HandleTemplateChange(string path)
-        {
-            var dependentFiles = DependencyTracker.Current.FindAllDependentFiles(path);
-
-            try
-            {
-                CompileTemplate(path);
-            }
-            catch (FileNotFoundException)
-            {
-                // ok, probably a temp file
-            }
-
-            foreach (var dependentFile in dependentFiles)
-            {
-                ReAddDependentFile(dependentFile);
-            }
-
-            if (_postsAreDirty)
-            {
-                siteContext.UpdatePostsCollection(posts);
-                _postsAreDirty = false;
-            }
-        }
-
-        private void ReAddDependentFile(string file)
+        public void ReAddDependentFile(string file)
         {
             var fullPath = Path.Combine(BasePath, file);
             if (file.StartsWith(TemplateManager.TEMPLATES_FOLDER))
@@ -256,7 +226,7 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        private void CompileTemplate(string path)
+        public void CompileTemplate(string path)
         {
             var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
             TemplateManager.Current.CompileTemplate(path);
@@ -332,6 +302,15 @@ namespace RDumont.Frankie.Core
         private string GetRelativePath(string fullPath)
         {
             return fullPath.Remove(0, BasePath.Length + 1);
+        }
+
+        public void UpdatePostsCollection()
+        {
+            if (_postsAreDirty)
+            {
+                siteContext.UpdatePostsCollection(posts);
+                _postsAreDirty = false;
+            }
         }
     }
 }
