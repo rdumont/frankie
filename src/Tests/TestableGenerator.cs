@@ -16,18 +16,6 @@ namespace RDumont.Frankie.Tests
             set { base.BasePath = value; }
         }
 
-        public new string PostsPath
-        {
-            get { return base.PostsPath; }
-            set { base.PostsPath = value; }
-        }
-
-        public new string TemplatesPath
-        {
-            get { return base.TemplatesPath; }
-            set { base.TemplatesPath = value; }
-        }
-
         public new string SitePath
         {
             get { return base.SitePath; }

@@ -18,6 +18,10 @@ namespace RDumont.Frankie.Core
 
         public string[] Excludes { get; set; }
 
+        public string SitePath { get; set; }
+
+        public string SourcePath { get; set; }
+
         public SiteConfiguration()
         {
             Excludes = new string[0];

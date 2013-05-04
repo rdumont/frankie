@@ -11,8 +11,6 @@ namespace RDumont.Frankie.Core
     public class Generator
     {
         protected string BasePath;
-        protected string PostsPath;
-        protected string TemplatesPath;
         protected string SitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
@@ -34,12 +32,12 @@ namespace RDumont.Frankie.Core
         public void Init(string locationPath, string outputPath)
         {
             this.BasePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
-            this.PostsPath = Path.Combine(locationPath, "_posts");
-            this.TemplatesPath = Path.Combine(locationPath, "_templates");
             this.SitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
 
             var configPath = Path.Combine(locationPath, "config.yaml");
             Configuration = SiteConfiguration.Load(configPath);
+            Configuration.SitePath = this.SitePath;
+            Configuration.SourcePath = this.BasePath;
 
             if (Configuration.Culture != null)
             {
@@ -56,7 +54,7 @@ namespace RDumont.Frankie.Core
 
         public void CompileTemplates(string root)
         {
-            var allFiles = Io.FindFilesRecursively(TemplatesPath, "*.html");
+            var allFiles = Io.FindFilesRecursively(Path.Combine(this.BasePath, TemplateManager.TEMPLATES_FOLDER), "*.html");
             foreach (var file in allFiles)
             {
                 CompileTemplate(file);
@@ -67,7 +65,7 @@ namespace RDumont.Frankie.Core
         {
             foreach (var file in files)
             {
-                LoadSinglePost(file);
+                LoadSinglePost(GetRelativePath(file));
             }
 
             siteContext.UpdatePostsCollection(posts);
@@ -83,7 +81,7 @@ namespace RDumont.Frankie.Core
             post.LoadFile(Configuration);
             try
             {
-                post.ExecuteTransformationPipeline(this.BasePath, Configuration);
+                post.ExecuteTransformationPipeline(Configuration);
                 posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
                 posts.Add(post);
             }
@@ -179,12 +177,12 @@ namespace RDumont.Frankie.Core
 
         public void RemoveFile(string fullPath)
         {
-            var relativeOrigin = GetRelativePath(fullPath);
-            if (Configuration.IsExcluded(relativeOrigin)) return;
+            var relativePath = GetRelativePath(fullPath);
+            if (Configuration.IsExcluded(relativePath)) return;
 
             if (IsGeneratedContent(fullPath)) return;
 
-            var destination = GetFileDestinationPath(fullPath);
+            var destination = GetFileDestinationPath(relativePath);
             try
             {
                 Io.DeleteFile(destination);
@@ -248,8 +246,9 @@ namespace RDumont.Frankie.Core
 
         private void CompileTemplate(string file)
         {
-            var name = file.Remove(0, TemplatesPath.Length + 1).Replace(".html", "");
-            TemplateManager.Current.CompileTemplate(GetRelativePath(file));
+            var relativePath = GetRelativePath(file);
+            var name = relativePath.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            TemplateManager.Current.CompileTemplate(relativePath);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
@@ -293,16 +292,16 @@ namespace RDumont.Frankie.Core
             Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativePath);
         }
 
-        protected string GetFileDestinationPath(string fullPath)
+        protected string GetFileDestinationPath(string relativePath)
         {
-            if (fullPath.StartsWith(this.PostsPath))
+            if (relativePath.StartsWith(Post.POSTS_FOLDER))
             {
-                var post = Post.FromFile(fullPath);
-                var relativePath = post.GetDestinationFilePath(this.Configuration);
-                return Path.GetFullPath(Path.Combine(this.SitePath, relativePath));
+                var post = Post.FromFile(relativePath);
+                var destinationPath = post.GetDestinationFilePath(this.Configuration);
+                return Path.Combine(this.SitePath, destinationPath).Replace('\\', '/');
             }
 
-            var destination = fullPath.Replace(this.BasePath, this.SitePath);
+            var destination = relativePath.Replace(this.BasePath, this.SitePath);
 
             if (destination.EndsWith(".md"))
                 destination = destination.Replace(".md", ".html");

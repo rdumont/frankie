@@ -26,7 +26,6 @@ namespace RDumont.Frankie.Tests
                 {
                     BasePath = FullPath("my/blog"),
                     SitePath = FullPath("my/blog/final"),
-                    PostsPath = FullPath("my/blog/_posts")
                 };
 
             // Act
@@ -42,8 +41,7 @@ namespace RDumont.Frankie.Tests
             // Arrange
             var generator = new TestableGenerator
                 {
-                    SitePath = FullPath("my/blog/final"),
-                    PostsPath = FullPath("my/blog/_posts"),
+                    SitePath = "my/blog/final",
                     Configuration = new SiteConfiguration
                         {
                             Permalink = ":year/:month/:day/:title"
@@ -51,10 +49,10 @@ namespace RDumont.Frankie.Tests
                 };
 
             // Act
-            var destination = generator.GetFileDestinationPath(FullPath("my/blog/_posts/2013-05-10-some-post.md"));
+            var destination = generator.GetFileDestinationPath("_posts/2013-05-10-some-post.md");
 
             // Assert
-            Assert.That(destination, Is.EqualTo(FullPath("my/blog/final/2013/05/10/some-post/index.html")));
+            Assert.That(destination, Is.EqualTo("my/blog/final/2013/05/10/some-post/index.html"));
         }
 
         [Test]
@@ -65,7 +63,6 @@ namespace RDumont.Frankie.Tests
             {
                 BasePath = FullPath("my/blog"),
                 SitePath = FullPath("my/blog/final"),
-                PostsPath = FullPath("my/blog/_posts"),
                 Configuration = new SiteConfiguration
                 {
                     Permalink = ":year/:month/:day/:title"

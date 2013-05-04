@@ -15,7 +15,7 @@ namespace RDumont.Frankie.Tests
             public void Create_post_from_file_path()
             {
                 // Arrange
-                var path = @"C:\something\_posts\something else\blog\_posts\2013-02-23-some-nice-article.md";
+                var path = @"_posts\2013-02-23-some-nice-article.md";
 
                 // Act
                 var post = new Post(path);
@@ -31,7 +31,7 @@ namespace RDumont.Frankie.Tests
             public void Create_post_from_file_path_with_category()
             {
                 // Arrange
-                var path = @"C:\something\_posts\something else\blog\_posts\Cat1\2013-02-23-some-nice-article.md";
+                var path = @"_posts\Cat1\2013-02-23-some-nice-article.md";
 
                 // Act
                 var post = new Post(path);
@@ -48,7 +48,7 @@ namespace RDumont.Frankie.Tests
             {
                 // Arrange
                 var path =
-                    @"C:\something\_posts\something else\blog\_posts\Cat1\sub cat\2013-02-23-some-nice-article.md";
+                    @"_posts\Cat1\sub cat\2013-02-23-some-nice-article.md";
 
                 // Act
                 var post = new Post(path);
@@ -65,7 +65,7 @@ namespace RDumont.Frankie.Tests
             public void Create_post_from_file_path_in_unix()
             {
                 // Arrange
-                var path = @"home/something/_posts/something else/blog/_posts/2013-02-23-some-nice-article.md";
+                var path = @"_posts/2013-02-23-some-nice-article.md";
 
                 // Act
                 var post = new Post(path);

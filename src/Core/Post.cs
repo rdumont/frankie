@@ -11,11 +11,11 @@ namespace RDumont.Frankie.Core
     public class Post : ContentFile, ILiquidizable
     {
         public const string POSTS_FOLDER = "_posts";
-        private static readonly Regex PostFileRegex = new Regex(@"^.+(\\|/)" + POSTS_FOLDER
+        private static readonly Regex PostFileRegex = new Regex(@"^" + POSTS_FOLDER
             + @"(\\|/)((?<category>.+?)(\\|/))*(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-(?<title>.+)\.(?<ext>.+)$",
             RegexOptions.Compiled);
 
-        private readonly string absoluteFilePath;
+        private readonly string originalPath;
 
         public string Title { get; set; }
         public DateTime Date { get; set; }
@@ -30,10 +30,10 @@ namespace RDumont.Frankie.Core
         {
         }
 
-        public Post(string absoluteFilePath)
+        public Post(string originalPath)
         {
-            this.absoluteFilePath = absoluteFilePath;
-            var match = PostFileRegex.Match(absoluteFilePath);
+            this.originalPath = originalPath;
+            var match = PostFileRegex.Match(originalPath);
             if (!match.Success)
                 throw new ArgumentException("Invalid post file path");
 
@@ -47,7 +47,7 @@ namespace RDumont.Frankie.Core
             this.Category = match.Groups["category"].Captures
                 .Cast<Capture>().Select(c => c.Value).ToArray();
 
-            this.OriginalPath = absoluteFilePath.Substring(absoluteFilePath.LastIndexOf(POSTS_FOLDER))
+            this.OriginalPath = originalPath.Substring(originalPath.LastIndexOf(POSTS_FOLDER))
                 .Replace('\\', '/');
         }
 
@@ -74,7 +74,7 @@ namespace RDumont.Frankie.Core
 
         public void LoadFile(SiteConfiguration configuration)
         {
-            var contents = File.ReadAllText(this.absoluteFilePath);
+            var contents = File.ReadAllText(Path.Combine(configuration.SourcePath, this.originalPath));
             this.Body = contents;
 
             this.Permalink = ResolvePermalink(configuration.Permalink);
@@ -92,15 +92,14 @@ namespace RDumont.Frankie.Core
                 .Select(tag => tag.Trim()).ToArray();
         }
 
-        public void ExecuteTransformationPipeline(string rootPath, SiteConfiguration configuration)
+        public void ExecuteTransformationPipeline(SiteConfiguration configuration)
         {
             if (this.Extension == "md" || this.Extension == "markdown")
                 this.TransformMarkdown();
 
             this.RetrieveTitle();
 
-            var postPath = absoluteFilePath.Remove(0, rootPath.Length + 1);
-            this.ParseTemplate(postPath);
+            this.ParseTemplate(originalPath);
         }
 
         protected void RetrieveTitle()
@@ -126,7 +125,7 @@ namespace RDumont.Frankie.Core
                 if (!exception.Message.StartsWith("No template exists")) throw;
 
                 Logger.Current.LogError("{0}\n  No template exists with name '{1}'",
-                    this.absoluteFilePath, templateName);
+                    this.originalPath, templateName);
             }
         }
 
