@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using Path = System.IO.Path;
-using System.Linq;
 
 namespace RDumont.Frankie.Core
 {
@@ -57,7 +56,7 @@ namespace RDumont.Frankie.Core
             var allFiles = Io.FindFilesRecursively(Path.Combine(this.BasePath, TemplateManager.TEMPLATES_FOLDER), "*.html");
             foreach (var file in allFiles)
             {
-                CompileTemplate(file);
+                CompileTemplate(GetRelativePath(file));
             }
         }
 
@@ -119,7 +118,7 @@ namespace RDumont.Frankie.Core
                 return;
 
             if (IsTemplate(path))
-                HandleTemplateChange(fullPath);
+                HandleTemplateChange(path);
 
             else if (IsPost(path))
                 HandlePostChange(fullPath);
@@ -141,7 +140,7 @@ namespace RDumont.Frankie.Core
             var destination = Path.Combine(this.SitePath, relativePath);
             try
             {
-                Io.CopyFile(destination, destination, true);
+                Io.CopyFile(Path.Combine(this.BasePath, relativePath), destination, true);
                 Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativePath);
             }
             catch (FileNotFoundException)
@@ -200,14 +199,13 @@ namespace RDumont.Frankie.Core
             WritePost(post);
         }
 
-        private void HandleTemplateChange(string file)
+        private void HandleTemplateChange(string path)
         {
-            var path = GetRelativePath(file);
             var dependentFiles = DependencyTracker.Current.FindAllDependentFiles(path);
 
             try
             {
-                CompileTemplate(file);
+                CompileTemplate(path);
             }
             catch (FileNotFoundException)
             {
@@ -231,11 +229,11 @@ namespace RDumont.Frankie.Core
             var fullPath = Path.Combine(BasePath, file);
             if (file.StartsWith(TemplateManager.TEMPLATES_FOLDER))
             {
-                CompileTemplate(fullPath);
+                CompileTemplate(file);
             }
             else if (file.StartsWith(Post.POSTS_FOLDER))
             {
-                var post = LoadSinglePost(fullPath);
+                var post = LoadSinglePost(file);
                 WritePost(post);
             }
             else
@@ -244,11 +242,10 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        private void CompileTemplate(string file)
+        private void CompileTemplate(string path)
         {
-            var relativePath = GetRelativePath(file);
-            var name = relativePath.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
-            TemplateManager.Current.CompileTemplate(relativePath);
+            var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            TemplateManager.Current.CompileTemplate(path);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
@@ -283,10 +280,10 @@ namespace RDumont.Frankie.Core
             var destination = Path.Combine(this.SitePath, relativePath);
             EnsureDirectoryExists(destination);
 
-            var model = new Page(Path.Combine(this.SitePath, relativePath));
+            var model = new Page(Path.Combine(this.BasePath, relativePath));
             model.LoadFile(Configuration);
 
-            var result = TemplateManager.Current.RenderPage(GetRelativePath(relativePath), model);
+            var result = TemplateManager.Current.RenderPage(relativePath, model);
 
             Io.WriteFile(destination, result);
             Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativePath);

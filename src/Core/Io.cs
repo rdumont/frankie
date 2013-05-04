@@ -34,6 +34,8 @@ namespace RDumont.Frankie.Core
         /// <param name="overwrite">Whether the destination should be overwritten if it exists</param>
         public virtual void CopyFile(string fromPath, string toPath, bool overwrite)
         {
+            var folder = Path.GetDirectoryName(toPath);
+            if (!DirectoryExists(folder)) CreateDirectory(folder);
             File.Copy(fromPath, toPath, overwrite);
         }
 
