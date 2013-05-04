@@ -115,54 +115,66 @@ namespace RDumont.Frankie.Core
 
         public void AddFile(string fullPath)
         {
-            var relativeOrigin = GetRelativePath(fullPath);
-            if (Configuration.IsExcluded(relativeOrigin)) return;
+            var path = GetRelativePath(fullPath);
 
-            if (IsTemplate(fullPath))
-            {
-                HandleTemplateChange(fullPath);
+            if (Configuration.IsExcluded(path))
                 return;
-            }
 
-            if (!IsSiteContent(fullPath)) return;
+            if (IsTemplate(path))
+                HandleTemplateChange(fullPath);
 
-            var destination = GetFileDestinationPath(fullPath);
-            EnsureDirectoryExists(destination);
+            else if (IsPost(path))
+                HandlePostChange(fullPath);
 
-            if (fullPath.EndsWith(".html"))
+            else if (IsGeneratedContent(path))
+                return;
+
+            else if (IsMarkdown(path))
+                HandleMarkdownPage(path);
+
+            else if (IsTransformableContent(path))
+                HandleHtmlPage(path);
+
+            else HandleContentFile(path);
+        }
+
+        private void HandleContentFile(string relativePath)
+        {
+            var destination = Path.Combine(this.SitePath, relativePath);
+            try
             {
-                HandleHtmlPage(fullPath, destination);
-                Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativeOrigin);
+                Io.CopyFile(destination, destination, true);
+                Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativePath);
             }
-            else if (fullPath.EndsWith(".md"))
+            catch (FileNotFoundException)
             {
-                HandleMarkdownPage(fullPath, destination);
-                Logger.Current.Log(LoggingLevel.Debug, "Markdown page: {0}", relativeOrigin);
-            }
-            else
-            {
-                try
-                {
-                    Io.CopyFile(fullPath, destination, true);
-                    Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativeOrigin);
-                }
-                catch (FileNotFoundException)
-                {
-                    // ok, probably a temp file
-                }
+                // ok, probably a temp file
             }
         }
 
-        private bool IsTemplate(string fullPath)
+        private bool IsTransformableContent(string relativePath)
         {
-            return fullPath.StartsWith(this.TemplatesPath);
+            return relativePath.EndsWith(".html");
         }
-        private bool IsSiteContent(string fullPath)
+
+        private bool IsMarkdown(string relativePath)
         {
-            if (fullPath.StartsWith(this.TemplatesPath)) return false;
-            if (fullPath.StartsWith(this.SitePath)) return false;
-            if (fullPath.StartsWith(this.PostsPath)) return false;
-            return true;
+            return relativePath.EndsWith(".md");
+        }
+
+        private bool IsPost(string relativePath)
+        {
+            return relativePath.StartsWith(Post.POSTS_FOLDER);
+        }
+
+        private bool IsTemplate(string relativePath)
+        {
+            return relativePath.StartsWith(TemplateManager.TEMPLATES_FOLDER);
+        }
+
+        private bool IsGeneratedContent(string relativePath)
+        {
+            return relativePath.StartsWith(this.SitePath);
         }
 
         public void RemoveFile(string fullPath)
@@ -170,7 +182,7 @@ namespace RDumont.Frankie.Core
             var relativeOrigin = GetRelativePath(fullPath);
             if (Configuration.IsExcluded(relativeOrigin)) return;
 
-            if (!IsSiteContent(fullPath)) return;
+            if (IsGeneratedContent(fullPath)) return;
 
             var destination = GetFileDestinationPath(fullPath);
             try
@@ -182,6 +194,12 @@ namespace RDumont.Frankie.Core
             {
                 // ok, probably a temp file
             }
+        }
+
+        private void HandlePostChange(string file)
+        {
+            var post = LoadSinglePost(file);
+            WritePost(post);
         }
 
         private void HandleTemplateChange(string file)
@@ -236,37 +254,43 @@ namespace RDumont.Frankie.Core
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
 
-        private void HandleMarkdownPage(string originPath, string destinationPath)
+        private void HandleMarkdownPage(string relativePath)
         {
-            var page = new Page(originPath);
+            var page = new Page(Path.Combine(this.BasePath, relativePath));
+            var destination = Path.Combine(this.SitePath, relativePath.Replace(".md", ".html"));
+            EnsureDirectoryExists(destination);
             page.LoadFile(Configuration);
 
             var template = page.Metadata["template"] ?? "_page";
-            var relativeOrigin = GetRelativePath(originPath);
 
             try
             {
-                page.Body = TemplateManager.Current.RenderMarkdownPage(relativeOrigin, template, page);
+                page.Body = TemplateManager.Current.RenderMarkdownPage(relativePath, template, page);
             }
             catch (InvalidOperationException exception)
             {
                 if (!exception.Message.StartsWith("No template exists")) throw;
 
                 Logger.Current.LogError("{0}\n  No template exists with name '{1}'",
-                    originPath, template);
+                    relativePath, template);
             }
 
-            Io.WriteFile(destinationPath, page.Body);
+            Io.WriteFile(destination, page.Body);
+            Logger.Current.Log(LoggingLevel.Debug, "Markdown page: {0}", relativePath);
         }
 
-        private void HandleHtmlPage(string originPath, string destinationPath)
+        private void HandleHtmlPage(string relativePath)
         {
-            var model = new Page(originPath);
+            var destination = Path.Combine(this.SitePath, relativePath);
+            EnsureDirectoryExists(destination);
+
+            var model = new Page(Path.Combine(this.SitePath, relativePath));
             model.LoadFile(Configuration);
 
-            var result = TemplateManager.Current.RenderPage(GetRelativePath(originPath), model);
+            var result = TemplateManager.Current.RenderPage(GetRelativePath(relativePath), model);
 
-            Io.WriteFile(destinationPath, result);
+            Io.WriteFile(destination, result);
+            Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativePath);
         }
 
         protected string GetFileDestinationPath(string fullPath)
