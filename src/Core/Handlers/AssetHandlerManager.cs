@@ -51,5 +51,14 @@ namespace RDumont.Frankie.Core.Handlers
             var handler = FindMatchingHandler(path);
             if (handler != null) handler.Handle(path);
         }
+
+        public void HandleRemoval(string path)
+        {
+            if (_configuration.IsExcluded(path))
+                return;
+
+            var handler = FindMatchingHandler(path);
+            if (handler != null) handler.HandleRemoval(path);
+        }
     }
 }

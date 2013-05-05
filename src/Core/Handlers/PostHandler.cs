@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace RDumont.Frankie.Core.Handlers
 {
@@ -28,11 +30,26 @@ namespace RDumont.Frankie.Core.Handlers
             WritePost(post);
         }
 
+        public void HandleRemoval(string path)
+        {
+            var post = _posts.FirstOrDefault(p => p.OriginalPath == path);
+            if (post == null)
+            {
+                Logger.Current.LogError("Cannot remove \"{0}\". Post not found.", path);
+                return;
+            }
+
+            var finalPath = post.GetDestinationFilePath(_configuration);
+            _io.DeleteFile(finalPath);
+            _posts.Remove(post);
+            UpdatePostsCollection();
+        }
+
         public void LoadAllPosts(IEnumerable<string> paths, SiteContext siteContext)
         {
             foreach (var path in paths)
                 LoadPost(path);
-            UpdatePostsCollection(siteContext);
+            UpdatePostsCollection();
         }
 
         public Post LoadPost(string file)
@@ -56,10 +73,10 @@ namespace RDumont.Frankie.Core.Handlers
             return post;
         }
 
-        public void UpdatePostsCollection(SiteContext siteContext)
+        public void UpdatePostsCollection()
         {
             if (_postsAreDirty)
-                siteContext.UpdatePostsCollection(_posts);
+                SiteContext.Current.UpdatePostsCollection(_posts);
             _postsAreDirty = false;
         }
 

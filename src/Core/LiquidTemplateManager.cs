@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using DotLiquid;
 
@@ -18,10 +20,16 @@ namespace RDumont.Frankie.Core
 
         public override void CompileTemplate(string templatePath)
         {
-            var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            var name = GetTemplateName(templatePath);
             var context = new Context();
             var contents = Template.FileSystem.ReadTemplateFile(context, name);
             templatesByName[name] = Template.Parse(contents);
+        }
+
+        private static string GetTemplateName(string templatePath)
+        {
+            var name = templatePath.Remove(0, TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            return name;
         }
 
         public override string RenderPage(string pagePath, Page model)
@@ -94,6 +102,18 @@ namespace RDumont.Frankie.Core
             hash.Add("title", _titleRegex.Match(page.Body).Groups[1].Value);
 
             return Template.Parse(page.Body).Render(hash);
+        }
+
+        public override void RemoveTemplate(string path)
+        {
+            var dependencies = DependencyTracker.Current.FindAllDependentFiles(path);
+            if(dependencies.Any())
+                throw new InvalidOperationException("Cannot remove template because it is still in use.");
+
+            DependencyTracker.Current.Remove(path);
+
+            var name = GetTemplateName(path);
+            templatesByName.Remove(name);
         }
 
         public override string PrepareTemplateContents(string contents, Context context, string templateName)

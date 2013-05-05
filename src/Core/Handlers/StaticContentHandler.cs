@@ -20,16 +20,28 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            var destination = Path.Combine(_configuration.SitePath, path);
+            var finalPath = GetFinalPath(path);
             try
             {
-                _io.CopyFile(Path.Combine(_configuration.SourcePath, path), destination, true);
+                _io.CopyFile(Path.Combine(_configuration.SourcePath, path), finalPath, true);
                 Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", path);
             }
             catch (FileNotFoundException)
             {
                 // ok, probably a temp file
             }
+        }
+
+        public void HandleRemoval(string path)
+        {
+            var finalPath = GetFinalPath(path);
+            _io.DeleteFile(finalPath);
+        }
+
+        private string GetFinalPath(string path)
+        {
+            var destination = Path.Combine(_configuration.SitePath, path);
+            return destination;
         }
     }
 }

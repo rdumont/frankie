@@ -16,6 +16,12 @@
 
         public void Handle(string path)
         {
+            // don't touch generated files
+        }
+
+        public void HandleRemoval(string path)
+        {
+            // don't touch generated files
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using DotLiquid;
+﻿using DotLiquid;
 
 namespace RDumont.Frankie.Core
 {
@@ -30,5 +29,7 @@ namespace RDumont.Frankie.Core
         public abstract string PrepareTemplateContents(string contents, Context context, string templateName);
 
         public abstract string RenderMarkdownPage(string pagePath, string template, Page page);
+
+        public abstract void RemoveTemplate(string path);
     }
 }

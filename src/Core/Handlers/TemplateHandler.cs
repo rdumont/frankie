@@ -39,7 +39,12 @@ namespace RDumont.Frankie.Core.Handlers
                 _handlers.Handle(dependentFile);
             }
 
-            _handlers.PostHandler.UpdatePostsCollection(SiteContext.Current);
+            _handlers.PostHandler.UpdatePostsCollection();
+        }
+
+        public void HandleRemoval(string path)
+        {
+            TemplateManager.Current.RemoveTemplate(path);
         }
 
         public void CompileAllTemplates()
@@ -54,10 +59,16 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void CompileTemplate(string path)
         {
-            var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            var name = GetTemplateName(path);
             TemplateManager.Current.CompileTemplate(path);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
+        }
+
+        private static string GetTemplateName(string path)
+        {
+            var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            return name;
         }
     }
 }

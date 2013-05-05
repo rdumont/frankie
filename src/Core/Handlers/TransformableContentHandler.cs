@@ -20,16 +20,28 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            var destination = Path.Combine(_configuration.SitePath, path);
-            _io.EnsureDirectoryExists(destination);
+            var finalPath = GetFinalPath(path);
+            _io.EnsureDirectoryExists(finalPath);
 
             var model = new Page(Path.Combine(_configuration.SourcePath, path));
             model.LoadFile(_configuration);
 
             var result = TemplateManager.Current.RenderPage(path, model);
 
-            _io.WriteFile(destination, result);
+            _io.WriteFile(finalPath, result);
             Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", path);
+        }
+
+        public void HandleRemoval(string path)
+        {
+            var finalPath = GetFinalPath(path);
+            _io.DeleteFile(finalPath);
+            DependencyTracker.Current.Remove(path);
+        }
+
+        private string GetFinalPath(string path)
+        {
+            return Path.Combine(_configuration.SitePath, path);
         }
     }
 }

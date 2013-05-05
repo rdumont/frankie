@@ -15,10 +15,5 @@ namespace RDumont.Frankie.Tests
             get { return base.Configuration; }
             set { base.Configuration = value; }
         }
-
-        public new string GetFileDestinationPath(string fullPath)
-        {
-            return base.GetFileDestinationPath(fullPath);
-        }
     }
 }

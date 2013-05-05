@@ -64,7 +64,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         private void RemoveFile(string fullPath)
         {
             var path = Configuration.GetRelativePath(fullPath);
-            Generator.RemoveFile(path);
+            Handlers.HandleRemoval(path);
         }
 
         private void AddFile(string fullPath)
