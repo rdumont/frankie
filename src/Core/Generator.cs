@@ -11,16 +11,16 @@ namespace RDumont.Frankie.Core
 {
     public class Generator
     {
-        protected string BasePath;
-        protected string SitePath;
+        public string BasePath;
+        public string SitePath;
         public string RelativeSitePath;
         private List<Post> posts;
         private readonly SiteContext siteContext;
         private bool _postsAreDirty;
         private AssetHandlerManager _contentHandlers;
 
-        protected Io Io { get; set; }
-        protected SiteConfiguration Configuration { get; set; }
+        public Io Io { get; set; }
+        public SiteConfiguration Configuration { get; set; }
 
         protected Generator()
         {
@@ -131,9 +131,6 @@ namespace RDumont.Frankie.Core
                 return;
             }
 
-            else if (IsMarkdown(path))
-                HandleMarkdownPage(path);
-
             else if (IsTransformableContent(path))
                 HandleHtmlPage(path);
 
@@ -157,11 +154,6 @@ namespace RDumont.Frankie.Core
         private bool IsTransformableContent(string relativePath)
         {
             return relativePath.EndsWith(".html");
-        }
-
-        private bool IsMarkdown(string relativePath)
-        {
-            return relativePath.EndsWith(".md");
         }
 
         public void RemoveFile(string fullPath)
@@ -209,31 +201,6 @@ namespace RDumont.Frankie.Core
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
 
-        private void HandleMarkdownPage(string relativePath)
-        {
-            var page = new Page(Path.Combine(this.BasePath, relativePath));
-            var destination = Path.Combine(this.SitePath, relativePath.Replace(".md", ".html"));
-            EnsureDirectoryExists(destination);
-            page.LoadFile(Configuration);
-
-            var template = page.Metadata["template"] ?? "_page";
-
-            try
-            {
-                page.Body = TemplateManager.Current.RenderMarkdownPage(relativePath, template, page);
-            }
-            catch (InvalidOperationException exception)
-            {
-                if (!exception.Message.StartsWith("No template exists")) throw;
-
-                Logger.Current.LogError("{0}\n  No template exists with name '{1}'",
-                    relativePath, template);
-            }
-
-            Io.WriteFile(destination, page.Body);
-            Logger.Current.Log(LoggingLevel.Debug, "Markdown page: {0}", relativePath);
-        }
-
         private void HandleHtmlPage(string relativePath)
         {
             var destination = Path.Combine(this.SitePath, relativePath);
@@ -265,7 +232,7 @@ namespace RDumont.Frankie.Core
             return destination;
         }
 
-        protected void EnsureDirectoryExists(string fullPath)
+        public void EnsureDirectoryExists(string fullPath)
         {
             var destinationFolder = Path.GetDirectoryName(fullPath);
             if (!Io.DirectoryExists(destinationFolder))

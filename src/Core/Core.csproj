@@ -62,6 +62,7 @@
     <Compile Include="Handlers\AssetHandlerManager.cs" />
     <Compile Include="Handlers\GeneratedContentHandler.cs" />
     <Compile Include="Handlers\IAssetHandler.cs" />
+    <Compile Include="Handlers\MarkdownPageHandler.cs" />
     <Compile Include="Handlers\PostHandler.cs" />
     <Compile Include="Handlers\TemplateHandler.cs" />
     <Compile Include="Io.cs" />
