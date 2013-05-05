@@ -4,11 +4,13 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class StaticContentHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
 
-        public StaticContentHandler(Generator generator)
+        public StaticContentHandler(SiteConfiguration configuration, Io io)
         {
-            _generator = generator;
+            _configuration = configuration;
+            _io = io;
         }
 
         public bool Matches(string path)
@@ -18,10 +20,10 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            var destination = Path.Combine(_generator.SitePath, path);
+            var destination = Path.Combine(_configuration.SitePath, path);
             try
             {
-                _generator.Io.CopyFile(Path.Combine(_generator.BasePath, path), destination, true);
+                _io.CopyFile(Path.Combine(_configuration.SourcePath, path), destination, true);
                 Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", path);
             }
             catch (FileNotFoundException)

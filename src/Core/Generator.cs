@@ -106,11 +106,6 @@ namespace RDumont.Frankie.Core
             return destination;
         }
 
-        public void EnsureDirectoryExists(string fullPath)
-        {
-            Io.EnsureDirectoryExists(fullPath);
-        }
-
         private string GetRelativePath(string fullPath)
         {
             return fullPath.Remove(0, BasePath.Length + 1);

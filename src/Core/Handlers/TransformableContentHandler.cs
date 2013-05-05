@@ -4,11 +4,13 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class TransformableContentHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
 
-        public TransformableContentHandler(Generator generator)
+        public TransformableContentHandler(SiteConfiguration configuration, Io io)
         {
-            _generator = generator;
+            _configuration = configuration;
+            _io = io;
         }
 
         public bool Matches(string path)
@@ -18,15 +20,15 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            var destination = Path.Combine(_generator.SitePath, path);
-            _generator.EnsureDirectoryExists(destination);
+            var destination = Path.Combine(_configuration.SitePath, path);
+            _io.EnsureDirectoryExists(destination);
 
-            var model = new Page(Path.Combine(_generator.BasePath, path));
-            model.LoadFile(_generator.Configuration);
+            var model = new Page(Path.Combine(_configuration.SourcePath, path));
+            model.LoadFile(_configuration);
 
             var result = TemplateManager.Current.RenderPage(path, model);
 
-            _generator.Io.WriteFile(destination, result);
+            _io.WriteFile(destination, result);
             Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", path);
         }
     }
