@@ -131,9 +131,6 @@ namespace RDumont.Frankie.Core
                 return;
             }
 
-            else if (IsTransformableContent(path))
-                HandleHtmlPage(path);
-
             else HandleContentFile(path);
         }
 
@@ -149,11 +146,6 @@ namespace RDumont.Frankie.Core
             {
                 // ok, probably a temp file
             }
-        }
-
-        private bool IsTransformableContent(string relativePath)
-        {
-            return relativePath.EndsWith(".html");
         }
 
         public void RemoveFile(string fullPath)
@@ -199,20 +191,6 @@ namespace RDumont.Frankie.Core
             TemplateManager.Current.CompileTemplate(path);
 
             Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
-        }
-
-        private void HandleHtmlPage(string relativePath)
-        {
-            var destination = Path.Combine(this.SitePath, relativePath);
-            EnsureDirectoryExists(destination);
-
-            var model = new Page(Path.Combine(this.BasePath, relativePath));
-            model.LoadFile(Configuration);
-
-            var result = TemplateManager.Current.RenderPage(relativePath, model);
-
-            Io.WriteFile(destination, result);
-            Logger.Current.Log(LoggingLevel.Debug, "HTML page: {0}", relativePath);
         }
 
         protected string GetFileDestinationPath(string relativePath)
