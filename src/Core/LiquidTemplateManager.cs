@@ -17,7 +17,7 @@ namespace RDumont.Frankie.Core
         public override void Init(SiteConfiguration configuration)
         {
             Template.FileSystem = new TemplatesFileSystem(configuration.SourcePath);
-            Template.RegisterFilter(typeof(LiquidFilters));
+            Template.RegisterFilter(typeof(Filters));
             _siteDrop = new SiteDrop(configuration);
         }
 
@@ -40,6 +40,7 @@ namespace RDumont.Frankie.Core
             var hash = Hash.FromAnonymousObject(anonymousObject);
             hash["frankie"] = new FrankieDrop();
             hash["site"] = _siteDrop;
+            hash["timestamp"] = DateTime.Now;
             return hash;
         }
 

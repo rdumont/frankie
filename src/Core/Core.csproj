@@ -67,7 +67,7 @@
     <Compile Include="Handlers\TemplateHandler.cs" />
     <Compile Include="Handlers\TransformableContentHandler.cs" />
     <Compile Include="Io.cs" />
-    <Compile Include="LiquidFilters.cs" />
+    <Compile Include="Liquid\LiquidFilters.cs" />
     <Compile Include="LiquidTemplateManager.cs" />
     <Compile Include="Liquid\FrankieDrop.cs" />
     <Compile Include="Liquid\SiteDrop.cs" />
