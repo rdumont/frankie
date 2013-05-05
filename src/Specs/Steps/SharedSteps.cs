@@ -27,6 +27,7 @@ namespace RDumont.Frankie.Specs.Steps
         {
             CreateDirectory("_posts");
             CreateDirectory("_site");
+            CreateDirectory("_templates");
             WriteFile("config.yaml", "Permalink: permalink_not_set");
         }
 
@@ -50,12 +51,19 @@ namespace RDumont.Frankie.Specs.Steps
             var options = new BaseOptions
                 {
                     Output = BasePath + "/_site",
-                    Location = BasePath
+                    Location = BasePath,
                 };
             var command = new RunCommand();
             command.ExecuteCommand(options);
         }
 
+        [When(@"I create the file '(.+)'")]
+        public void When_I_create_the_file(string path, string contents)
+        {
+            WriteFile(path, contents);
+        }
+
+        [Then(@"there should be an '(.+)' text file")]
         [Then(@"there should be a '(.+)' text file")]
         public void There_should_be_a_text_file(string filePath, string contents)
         {

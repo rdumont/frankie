@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using RDumont.Frankie.CommandLine.Commands;
 using RDumont.Frankie.Specs.Testables;
 using TechTalk.SpecFlow;
 
@@ -15,6 +16,12 @@ namespace RDumont.Frankie.Specs.Steps
         public static TestLogger Logger
         {
             get { return ScenarioContext.Current.Get<TestLogger>(); }
+            set { ScenarioContext.Current.Set(value); }
+        }
+
+        public static WatchCommand WatchCommand
+        {
+            get { return ScenarioContext.Current.Get<WatchCommand>(); }
             set { ScenarioContext.Current.Set(value); }
         }
 
