@@ -11,6 +11,9 @@ namespace RDumont.Frankie.CommandLine.Commands
         [Option('s', "source", DefaultValue = ".\\")]
         public string Source { get; set; }
 
+        [Option('v', "verbosity", DefaultValue = "quiet")]
+        public string Verbosity { get; set; }
+
         public string OutputPath
         {
             get { return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), this.Output)); }

@@ -9,6 +9,7 @@ using RDumont.Frankie.Core.Handlers;
 namespace RDumont.Frankie.CommandLine.Commands
 {
     public abstract class RunnableAbstractCommand<T> : Command<T>
+        where T : BaseOptions
     {
         private readonly string[] exclude = new[]
             {

@@ -3,7 +3,7 @@ using CommandLine.Text;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
-    public class ServeOptions
+    public class ServeOptions : BaseOptions
     {
         [Option('b', "baseUrl", DefaultValue = "/", HelpText = "A base url where to serve the site")]
         public string BaseUrl { get; set; }
@@ -13,9 +13,6 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         [Option('w', "watch", DefaultValue = false, HelpText = "Whether file changes should be automatically detected")]
         public bool Watch { get; set; }
-
-        [Option('s', "source", DefaultValue = @".\_site", HelpText = "The path from where to serve files")]
-        public string Source { get; set; }
 
         [HelpOption('h', "help")]
         public string GetUsage()

@@ -65,7 +65,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         }
     }
 
-    public class BootstrapOptions
+    public class BootstrapOptions : BaseOptions
     {
     }
 }
