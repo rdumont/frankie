@@ -4,24 +4,24 @@ using RDumont.Frankie.Core;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
-    public class WatchCommand : Command<WatchOptions>
+    public class WatchCommand : RunnableAbstractCommand<WatchOptions>
     {
-        private readonly Generator generator;
-
         public override string Name
         {
             get { return "watch"; }
         }
 
-        public WatchCommand()
+        public WatchCommand() : this(new Generator(SiteContext.Current))
         {
-            this.generator = new Generator(SiteContext.Current);
+        }
+
+        public WatchCommand(Generator generator) : base(generator)
+        {
         }
 
         public override void ExecuteCommand(WatchOptions options)
         {
-            var runCommand = new RunCommand(this.generator);
-            runCommand.ExecuteCommand(options);
+            RunTransformation(options);
 
             var path = GetAbsolutePath(options.Location);
 
@@ -42,23 +42,23 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         private void OnFileDeleted(object sender, FileSystemEventArgs e)
         {
-            this.generator.RemoveFile(e.FullPath);
+            this.Generator.RemoveFile(e.FullPath);
         }
 
         private void OnFileCreated(object sender, FileSystemEventArgs e)
         {
-            this.generator.AddFile(e.FullPath);
+            this.Generator.AddFile(e.FullPath);
         }
 
         private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            this.generator.AddFile(e.FullPath);
+            this.Generator.AddFile(e.FullPath);
         }
 
         private void OnFileRenamed(object sender, RenamedEventArgs e)
         {
-            this.generator.RemoveFile(e.OldFullPath);
-            this.generator.AddFile(e.FullPath);
+            this.Generator.RemoveFile(e.OldFullPath);
+            this.Generator.AddFile(e.FullPath);
         }
     }
 }

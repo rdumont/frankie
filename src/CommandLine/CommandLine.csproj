@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\RunnableAbstractCommand.cs" />
     <Compile Include="Properties\SharedAssemblyVersion.cs" />
     <Compile Include="Commands\BaseOptions.cs" />
     <Compile Include="Commands\BootstrapCommand.cs" />
