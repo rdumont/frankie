@@ -99,7 +99,7 @@ namespace RDumont.Frankie.Core.Handlers
 
             if (!_io.DirectoryExists(folderPath))
                 _io.CreateDirectory(folderPath);
-            _io.WriteFile(filePath, post.Body);
+            _io.WriteFile(filePath, post.GeneratedContent);
         }
     }
 }
