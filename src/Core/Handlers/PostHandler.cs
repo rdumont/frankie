@@ -5,13 +5,15 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class PostHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
         private readonly List<Post> _posts;
         private bool _postsAreDirty;
 
-        public PostHandler(Generator generator)
+        public PostHandler(SiteConfiguration configuration, Io io)
         {
-            _generator = generator;
+            _configuration = configuration;
+            _io = io;
             _posts = new List<Post>();
         }
 
@@ -39,10 +41,10 @@ namespace RDumont.Frankie.Core.Handlers
             if (post == null) return null;
 
             Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
-            post.LoadFile(_generator.Configuration);
+            post.LoadFile(_configuration);
             try
             {
-                post.ExecuteTransformationPipeline(_generator.Configuration);
+                post.ExecuteTransformationPipeline(_configuration);
                 _posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
                 _posts.Add(post);
             }
@@ -64,20 +66,18 @@ namespace RDumont.Frankie.Core.Handlers
         public void WriteAllPosts()
         {
             foreach (var post in _posts)
-            {
                 WritePost(post);
-            }
         }
 
         private void WritePost(Post post)
         {
             var permalink = post.Permalink.Substring(1);
-            var folderPath = Path.Combine(_generator.SitePath, permalink);
+            var folderPath = Path.Combine(_configuration.SitePath, permalink);
             var filePath = Path.Combine(folderPath, "index.html");
 
-            if (!_generator.Io.DirectoryExists(folderPath))
-                _generator.Io.CreateDirectory(folderPath);
-            _generator.Io.WriteFile(filePath, post.Body);
+            if (!_io.DirectoryExists(folderPath))
+                _io.CreateDirectory(folderPath);
+            _io.WriteFile(filePath, post.Body);
         }
     }
 }

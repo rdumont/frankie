@@ -16,7 +16,7 @@ namespace RDumont.Frankie.Core.Handlers
         public AssetHandlerManager(Generator generator)
         {
             TemplateHandler = new TemplateHandler(generator); 
-            PostHandler = new PostHandler(generator);
+            PostHandler = new PostHandler(generator.Configuration, generator.Io);
             GeneratedContentHandler = new GeneratedContentHandler(generator);
             MarkdownPageHandler = new MarkdownPageHandler(generator);
             TransformableContentHandler = new TransformableContentHandler(generator);
