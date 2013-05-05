@@ -31,25 +31,17 @@ namespace RDumont.Frankie.Core
             TemplateManager.Current.Init(configuration.SourcePath);
         }
 
-        public void AddFile(string fullPath)
+        public void RemoveFile(string path)
         {
-            var path = GetRelativePath(fullPath);
+            if (Configuration.IsExcluded(path)) return;
 
-            _handlers.Handle(path);
-        }
+            if (_handlers.GeneratedContentHandler.Matches(path)) return;
 
-        public void RemoveFile(string fullPath)
-        {
-            var relativePath = GetRelativePath(fullPath);
-            if (Configuration.IsExcluded(relativePath)) return;
-
-            if (_handlers.GeneratedContentHandler.Matches(fullPath)) return;
-
-            var destination = GetFileDestinationPath(relativePath);
+            var destination = GetFileDestinationPath(path);
             try
             {
                 Io.DeleteFile(destination);
-                Logger.Current.Log(LoggingLevel.Debug, "Removed file: {0}", GetRelativePath(fullPath));
+                Logger.Current.Log(LoggingLevel.Debug, "Removed file: {0}", path);
             }
             catch (FileNotFoundException)
             {

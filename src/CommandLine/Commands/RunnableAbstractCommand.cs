@@ -21,9 +21,14 @@ namespace RDumont.Frankie.CommandLine.Commands
                 "config.yaml"
             };
 
+        protected SiteConfiguration Configuration { get; private set; }
+        protected Io Io { get; private set; }
+        protected AssetHandlerManager Handlers { get; private set; }
+
         protected RunnableAbstractCommand(Generator generator)
         {
             this.Generator = generator;
+            this.Io = new Io();
         }
 
         protected void RunTransformation(BaseOptions options)
@@ -31,22 +36,21 @@ namespace RDumont.Frankie.CommandLine.Commands
             var root = options.LocationPath;
             var output = options.OutputPath;
 
-            var configuration = LoadConfiguration(options);
-            var io = new Io();
-            var handlers = new AssetHandlerManager(configuration, io);
-            this.Generator.Init(handlers, configuration, io);
+            Configuration = LoadConfiguration(options);
+            Handlers = new AssetHandlerManager(Configuration, Io);
+            this.Generator.Init(Handlers, Configuration, Io);
 
             this.CleanDirectory(output);
 
-            handlers.TemplateHandler.CompileAllTemplates();
+            Handlers.TemplateHandler.CompileAllTemplates();
 
-            var postFiles = FindPostPaths(root).Select(configuration.GetRelativePath);
-            handlers.PostHandler.LoadAllPosts(postFiles, SiteContext.Current);
-            handlers.PostHandler.WriteAllPosts();
+            var postFiles = FindPostPaths(root).Select(Configuration.GetRelativePath);
+            Handlers.PostHandler.LoadAllPosts(postFiles, SiteContext.Current);
+            Handlers.PostHandler.WriteAllPosts();
 
-            var allEntries = FindAllEntries(root).Select(configuration.GetRelativePath);
+            var allEntries = FindAllEntries(root).Select(Configuration.GetRelativePath);
             foreach (var file in allEntries)
-                handlers.Handle(file);
+                Handlers.Handle(file);
         }
 
         public static SiteConfiguration LoadConfiguration(BaseOptions options)
