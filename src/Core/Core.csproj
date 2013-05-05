@@ -64,6 +64,7 @@
     <Compile Include="Handlers\IAssetHandler.cs" />
     <Compile Include="Handlers\MarkdownPageHandler.cs" />
     <Compile Include="Handlers\PostHandler.cs" />
+    <Compile Include="Handlers\StaticContentHandler.cs" />
     <Compile Include="Handlers\TemplateHandler.cs" />
     <Compile Include="Handlers\TransformableContentHandler.cs" />
     <Compile Include="Io.cs" />

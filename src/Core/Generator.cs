@@ -124,28 +124,8 @@ namespace RDumont.Frankie.Core
             if (Configuration.IsExcluded(path))
                 return;
 
-            var handler = _contentHandlers.AllHandlers.FirstOrDefault(h => h.Matches(path));
-            if (handler != null)
-            {
-                handler.Handle(path);
-                return;
-            }
-
-            else HandleContentFile(path);
-        }
-
-        private void HandleContentFile(string relativePath)
-        {
-            var destination = Path.Combine(this.SitePath, relativePath);
-            try
-            {
-                Io.CopyFile(Path.Combine(this.BasePath, relativePath), destination, true);
-                Logger.Current.Log(LoggingLevel.Debug, "Asset: {0}", relativePath);
-            }
-            catch (FileNotFoundException)
-            {
-                // ok, probably a temp file
-            }
+            var handler = _contentHandlers.FindMatchingHandler(path);
+            if (handler != null) handler.Handle(path);
         }
 
         public void RemoveFile(string fullPath)
