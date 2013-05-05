@@ -95,7 +95,7 @@ this.FeatureBackground();
  testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 19
-  testRunner.And("there should be an \'about.html\' text file", "<h1>About me</h1>\r\nFile: about.html", ((TechTalk.SpecFlow.Table)(null)), "And ");
+  testRunner.And("there should be an \'_site/about.html\' text file", "<h1>About me</h1>\r\nFile: about.html", ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

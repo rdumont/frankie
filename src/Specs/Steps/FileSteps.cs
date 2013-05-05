@@ -38,7 +38,7 @@ namespace RDumont.Frankie.Specs.Steps
         [Then(@"there should be a '(.+)' text file")]
         public void There_should_be_a_text_file(string filePath, string contents)
         {
-            var actualContents = ReadFile("_site/" + filePath);
+            var actualContents = ReadFile(filePath);
 
             Assert.That(actualContents, Is.Not.Null, "File '{0}' could not be found", filePath);
             Assert.That(Trimmed(actualContents), Is.EqualTo(Trimmed(contents)));

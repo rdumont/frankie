@@ -105,7 +105,7 @@ this.FeatureBackground();
  testRunner.Then("a post with slug \"some-nice-post\" should be registered", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 24
-  testRunner.And("there should be a \'2013/04/25/some-nice-post/index.html\' text file", "<p>Here is a paragraph.</p>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+  testRunner.And("there should be a \'_site/2013/04/25/some-nice-post/index.html\' text file", "<p>Here is a paragraph.</p>", ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

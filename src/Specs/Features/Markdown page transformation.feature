@@ -18,7 +18,7 @@ Scenario: Page with default template
 		**My page**
 		"""
 	When I run Frankie
-	Then there should be a 'my-page.html' text file
+	Then there should be a '_site/my-page.html' text file
 		"""
 		This is a page.
 		<p><strong>My page</strong></p>
@@ -37,7 +37,7 @@ Scenario: Page with custom template
 		**My page**
 		"""
 	When I run Frankie
-	Then there should be a 'my-page.html' text file
+	Then there should be a '_site/my-page.html' text file
         """
         This is the layout.
 		<p><strong>My page</strong></p>
@@ -54,7 +54,7 @@ Scenario: Page inside folder
 		# About me
 		"""
 	When I run Frankie
-	Then there should be a 'about/me.html' text file
+	Then there should be a '_site/about/me.html' text file
 		"""
 		<h1 id="about-me">About me</h1>
 		"""
@@ -76,7 +76,7 @@ Scenario: Page with embedded liquid syntax
 		{% include gravatar %}
 		"""
 	When I run Frankie
-	Then there should be a 'liquid-page.html' text file
+	Then there should be a '_site/liquid-page.html' text file
 		"""
 		<p>The page.</p>
 		<p>This is a <strong>gravatar</strong> include</p>
@@ -97,7 +97,7 @@ Scenario: Code block with language
 		```
 		"""
 	When I run Frankie
-	Then there should be a 'code-page.html' text file
+	Then there should be a '_site/code-page.html' text file
 		"""
 		<p>Some code.</p>
 		<pre><code data-language="csharp">public class Foo { }

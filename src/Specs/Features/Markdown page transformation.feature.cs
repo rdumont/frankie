@@ -94,7 +94,7 @@ this.FeatureBackground();
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 21
- testRunner.Then("there should be a \'my-page.html\' text file", "This is a page.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("there should be a \'_site/my-page.html\' text file", "This is a page.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 26
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -120,7 +120,7 @@ this.FeatureBackground();
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 40
- testRunner.Then("there should be a \'my-page.html\' text file", "This is the layout.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("there should be a \'_site/my-page.html\' text file", "This is the layout.\r\n<p><strong>My page</strong></p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 45
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -146,7 +146,7 @@ this.FeatureBackground();
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 57
- testRunner.Then("there should be a \'about/me.html\' text file", "<h1 id=\"about-me\">About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("there should be a \'_site/about/me.html\' text file", "<h1 id=\"about-me\">About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 61
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -175,7 +175,7 @@ this.FeatureBackground();
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 79
- testRunner.Then("there should be a \'liquid-page.html\' text file", "<p>The page.</p>\r\n<p>This is a <strong>gravatar</strong> include</p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("there should be a \'_site/liquid-page.html\' text file", "<p>The page.</p>\r\n<p>This is a <strong>gravatar</strong> include</p>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 84
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
@@ -201,7 +201,7 @@ this.FeatureBackground();
  testRunner.When("I run Frankie", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 100
- testRunner.Then("there should be a \'code-page.html\' text file", "<p>Some code.</p>\r\n<pre><code data-language=\"csharp\">public class Foo { }\r\n</code" +
+ testRunner.Then("there should be a \'_site/code-page.html\' text file", "<p>Some code.</p>\r\n<pre><code data-language=\"csharp\">public class Foo { }\r\n</code" +
                     "></pre>", ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 106
   testRunner.And("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

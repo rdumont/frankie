@@ -16,7 +16,7 @@ Scenario: Create a new page
 		"""
 	 And wait for the watcher to finish
 	Then no errors should be logged
-	 And there should be an 'about.html' text file
+	 And there should be an '_site/about.html' text file
 		"""
 		<h1>About me</h1>
 		File: about.html
@@ -32,4 +32,3 @@ Scenario: Delete a page
 	 And wait for the watcher to finish
 	Then no errors should be logged
 	And the file '_site/about.html' should not exist
-	

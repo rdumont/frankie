@@ -21,7 +21,7 @@ Scenario: Transform a post
 		"""
 	When I run Frankie
 	Then a post with slug "some-nice-post" should be registered
-	 And there should be a '2013/04/25/some-nice-post/index.html' text file
+	 And there should be a '_site/2013/04/25/some-nice-post/index.html' text file
          """
 		 <p>Here is a paragraph.</p>
          """
