@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,9 +13,7 @@ namespace RDumont.Frankie.Core
         public string BasePath;
         public string SitePath;
         public string RelativeSitePath;
-        private List<Post> posts;
         private readonly SiteContext siteContext;
-        private bool _postsAreDirty;
         private AssetHandlerManager _contentHandlers;
 
         public Io Io { get; set; }
@@ -53,8 +50,6 @@ namespace RDumont.Frankie.Core
 
             TemplateManager.Current.Init(this.BasePath);
 
-            this.posts = new List<Post>();
-
             _contentHandlers = new AssetHandlerManager(this);
         }
 
@@ -69,52 +64,7 @@ namespace RDumont.Frankie.Core
 
         public void LoadPosts(IEnumerable<string> files)
         {
-            foreach (var file in files)
-            {
-                LoadSinglePost(GetRelativePath(file));
-            }
-
-            siteContext.UpdatePostsCollection(posts);
-            _postsAreDirty = false;
-        }
-
-        public Post LoadSinglePost(string file)
-        {
-            var post = Post.FromFile(file);
-            if (post == null) return null;
-
-            Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
-            post.LoadFile(Configuration);
-            try
-            {
-                post.ExecuteTransformationPipeline(Configuration);
-                posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
-                posts.Add(post);
-            }
-            catch (TemplateNotFoundException exception)
-            {
-                Logger.Current.LogError(exception.Message);
-            }
-            _postsAreDirty = true;
-            return post;
-        }
-
-        public void WriteAllPosts(string root, string outputPath)
-        {
-            foreach (var post in posts)
-            {
-                WritePost(post);
-            }
-        }
-
-        public void WritePost(Post post)
-        {
-            var permalink = post.Permalink.Substring(1);
-            var folderPath = Path.Combine(this.SitePath, permalink);
-            var filePath = Path.Combine(folderPath, "index.html");
-
-            if (!Io.DirectoryExists(folderPath)) Io.CreateDirectory(folderPath);
-            Io.WriteFile(filePath, post.Body);
+            _contentHandlers.PostHandler.LoadAllPosts(files.Select(GetRelativePath), siteContext);
         }
 
         public void AddFile(string fullPath)
@@ -154,10 +104,9 @@ namespace RDumont.Frankie.Core
             {
                 CompileTemplate(file);
             }
-            else if (file.StartsWith(Post.POSTS_FOLDER))
+            else if (_contentHandlers.PostHandler.Matches(file))
             {
-                var post = LoadSinglePost(file);
-                WritePost(post);
+                _contentHandlers.PostHandler.Handle(file);
             }
             else
             {
@@ -206,11 +155,12 @@ namespace RDumont.Frankie.Core
 
         public void UpdatePostsCollection()
         {
-            if (_postsAreDirty)
-            {
-                siteContext.UpdatePostsCollection(posts);
-                _postsAreDirty = false;
-            }
+            _contentHandlers.PostHandler.UpdatePostsCollection(siteContext);
+        }
+
+        public void WriteAllPosts()
+        {
+            _contentHandlers.PostHandler.WriteAllPosts();
         }
     }
 }

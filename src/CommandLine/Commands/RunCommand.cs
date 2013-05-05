@@ -52,7 +52,7 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             var postFiles = FindPostPaths(root);
             this.generator.LoadPosts(postFiles);
-            this.generator.WriteAllPosts(root, output);
+            this.generator.WriteAllPosts();
 
             var allEntries = FindAllEntries(root);
             foreach (var file in allEntries)
