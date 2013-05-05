@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace RDumont.Frankie.Core.Handlers
 {
     public class TemplateHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
+        private readonly AssetHandlerManager _handlers;
 
-        public TemplateHandler(Generator generator)
+        public TemplateHandler(SiteConfiguration configuration, Io io, AssetHandlerManager handlers)
         {
-            _generator = generator;
+            _configuration = configuration;
+            _handlers = handlers;
+            _io = io;
         }
 
         public bool Matches(string path)
@@ -26,7 +27,7 @@ namespace RDumont.Frankie.Core.Handlers
 
             try
             {
-                _generator.CompileTemplate(path);
+                CompileTemplate(path);
             }
             catch (FileNotFoundException)
             {
@@ -35,10 +36,28 @@ namespace RDumont.Frankie.Core.Handlers
 
             foreach (var dependentFile in dependentFiles)
             {
-                _generator.ReAddDependentFile(dependentFile);
+                _handlers.Handle(dependentFile);
             }
 
-            _generator.UpdatePostsCollection();
+            _handlers.PostHandler.UpdatePostsCollection(SiteContext.Current);
+        }
+
+        public void CompileAllTemplates()
+        {
+            var templatesPath = Path.Combine(_configuration.SourcePath, TemplateManager.TEMPLATES_FOLDER);
+            var allFiles = _io.FindFilesRecursively(templatesPath, "*.html");
+
+            var paths = allFiles.Select(path => _configuration.GetRelativePath(path));
+            foreach (var path in paths)
+                CompileTemplate(path);
+        }
+
+        public void CompileTemplate(string path)
+        {
+            var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
+            TemplateManager.Current.CompileTemplate(path);
+
+            Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
     }
 }

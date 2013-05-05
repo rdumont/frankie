@@ -4,6 +4,8 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class AssetHandlerManager
     {
+        private readonly Generator _generator;
+
         public TemplateHandler TemplateHandler { get; private set; }
         public PostHandler PostHandler { get; private set; }
         public GeneratedContentHandler GeneratedContentHandler { get; private set; }
@@ -15,7 +17,8 @@ namespace RDumont.Frankie.Core.Handlers
 
         public AssetHandlerManager(Generator generator)
         {
-            TemplateHandler = new TemplateHandler(generator); 
+            _generator = generator;
+            TemplateHandler = new TemplateHandler(generator.Configuration, generator.Io, this);
             PostHandler = new PostHandler(generator.Configuration, generator.Io);
             GeneratedContentHandler = new GeneratedContentHandler(generator);
             MarkdownPageHandler = new MarkdownPageHandler(generator);
@@ -36,6 +39,15 @@ namespace RDumont.Frankie.Core.Handlers
         public IAssetHandler FindMatchingHandler(string path)
         {
             return _allHandlers.FirstOrDefault(handler => handler.Matches(path));
+        }
+
+        public void Handle(string path)
+        {
+            if (_generator.Configuration.IsExcluded(path))
+                return;
+
+            var handler = FindMatchingHandler(path);
+            if (handler != null) handler.Handle(path);
         }
     }
 }

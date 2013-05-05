@@ -61,6 +61,11 @@ namespace RDumont.Frankie.Core
             return false;
         }
 
+        public string GetRelativePath(string fullPath)
+        {
+            return fullPath.Remove(0, SourcePath.Length + 1);
+        }
+
         /**
          * The code for this method was based on the DirectoryScanner.ConvertPatterns method from NAnt in:
          * https://github.com/nant/nant/blob/master/src/NAnt.Core/DirectoryScanner.cs

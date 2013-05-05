@@ -48,7 +48,7 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             this.CleanDirectory(output);
 
-            this.generator.CompileTemplates(root);
+            this.generator.CompileTemplates();
 
             var postFiles = FindPostPaths(root);
             this.generator.LoadPosts(postFiles);

@@ -53,13 +53,9 @@ namespace RDumont.Frankie.Core
             _contentHandlers = new AssetHandlerManager(this);
         }
 
-        public void CompileTemplates(string root)
+        public void CompileTemplates()
         {
-            var allFiles = Io.FindFilesRecursively(Path.Combine(this.BasePath, TemplateManager.TEMPLATES_FOLDER), "*.html");
-            foreach (var file in allFiles)
-            {
-                CompileTemplate(GetRelativePath(file));
-            }
+            _contentHandlers.TemplateHandler.CompileAllTemplates();
         }
 
         public void LoadPosts(IEnumerable<string> files)
@@ -71,11 +67,7 @@ namespace RDumont.Frankie.Core
         {
             var path = GetRelativePath(fullPath);
 
-            if (Configuration.IsExcluded(path))
-                return;
-
-            var handler = _contentHandlers.FindMatchingHandler(path);
-            if (handler != null) handler.Handle(path);
+            _contentHandlers.Handle(path);
         }
 
         public void RemoveFile(string fullPath)
@@ -95,31 +87,6 @@ namespace RDumont.Frankie.Core
             {
                 // ok, probably a temp file
             }
-        }
-
-        public void ReAddDependentFile(string file)
-        {
-            var fullPath = Path.Combine(BasePath, file);
-            if (file.StartsWith(TemplateManager.TEMPLATES_FOLDER))
-            {
-                CompileTemplate(file);
-            }
-            else if (_contentHandlers.PostHandler.Matches(file))
-            {
-                _contentHandlers.PostHandler.Handle(file);
-            }
-            else
-            {
-                AddFile(fullPath);
-            }
-        }
-
-        public void CompileTemplate(string path)
-        {
-            var name = path.Remove(0, TemplateManager.TEMPLATES_FOLDER.Length + 1).Replace(".html", "");
-            TemplateManager.Current.CompileTemplate(path);
-
-            Logger.Current.Log(LoggingLevel.Debug, "Compiled template: {0}", name);
         }
 
         protected string GetFileDestinationPath(string relativePath)
