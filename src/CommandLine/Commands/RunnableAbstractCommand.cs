@@ -31,7 +31,7 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         protected void RunTransformation(BaseOptions options)
         {
-            var root = options.LocationPath;
+            var root = options.SourcePath;
             var output = options.OutputPath;
 
             Configuration = LoadConfiguration(options);
@@ -55,9 +55,9 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         public static SiteConfiguration LoadConfiguration(BaseOptions options)
         {
-            var configurationFilePath = Path.Combine(options.LocationPath, "config.yaml");
+            var configurationFilePath = Path.Combine(options.SourcePath, "config.yaml");
             var configuration = SiteConfiguration.Load(configurationFilePath);
-            configuration.SourcePath = options.LocationPath.TrimEnd(Path.DirectorySeparatorChar);
+            configuration.SourcePath = options.SourcePath.TrimEnd(Path.DirectorySeparatorChar);
             configuration.SitePath = options.OutputPath.TrimEnd(Path.DirectorySeparatorChar);
 
             if (configuration.Culture != null)

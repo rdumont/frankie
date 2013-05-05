@@ -54,7 +54,7 @@ namespace RDumont.Frankie.Specs.Steps
             var options = new BaseOptions
                 {
                     Output = BasePath + "/_site",
-                    Location = BasePath,
+                    Source = BasePath,
                 };
             var command = new RunCommand();
             command.ExecuteCommand(options);

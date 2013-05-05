@@ -19,7 +19,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         {
             RunTransformation(options);
 
-            var path = GetAbsolutePath(options.Location);
+            var path = GetAbsolutePath(options.Source);
 
             _watcher = new FileSystemWatcher(path);
             _watcher.IncludeSubdirectories = true;

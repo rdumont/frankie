@@ -8,17 +8,17 @@ namespace RDumont.Frankie.CommandLine.Commands
         [Option('o', "output", DefaultValue = ".\\_site\\")]
         public string Output { get; set; }
 
-        [Option('l', "location", DefaultValue = ".\\")]
-        public string Location { get; set; }
+        [Option('s', "source", DefaultValue = ".\\")]
+        public string Source { get; set; }
 
         public string OutputPath
         {
             get { return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), this.Output)); }
         }
 
-        public string LocationPath
+        public string SourcePath
         {
-            get { return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), this.Location)); }
+            get { return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), this.Source)); }
         }
     }
 }

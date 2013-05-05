@@ -23,7 +23,7 @@ namespace RDumont.Frankie.Specs.Steps
             var options = new WatchOptions
                 {
                     Output = BasePath + "/_site",
-                    Location = BasePath,
+                    Source = BasePath,
                     DontWaitForCommand = true
                 };
             var command = new WatchCommand();

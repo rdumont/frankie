@@ -12,7 +12,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         public override void ExecuteCommand(BaseOptions options)
         {
             Logger.Current.Log(LoggingLevel.Minimal, "Running Frankie...");
-            Logger.Current.Log(LoggingLevel.Minimal, "Source: {0}", options.LocationPath);
+            Logger.Current.Log(LoggingLevel.Minimal, "Source: {0}", options.SourcePath);
             Logger.Current.Log(LoggingLevel.Minimal, "Target: {0}\n", options.OutputPath);
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
