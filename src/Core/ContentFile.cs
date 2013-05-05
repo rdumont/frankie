@@ -9,7 +9,6 @@ namespace RDumont.Frankie.Core
     public class ContentFile
     {
         public string Body { get; set; }
-        private static Markdown markdownEngine;
         public NameValueCollection Metadata { get; protected set; }
 
         public static NameValueCollection GetMetadata(ref string contents)
@@ -34,7 +33,7 @@ namespace RDumont.Frankie.Core
 
         public void TransformMarkdown()
         {
-            markdownEngine = markdownEngine ?? new Markdown
+            var markdownEngine = new Markdown
             {
                 ExtraMode = true,
                 AutoHeadingIDs = true,

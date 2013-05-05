@@ -6,6 +6,9 @@ namespace RDumont.Frankie.Core
 {
     public class DependencyTracker
     {
+        private object _fileDependenciesLock = new object();
+        private object _dependentFilesLock = new object();
+
         protected Dictionary<string, HashSet<string>> FileDependencies = new Dictionary<string, HashSet<string>>();
         protected Dictionary<string, HashSet<string>> DependentFiles = new Dictionary<string, HashSet<string>>();
 
@@ -25,12 +28,15 @@ namespace RDumont.Frankie.Core
         /// <param name="name">The resource name on which the files depend</param>
         public string[] FindDependentFiles(string name)
         {
-            HashSet<string> dependents;
-            if (DependentFiles.TryGetValue(name, out dependents))
+            lock (_dependentFilesLock)
             {
-                return dependents.ToArray();
+                HashSet<string> dependents;
+                if (DependentFiles.TryGetValue(name, out dependents))
+                {
+                    return dependents.ToArray();
+                }
+                return new string[0];
             }
-            return new string[0];
         }
 
         /// <summary>
@@ -39,9 +45,12 @@ namespace RDumont.Frankie.Core
         /// <param name="name">The dependent file</param>
         public string[] FindFileDependencies(string name)
         {
-            HashSet<string> dependencies;
-            if (FileDependencies.TryGetValue(name, out dependencies)) return dependencies.ToArray();
-            return null;
+            lock (_fileDependenciesLock)
+            {
+                HashSet<string> dependencies;
+                if (FileDependencies.TryGetValue(name, out dependencies)) return dependencies.ToArray();
+                return null;
+            }
         }
 
         /// <summary>
@@ -53,37 +62,47 @@ namespace RDumont.Frankie.Core
         {
             if (dependency == null) return;
 
-            HashSet<string> dependencies;
-            if (!FileDependencies.TryGetValue(dependentFile, out dependencies))
+            lock (_fileDependenciesLock)
             {
-                this.FileDependencies.Add(dependentFile, new HashSet<string> {dependency});
-            }
-            else
-            {
-                dependencies.Add(dependency);
+                try
+                {
+                    FileDependencies.Add(dependentFile, new HashSet<string> {dependency});
+                }
+                catch (ArgumentException)
+                {
+                    FileDependencies[dependentFile].Add(dependency);
+                }
             }
 
-            HashSet<string> dependentFiles;
-            if (!DependentFiles.TryGetValue(dependency, out dependentFiles))
+            lock (_dependentFilesLock)
             {
-                this.DependentFiles.Add(dependency, new HashSet<string> {dependentFile});
-            }
-            else
-            {
-                dependentFiles.Add(dependentFile);
+                try
+                {
+                    DependentFiles.Add(dependency, new HashSet<string> { dependentFile });
+                }
+                catch(ArgumentException)
+                {
+                    DependentFiles[dependency].Add(dependentFile);
+                }
             }
         }
 
         public void Remove(string name)
         {
-            HashSet<string> dependsOn;
-            if (!FileDependencies.TryGetValue(name, out dependsOn)) return;
+            lock (_fileDependenciesLock)
+            {
+                HashSet<string> dependsOn;
+                if (!FileDependencies.TryGetValue(name, out dependsOn)) return;
 
-            var dependentFiles = DependentFiles[dependsOn.First()];
-            dependentFiles.Remove(name);
-            if (!dependentFiles.Any()) DependentFiles.Remove(dependsOn.First());
+                lock (_dependentFilesLock)
+                {
+                    var dependentFiles = DependentFiles[dependsOn.First()];
+                    dependentFiles.Remove(name);
+                    if (!dependentFiles.Any()) DependentFiles.Remove(dependsOn.First());
+                }
 
-            FileDependencies.Remove(name);
+                FileDependencies.Remove(name);
+            }
         }
 
         public string[] FindAllDependentFiles(string path)

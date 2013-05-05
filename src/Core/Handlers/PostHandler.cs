@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -41,14 +40,16 @@ namespace RDumont.Frankie.Core.Handlers
 
             var finalPath = post.GetDestinationFilePath(_configuration);
             _io.DeleteFile(finalPath);
-            _posts.Remove(post);
+            lock (_posts)
+            {
+                _posts.Remove(post);
+            }
             UpdatePostsCollection();
         }
 
         public void LoadAllPosts(IEnumerable<string> paths, SiteContext siteContext)
         {
-            foreach (var path in paths)
-                LoadPost(path);
+            paths.AsParallel().ForAll(path => LoadPost(path));
             UpdatePostsCollection();
         }
 
@@ -63,8 +64,11 @@ namespace RDumont.Frankie.Core.Handlers
             try
             {
                 post.ExecuteTransformationPipeline(_configuration);
-                _posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
-                _posts.Add(post);
+                lock (_posts)
+                {
+                    _posts.RemoveAll(p => p.Slug == post.Slug && p.Date == post.Date);
+                    _posts.Add(post);
+                }
             }
             catch (TemplateNotFoundException exception)
             {
