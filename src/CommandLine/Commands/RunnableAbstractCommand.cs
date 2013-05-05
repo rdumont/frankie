@@ -57,11 +57,9 @@ namespace RDumont.Frankie.CommandLine.Commands
                 });
 
             Profile("Content handling", () =>
-                {
-                    var allEntries = FindAllEntries(root).Select(Configuration.GetRelativePath);
-                    foreach (var file in allEntries)
-                        Handlers.Handle(file);
-                });
+                FindAllEntries(root)
+                    .Select(Configuration.GetRelativePath).AsParallel()
+                    .ForAll(Handlers.Handle));
         }
 
         public static SiteConfiguration LoadConfiguration(BaseOptions options)
