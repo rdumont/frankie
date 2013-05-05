@@ -50,12 +50,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Features\Markdown page transformation.feature.cs">
+    <Compile Include="Features\Run\Markdown page transformation.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Markdown page transformation.feature</DependentUpon>
     </Compile>
-    <Compile Include="Features\Posts transformation.feature.cs">
+    <Compile Include="Features\Run\Posts transformation.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Posts transformation.feature</DependentUpon>
@@ -77,11 +77,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Features\Markdown page transformation.feature">
+    <None Include="Features\Run\Markdown page transformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Markdown page transformation.feature.cs</LastGenOutput>
     </None>
-    <None Include="Features\Posts transformation.feature">
+    <None Include="Features\Run\Posts transformation.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Posts transformation.feature.cs</LastGenOutput>
     </None>

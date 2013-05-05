@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace RDumont.Frankie.Specs.Features
+namespace RDumont.Frankie.Specs.Features.Run
 {
     using TechTalk.SpecFlow;
     
