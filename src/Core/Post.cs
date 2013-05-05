@@ -72,9 +72,8 @@ namespace RDumont.Frankie.Core
             }
         }
 
-        public void LoadFile(SiteConfiguration configuration)
+        public void LoadFile(string contents, SiteConfiguration configuration)
         {
-            var contents = File.ReadAllText(Path.Combine(configuration.SourcePath, this.originalPath));
             this.Body = contents;
 
             this.Permalink = ResolvePermalink(configuration.Permalink);

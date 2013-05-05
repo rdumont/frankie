@@ -51,6 +51,10 @@ namespace RDumont.Frankie.Specs.Steps
             {
                 return null;
             }
+            catch (DirectoryNotFoundException)
+            {
+                return null;
+            }
         }
 
         public void DeleteFile(string path)

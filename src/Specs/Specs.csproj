@@ -65,6 +65,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Watching pages.feature</DependentUpon>
     </Compile>
+    <Compile Include="Features\Watch\Watching posts.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Watching posts.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\FileSteps.cs" />
     <Compile Include="Steps\LoggerSteps.cs" />
@@ -88,6 +93,10 @@
     <None Include="Features\Watch\Watching pages.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Watching pages.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\Watch\Watching posts.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Watching posts.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

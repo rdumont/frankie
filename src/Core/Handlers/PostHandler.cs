@@ -58,7 +58,8 @@ namespace RDumont.Frankie.Core.Handlers
             if (post == null) return null;
 
             Logger.Current.Log(LoggingLevel.Debug, "Loading post: {0}", file);
-            post.LoadFile(_configuration);
+            var contents = _io.ReadFile(_configuration.GetFullPath(file), 3);
+            post.LoadFile(contents, _configuration);
             try
             {
                 post.ExecuteTransformationPipeline(_configuration);
