@@ -2,16 +2,16 @@
 {
     public class GeneratedContentHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
 
-        public GeneratedContentHandler(Generator generator)
+        public GeneratedContentHandler(SiteConfiguration configuration)
         {
-            _generator = generator;
+            _configuration = configuration;
         }
 
         public bool Matches(string path)
         {
-            return path.StartsWith(_generator.RelativeSitePath);
+            return path.StartsWith(_configuration.GetRelativePath(_configuration.SitePath));
         }
 
         public void Handle(string path)
