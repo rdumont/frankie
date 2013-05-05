@@ -43,7 +43,7 @@ namespace RDumont.Frankie.CommandLine.Commands
                     this.CleanDirectory(output);
 
                     TemplateManager.SetTemplateManager(new LiquidTemplateManager());
-                    TemplateManager.Current.Init(Configuration.SourcePath);
+                    TemplateManager.Current.Init(Configuration);
                 });
 
             Profile("Templates compilation", () =>

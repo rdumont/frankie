@@ -69,6 +69,8 @@
     <Compile Include="Io.cs" />
     <Compile Include="LiquidFilters.cs" />
     <Compile Include="LiquidTemplateManager.cs" />
+    <Compile Include="Liquid\FrankieDrop.cs" />
+    <Compile Include="Liquid\SiteDrop.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PageModel.cs" />
     <Compile Include="Post.cs" />

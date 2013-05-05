@@ -12,6 +12,8 @@ namespace RDumont.Frankie.Core
     {
         private Regex[] _compiledExcludes;
 
+        public string Url { get; set; }
+
         public string Permalink { get; set; }
 
         public string Culture { get; set; }

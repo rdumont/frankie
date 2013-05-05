@@ -4,18 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DotLiquid;
+using RDumont.Frankie.Core.Liquid;
 
 namespace RDumont.Frankie.Core
 {
     public class LiquidTemplateManager : TemplateManager
     {
+        private SiteDrop _siteDrop;
         private readonly Regex _titleRegex = new Regex(@"<h1(?:.+)?>(.+)</h1>", RegexOptions.Compiled);
         private readonly Dictionary<string, Template> templatesByName = new Dictionary<string, Template>();
 
-        public override void Init(string basePath)
+        public override void Init(SiteConfiguration configuration)
         {
-            Template.FileSystem = new TemplatesFileSystem(basePath);
+            Template.FileSystem = new TemplatesFileSystem(configuration.SourcePath);
             Template.RegisterFilter(typeof(LiquidFilters));
+            _siteDrop = new SiteDrop(configuration);
         }
 
         public override void CompileTemplate(string templatePath)
@@ -32,11 +35,19 @@ namespace RDumont.Frankie.Core
             return name;
         }
 
+        private Hash CreateHash(object anonymousObject)
+        {
+            var hash = Hash.FromAnonymousObject(anonymousObject);
+            hash["frankie"] = new FrankieDrop();
+            hash["site"] = _siteDrop;
+            return hash;
+        }
+
         public override string RenderPage(string pagePath, Page model)
         {
             WrapWithTemplate(model);
 
-            var hash = Hash.FromAnonymousObject(new
+            var hash = CreateHash(new
                 {
                     title = _titleRegex.Match(model.Body).Groups[1].Value,
                     dependantPath = pagePath,
@@ -72,7 +83,7 @@ namespace RDumont.Frankie.Core
             if (!templatesByName.TryGetValue(templateName, out template))
                 throw new TemplateNotFoundException(templateName);
 
-            var hash = Hash.FromAnonymousObject(new
+            var hash = CreateHash(new
                 {
                     title = model.Title,
                     dependantPath = postPath,
@@ -88,7 +99,7 @@ namespace RDumont.Frankie.Core
 
             var siteContext = SiteContext.Current;
 
-            var hash = Hash.FromAnonymousObject(new
+            var hash = CreateHash(new
                 {
                     dependantPath = pagePath,
                     path = pagePath,
