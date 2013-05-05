@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using NUnit.Framework;
 using RDumont.Frankie.CommandLine.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -39,12 +38,6 @@ namespace RDumont.Frankie.Specs.Steps
             WriteFile("config.yaml", serialized);
         }
 
-        [Given(@"the '(.+)' text file")]
-        public void Given_the_text_file(string filePath, string contents)
-        {
-            WriteFile(filePath, contents);
-        }
-
         [When(@"I run Frankie")]
         public void When_I_run_Frankie()
         {
@@ -55,22 +48,6 @@ namespace RDumont.Frankie.Specs.Steps
                 };
             var command = new RunCommand();
             command.ExecuteCommand(options);
-        }
-
-        [When(@"I create the file '(.+)'")]
-        public void When_I_create_the_file(string path, string contents)
-        {
-            WriteFile(path, contents);
-        }
-
-        [Then(@"there should be an '(.+)' text file")]
-        [Then(@"there should be a '(.+)' text file")]
-        public void There_should_be_a_text_file(string filePath, string contents)
-        {
-            var actualContents = ReadFile("_site/" + filePath);
-
-            Assert.That(actualContents, Is.Not.Null, "File '{0}' could not be found", filePath);
-            Assert.That(Trimmed(actualContents), Is.EqualTo(Trimmed(contents)));
         }
     }
 }

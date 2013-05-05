@@ -65,29 +65,63 @@ namespace RDumont.Frankie.Specs.Features.Watch
             testRunner.CollectScenarioErrors();
         }
         
+        public virtual void FeatureBackground()
+        {
+#line 6
+#line 7
+ testRunner.Given("the default directory structure", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 8
+  testRunner.And("the in-memory logger", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+        }
+        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a new page")]
         public virtual void CreateANewPage()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new page", ((string[])(null)));
-#line 6
-this.ScenarioSetup(scenarioInfo);
-#line 7
- testRunner.Given("the default directory structure", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 8
-  testRunner.And("the in-memory logger", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 9
-  testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
 #line 10
- testRunner.When("I create the file \'about.html\'", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 14
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line 11
+ testRunner.Given("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 12
+ testRunner.When("I create the file \'about.html\'", "<h1>About me</h1>\r\nFile: {{ path }}", ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 17
   testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 15
+#line 18
  testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 16
-  testRunner.And("there should be an \'about.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 19
+  testRunner.And("there should be an \'about.html\' text file", "<h1>About me</h1>\r\nFile: about.html", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Delete a page")]
+        public virtual void DeleteAPage()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a page", ((string[])(null)));
+#line 25
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 26
+ testRunner.Given("the \'about.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 30
+  testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 31
+ testRunner.When("I delete the file \'about.html\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 32
+  testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 33
+ testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 34
+ testRunner.And("the file \'_site/about.html\' should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

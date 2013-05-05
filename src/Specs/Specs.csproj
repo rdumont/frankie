@@ -66,6 +66,7 @@
       <DependentUpon>Watching pages.feature</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Steps\FileSteps.cs" />
     <Compile Include="Steps\LoggerSteps.cs" />
     <Compile Include="Steps\PostSteps.cs" />
     <Compile Include="Steps\SharedSteps.cs" />
