@@ -21,7 +21,7 @@ namespace RDumont.Frankie.Core.Handlers
             TemplateHandler = new TemplateHandler(generator.Configuration, generator.Io, this);
             PostHandler = new PostHandler(generator.Configuration, generator.Io);
             GeneratedContentHandler = new GeneratedContentHandler(generator.Configuration);
-            MarkdownPageHandler = new MarkdownPageHandler(generator);
+            MarkdownPageHandler = new MarkdownPageHandler(_generator.Configuration, _generator.Io);
             TransformableContentHandler = new TransformableContentHandler(generator);
             StaticContentHandler = new StaticContentHandler(generator);
 

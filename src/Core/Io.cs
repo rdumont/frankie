@@ -98,6 +98,19 @@ namespace RDumont.Frankie.Core
             return Directory.CreateDirectory(path);
         }
 
+        /// <summary>
+        /// Creates all the needed folders in a path if they don't exist already
+        /// </summary>
+        /// <param name="path">The path that contains the folder</param>
+        public void EnsureDirectoryExists(string path)
+        {
+            var destinationFolder = Path.GetDirectoryName(path);
+            if (!DirectoryExists(destinationFolder))
+            {
+                CreateDirectory(destinationFolder);
+            }
+        }
+
         #endregion
     }
 }

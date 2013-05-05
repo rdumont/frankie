@@ -108,11 +108,7 @@ namespace RDumont.Frankie.Core
 
         public void EnsureDirectoryExists(string fullPath)
         {
-            var destinationFolder = Path.GetDirectoryName(fullPath);
-            if (!Io.DirectoryExists(destinationFolder))
-            {
-                Io.CreateDirectory(destinationFolder);
-            }
+            Io.EnsureDirectoryExists(fullPath);
         }
 
         private string GetRelativePath(string fullPath)

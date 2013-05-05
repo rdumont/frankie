@@ -5,11 +5,13 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class MarkdownPageHandler : IAssetHandler
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
 
-        public MarkdownPageHandler(Generator generator)
+        public MarkdownPageHandler(SiteConfiguration configuration, Io io)
         {
-            _generator = generator;
+            _configuration = configuration;
+            _io = io;
         }
 
         public bool Matches(string path)
@@ -20,10 +22,10 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            var page = new Page(Path.Combine(_generator.BasePath, path));
-            var destination = Path.Combine(_generator.SitePath, path.Replace(".md", ".html"));
-            _generator.EnsureDirectoryExists(destination);
-            page.LoadFile(_generator.Configuration);
+            var page = new Page(Path.Combine(_configuration.SourcePath, path));
+            var destination = Path.Combine(_configuration.SitePath, path.Replace(".md", ".html"));
+            _io.EnsureDirectoryExists(destination);
+            page.LoadFile(_configuration);
 
             var template = page.Metadata["template"] ?? "_page";
 
@@ -39,7 +41,7 @@ namespace RDumont.Frankie.Core.Handlers
                     path, template);
             }
 
-            _generator.Io.WriteFile(destination, page.Body);
+            _io.WriteFile(destination, page.Body);
             Logger.Current.Log(LoggingLevel.Debug, "Markdown page: {0}", path);
         }
     }
