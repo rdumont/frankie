@@ -6,6 +6,8 @@ namespace RDumont.Frankie.CommandLine.Commands
 {
     public class WatchCommand : RunnableAbstractCommand<WatchOptions>
     {
+        private FileSystemWatcher _watcher;
+
         public override string Name
         {
             get { return "watch"; }
@@ -19,16 +21,16 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             var path = GetAbsolutePath(options.Location);
 
-            var watcher = new FileSystemWatcher(path);
-            watcher.IncludeSubdirectories = true;
-            watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
+            _watcher = new FileSystemWatcher(path);
+            _watcher.IncludeSubdirectories = true;
+            _watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
 
-            watcher.Created += OnFileCreated;
-            watcher.Changed += OnFileChanged;
-            watcher.Deleted += OnFileDeleted;
-            watcher.Renamed += OnFileRenamed;
+            _watcher.Created += OnFileCreated;
+            _watcher.Changed += OnFileChanged;
+            _watcher.Deleted += OnFileDeleted;
+            _watcher.Renamed += OnFileRenamed;
 
-            watcher.EnableRaisingEvents = true;
+            _watcher.EnableRaisingEvents = true;
 
             Logger.Current.Log(LoggingLevel.Minimal, "\nNow monitoring file changes in {0}", path);
 
@@ -91,6 +93,11 @@ namespace RDumont.Frankie.CommandLine.Commands
             {
                 IsIdle = true;
             }
+        }
+
+        public void Stop()
+        {
+            _watcher.EnableRaisingEvents = false;
         }
     }
 }

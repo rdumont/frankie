@@ -25,6 +25,14 @@ namespace RDumont.Frankie.Specs.Steps
             set { ScenarioContext.Current.Set(value); }
         }
 
+        public static event BeforeCleanUpArgs OnBeforeCleanUp;
+        public delegate void BeforeCleanUpArgs();
+
+        public void BeforeCleanUp()
+        {
+            if(OnBeforeCleanUp != null) OnBeforeCleanUp();
+        }
+
         public void CreateDirectory(string path)
         {
             var fullPath = Path.Combine(BasePath, path);

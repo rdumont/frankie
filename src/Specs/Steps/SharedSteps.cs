@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using RDumont.Frankie.CommandLine.Commands;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -18,7 +19,16 @@ namespace RDumont.Frankie.Specs.Steps
         [AfterScenario]
         public void DeleteFolders()
         {
-            Directory.Delete(BasePath, true);
+            BeforeCleanUp();
+            try
+            {
+                Directory.Delete(BasePath, true);
+            }
+            catch (IOException)
+            {
+                Thread.Sleep(10);
+                Directory.Delete(BasePath, true);
+            }
         }
 
         [Given(@"the default directory structure")]

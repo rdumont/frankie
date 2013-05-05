@@ -8,6 +8,15 @@ namespace RDumont.Frankie.Specs.Steps
     [Binding]
     public class WatchSteps : StepsBase
     {
+        static WatchSteps()
+        {
+            OnBeforeCleanUp += () =>
+                {
+                    if(ScenarioContext.Current.ContainsKey(typeof(WatchCommand).FullName))
+                        WatchCommand.Stop();
+                };
+        }
+
         [Given(@"that Frankie is watching my folder")]
         public void Given_that_Frankie_is_watching_my_folder()
         {
