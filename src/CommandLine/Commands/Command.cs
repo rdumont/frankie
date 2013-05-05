@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using CommandLine;
 using RDumont.Frankie.Core;
@@ -8,28 +9,30 @@ namespace RDumont.Frankie.CommandLine.Commands
     public abstract class Command<TOptions> : ICommand
         where TOptions : BaseOptions
     {
+        protected TOptions Options { get; private set; }
+
         public abstract string Name { get; }
 
         public abstract void ExecuteCommand(TOptions options);
 
         public void ExecuteCommand(string[] args)
         {
-            var options = Activator.CreateInstance<TOptions>();
+            Options = Activator.CreateInstance<TOptions>();
             var commandLineParser = new Parser(settings =>
                 {
                     settings.HelpWriter = Console.Out;
                     settings.CaseSensitive = true;
                 });
 
-            if (!commandLineParser.ParseArguments(args, options))
+            if (!commandLineParser.ParseArguments(args, Options))
             {
                 Environment.Exit(1);
             }
 
-            var verbosity = ParseVerbosityLevel(options.Verbosity);
+            var verbosity = ParseVerbosityLevel(Options.Verbosity);
             Logger.Start(verbosity);
 
-            ExecuteCommand(options);
+            ExecuteCommand(Options);
         }
 
         private LoggingLevel ParseVerbosityLevel(string argument)
@@ -65,6 +68,21 @@ namespace RDumont.Frankie.CommandLine.Commands
             var current = Directory.GetCurrentDirectory();
             var actual = Path.Combine(current, relativePath);
             return Path.GetFullPath(actual);
+        }
+
+        protected void Profile(string message, Action action)
+        {
+            if (Options != null && Options.Profile)
+            {
+                var stopWatch = Stopwatch.StartNew();
+                action();
+                stopWatch.Stop();
+                Console.WriteLine("{0}: {1}ms", message, stopWatch.ElapsedMilliseconds);
+            }
+            else
+            {
+                action();
+            }
         }
     }
 }

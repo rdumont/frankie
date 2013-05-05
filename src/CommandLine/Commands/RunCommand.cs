@@ -15,13 +15,10 @@ namespace RDumont.Frankie.CommandLine.Commands
             Logger.Current.Log(LoggingLevel.Minimal, "Source: {0}", options.SourcePath);
             Logger.Current.Log(LoggingLevel.Minimal, "Target: {0}\n", options.OutputPath);
 
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            
-            RunTransformation(options);
-            
-            sw.Stop();
+            Profile(" ==> Total", () =>
+                RunTransformation(options));
 
-            Logger.Current.Log(LoggingLevel.Minimal, "\nFINISHED! Took {0}ms", sw.ElapsedMilliseconds);
+            Logger.Current.Log(LoggingLevel.Minimal, "\nFinished!");
         }
     }
 }

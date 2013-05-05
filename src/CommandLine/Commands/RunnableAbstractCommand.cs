@@ -35,23 +35,33 @@ namespace RDumont.Frankie.CommandLine.Commands
             var root = options.SourcePath;
             var output = options.OutputPath;
 
-            Configuration = LoadConfiguration(options);
-            Handlers = new AssetHandlerManager(Configuration, Io);
+            Profile("Initialization", () =>
+                {
+                    Configuration = LoadConfiguration(options);
+                    Handlers = new AssetHandlerManager(Configuration, Io);
 
-            this.CleanDirectory(output);
+                    this.CleanDirectory(output);
 
-            TemplateManager.SetTemplateManager(new LiquidTemplateManager());
-            TemplateManager.Current.Init(Configuration.SourcePath);
+                    TemplateManager.SetTemplateManager(new LiquidTemplateManager());
+                    TemplateManager.Current.Init(Configuration.SourcePath);
+                });
 
-            Handlers.TemplateHandler.CompileAllTemplates();
+            Profile("Templates compilation", () =>
+                Handlers.TemplateHandler.CompileAllTemplates());
 
-            var postFiles = FindPostPaths(root).Select(Configuration.GetRelativePath);
-            Handlers.PostHandler.LoadAllPosts(postFiles, SiteContext.Current);
-            Handlers.PostHandler.WriteAllPosts();
+            Profile("Posts transformation", () =>
+                {
+                    var postFiles = FindPostPaths(root).Select(Configuration.GetRelativePath);
+                    Handlers.PostHandler.LoadAllPosts(postFiles, SiteContext.Current);
+                    Handlers.PostHandler.WriteAllPosts();
+                });
 
-            var allEntries = FindAllEntries(root).Select(Configuration.GetRelativePath);
-            foreach (var file in allEntries)
-                Handlers.Handle(file);
+            Profile("Content handling", () =>
+                {
+                    var allEntries = FindAllEntries(root).Select(Configuration.GetRelativePath);
+                    foreach (var file in allEntries)
+                        Handlers.Handle(file);
+                });
         }
 
         public static SiteConfiguration LoadConfiguration(BaseOptions options)
