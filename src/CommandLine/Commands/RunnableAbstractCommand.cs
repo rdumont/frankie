@@ -10,7 +10,6 @@ namespace RDumont.Frankie.CommandLine.Commands
 {
     public abstract class RunnableAbstractCommand<T> : Command<T>
     {
-        protected readonly Generator Generator;
         private readonly string[] exclude = new[]
             {
                 Post.POSTS_FOLDER,
@@ -25,9 +24,8 @@ namespace RDumont.Frankie.CommandLine.Commands
         protected Io Io { get; private set; }
         protected AssetHandlerManager Handlers { get; private set; }
 
-        protected RunnableAbstractCommand(Generator generator)
+        protected RunnableAbstractCommand()
         {
-            this.Generator = generator;
             this.Io = new Io();
         }
 
@@ -38,9 +36,11 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             Configuration = LoadConfiguration(options);
             Handlers = new AssetHandlerManager(Configuration, Io);
-            this.Generator.Init(Handlers, Configuration, Io);
 
             this.CleanDirectory(output);
+
+            TemplateManager.SetTemplateManager(new LiquidTemplateManager());
+            TemplateManager.Current.Init(Configuration.SourcePath);
 
             Handlers.TemplateHandler.CompileAllTemplates();
 

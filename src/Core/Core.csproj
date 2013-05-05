@@ -58,7 +58,6 @@
     </Compile>
     <Compile Include="ContentFile.cs" />
     <Compile Include="DependencyTracker.cs" />
-    <Compile Include="Generator.cs" />
     <Compile Include="Handlers\AssetHandlerManager.cs" />
     <Compile Include="Handlers\GeneratedContentHandler.cs" />
     <Compile Include="Handlers\IAssetHandler.cs" />

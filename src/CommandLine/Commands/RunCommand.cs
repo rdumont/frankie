@@ -9,14 +9,6 @@ namespace RDumont.Frankie.CommandLine.Commands
             get { return "run"; }
         }
 
-        public RunCommand() : this(new Generator(SiteContext.Current))
-        {
-        }
-
-        public RunCommand(Generator generator) : base(generator)
-        {
-        }
-
         public override void ExecuteCommand(BaseOptions options)
         {
             Logger.Current.Log(LoggingLevel.Minimal, "Running Frankie...");
