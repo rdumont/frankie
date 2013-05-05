@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using RDumont.Frankie.Core.Handlers;
 using Path = System.IO.Path;
 
@@ -31,16 +29,6 @@ namespace RDumont.Frankie.Core
 
             TemplateManager.SetTemplateManager(new LiquidTemplateManager());
             TemplateManager.Current.Init(configuration.SourcePath);
-        }
-
-        public void CompileTemplates()
-        {
-            _handlers.TemplateHandler.CompileAllTemplates();
-        }
-
-        public void LoadPosts(IEnumerable<string> files)
-        {
-            _handlers.PostHandler.LoadAllPosts(files.Select(GetRelativePath), siteContext);
         }
 
         public void AddFile(string fullPath)
@@ -94,11 +82,6 @@ namespace RDumont.Frankie.Core
         public void UpdatePostsCollection()
         {
             _handlers.PostHandler.UpdatePostsCollection(siteContext);
-        }
-
-        public void WriteAllPosts()
-        {
-            _handlers.PostHandler.WriteAllPosts();
         }
     }
 }

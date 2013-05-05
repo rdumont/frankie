@@ -54,17 +54,16 @@ namespace RDumont.Frankie.CommandLine.Commands
 
             this.CleanDirectory(output);
 
-            this.generator.CompileTemplates();
+            handlers.TemplateHandler.CompileAllTemplates();
 
-            var postFiles = FindPostPaths(root);
-            this.generator.LoadPosts(postFiles);
-            this.generator.WriteAllPosts();
+            var postFiles = FindPostPaths(root).Select(configuration.GetRelativePath);
+            handlers.PostHandler.LoadAllPosts(postFiles, SiteContext.Current);
+            handlers.PostHandler.WriteAllPosts();
 
-            var allEntries = FindAllEntries(root);
+            var allEntries = FindAllEntries(root).Select(configuration.GetRelativePath);
             foreach (var file in allEntries)
-            {
-                this.generator.AddFile(file);
-            }
+                handlers.Handle(file);
+            
             sw.Stop();
 
             Logger.Current.Log(LoggingLevel.Minimal, "\nFINISHED! Took {0}ms", sw.ElapsedMilliseconds);
