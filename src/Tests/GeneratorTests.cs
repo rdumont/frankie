@@ -24,8 +24,11 @@ namespace RDumont.Frankie.Tests
             // Arrange
             var generator = new TestableGenerator
                 {
-                    BasePath = FullPath("my/blog"),
-                    SitePath = FullPath("my/blog/final"),
+                    Configuration = new SiteConfiguration
+                        {
+                            SourcePath = FullPath("my/blog"),
+                            SitePath = FullPath("my/blog/final")
+                        }
                 };
 
             // Act
@@ -41,9 +44,9 @@ namespace RDumont.Frankie.Tests
             // Arrange
             var generator = new TestableGenerator
                 {
-                    SitePath = "my/blog/final",
                     Configuration = new SiteConfiguration
                         {
+                            SitePath = "my/blog/final",
                             Permalink = ":year/:month/:day/:title"
                         }
                 };
@@ -61,10 +64,10 @@ namespace RDumont.Frankie.Tests
             // Arrange
             var generator = new TestableGenerator
             {
-                BasePath = FullPath("my/blog"),
-                SitePath = FullPath("my/blog/final"),
                 Configuration = new SiteConfiguration
                 {
+                    SourcePath = FullPath("my/blog"),
+                    SitePath = FullPath("my/blog/final"),
                     Permalink = ":year/:month/:day/:title"
                 }
             };

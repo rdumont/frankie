@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using RDumont.Frankie.Core;
+using RDumont.Frankie.Core.Handlers;
 
 namespace RDumont.Frankie.CommandLine.Commands
 {
@@ -44,7 +47,10 @@ namespace RDumont.Frankie.CommandLine.Commands
             var root = options.LocationPath;
             var output = options.OutputPath;
 
-            this.generator.Init(root, output);
+            var configuration = LoadConfiguration(options);
+            var io = new Io();
+            var handlers = new AssetHandlerManager(configuration, io);
+            this.generator.Init(handlers, configuration, io);
 
             this.CleanDirectory(output);
 
@@ -62,6 +68,22 @@ namespace RDumont.Frankie.CommandLine.Commands
             sw.Stop();
 
             Logger.Current.Log(LoggingLevel.Minimal, "\nFINISHED! Took {0}ms", sw.ElapsedMilliseconds);
+        }
+
+        public static SiteConfiguration LoadConfiguration(BaseOptions options)
+        {
+            var configurationFilePath = Path.Combine(options.LocationPath, "config.yaml");
+            var configuration = SiteConfiguration.Load(configurationFilePath);
+            configuration.SourcePath = options.LocationPath.TrimEnd(Path.DirectorySeparatorChar);
+            configuration.SitePath = options.OutputPath.TrimEnd(Path.DirectorySeparatorChar);
+
+            if (configuration.Culture != null)
+            {
+                Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture
+                    = CultureInfo.GetCultureInfo(configuration.Culture);
+            }
+
+            return configuration;
         }
 
         private void CleanDirectory(string path)

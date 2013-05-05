@@ -4,7 +4,8 @@ namespace RDumont.Frankie.Core.Handlers
 {
     public class AssetHandlerManager
     {
-        private readonly Generator _generator;
+        private readonly SiteConfiguration _configuration;
+        private readonly Io _io;
 
         public TemplateHandler TemplateHandler { get; private set; }
         public PostHandler PostHandler { get; private set; }
@@ -15,15 +16,16 @@ namespace RDumont.Frankie.Core.Handlers
 
         private readonly IAssetHandler[] _allHandlers;
 
-        public AssetHandlerManager(Generator generator)
+        public AssetHandlerManager(SiteConfiguration configuration, Io io)
         {
-            _generator = generator;
-            TemplateHandler = new TemplateHandler(generator.Configuration, generator.Io, this);
-            PostHandler = new PostHandler(generator.Configuration, generator.Io);
-            GeneratedContentHandler = new GeneratedContentHandler(generator.Configuration);
-            MarkdownPageHandler = new MarkdownPageHandler(_generator.Configuration, _generator.Io);
-            TransformableContentHandler = new TransformableContentHandler(_generator.Configuration, _generator.Io);
-            StaticContentHandler = new StaticContentHandler(_generator.Configuration, _generator.Io);
+            _configuration = configuration;
+            _io = io;
+            TemplateHandler = new TemplateHandler(configuration, io, this);
+            PostHandler = new PostHandler(configuration, io);
+            GeneratedContentHandler = new GeneratedContentHandler(configuration);
+            MarkdownPageHandler = new MarkdownPageHandler(configuration, io);
+            TransformableContentHandler = new TransformableContentHandler(configuration, io);
+            StaticContentHandler = new StaticContentHandler(configuration, io);
 
             _allHandlers = new IAssetHandler[]
                 {
@@ -43,7 +45,7 @@ namespace RDumont.Frankie.Core.Handlers
 
         public void Handle(string path)
         {
-            if (_generator.Configuration.IsExcluded(path))
+            if (_configuration.IsExcluded(path))
                 return;
 
             var handler = FindMatchingHandler(path);

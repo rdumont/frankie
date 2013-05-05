@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using RDumont.Frankie.Core.Handlers;
 using Path = System.IO.Path;
 
@@ -10,11 +8,8 @@ namespace RDumont.Frankie.Core
 {
     public class Generator
     {
-        public string BasePath;
-        public string SitePath;
-        public string RelativeSitePath;
         private readonly SiteContext siteContext;
-        private AssetHandlerManager _contentHandlers;
+        private AssetHandlerManager _handlers;
 
         public Io Io { get; set; }
         public SiteConfiguration Configuration { get; set; }
@@ -25,49 +20,34 @@ namespace RDumont.Frankie.Core
 
         public Generator(SiteContext siteContext)
         {
-            this.Io = new Io();
             this.siteContext = siteContext;
         }
         
-        public void Init(string locationPath, string outputPath)
+        public void Init(AssetHandlerManager handlers, SiteConfiguration configuration, Io io)
         {
-            this.BasePath = locationPath.TrimEnd(Path.DirectorySeparatorChar);
-            this.SitePath = outputPath.TrimEnd(Path.DirectorySeparatorChar);
-            this.RelativeSitePath = this.SitePath.Remove(0, this.BasePath.Length + 1);
-
-            var configPath = Path.Combine(locationPath, "config.yaml");
-            Configuration = SiteConfiguration.Load(configPath);
-            Configuration.SitePath = this.SitePath;
-            Configuration.SourcePath = this.BasePath;
-
-            if (Configuration.Culture != null)
-            {
-                Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture
-                    = CultureInfo.GetCultureInfo(Configuration.Culture);
-            }
+            _handlers = handlers;
+            Configuration = configuration;
+            Io = io;
 
             TemplateManager.SetTemplateManager(new LiquidTemplateManager());
-
-            TemplateManager.Current.Init(this.BasePath);
-
-            _contentHandlers = new AssetHandlerManager(this);
+            TemplateManager.Current.Init(configuration.SourcePath);
         }
 
         public void CompileTemplates()
         {
-            _contentHandlers.TemplateHandler.CompileAllTemplates();
+            _handlers.TemplateHandler.CompileAllTemplates();
         }
 
         public void LoadPosts(IEnumerable<string> files)
         {
-            _contentHandlers.PostHandler.LoadAllPosts(files.Select(GetRelativePath), siteContext);
+            _handlers.PostHandler.LoadAllPosts(files.Select(GetRelativePath), siteContext);
         }
 
         public void AddFile(string fullPath)
         {
             var path = GetRelativePath(fullPath);
 
-            _contentHandlers.Handle(path);
+            _handlers.Handle(path);
         }
 
         public void RemoveFile(string fullPath)
@@ -75,7 +55,7 @@ namespace RDumont.Frankie.Core
             var relativePath = GetRelativePath(fullPath);
             if (Configuration.IsExcluded(relativePath)) return;
 
-            if (_contentHandlers.GeneratedContentHandler.Matches(fullPath)) return;
+            if (_handlers.GeneratedContentHandler.Matches(fullPath)) return;
 
             var destination = GetFileDestinationPath(relativePath);
             try
@@ -95,10 +75,10 @@ namespace RDumont.Frankie.Core
             {
                 var post = Post.FromFile(relativePath);
                 var destinationPath = post.GetDestinationFilePath(this.Configuration);
-                return Path.Combine(this.SitePath, destinationPath).Replace('\\', '/');
+                return Path.Combine(Configuration.SitePath, destinationPath).Replace('\\', '/');
             }
 
-            var destination = relativePath.Replace(this.BasePath, this.SitePath);
+            var destination = relativePath.Replace(Configuration.SourcePath, Configuration.SitePath);
 
             if (destination.EndsWith(".md"))
                 destination = destination.Replace(".md", ".html");
@@ -108,17 +88,17 @@ namespace RDumont.Frankie.Core
 
         private string GetRelativePath(string fullPath)
         {
-            return fullPath.Remove(0, BasePath.Length + 1);
+            return fullPath.Remove(0, Configuration.SourcePath.Length + 1);
         }
 
         public void UpdatePostsCollection()
         {
-            _contentHandlers.PostHandler.UpdatePostsCollection(siteContext);
+            _handlers.PostHandler.UpdatePostsCollection(siteContext);
         }
 
         public void WriteAllPosts()
         {
-            _contentHandlers.PostHandler.WriteAllPosts();
+            _handlers.PostHandler.WriteAllPosts();
         }
     }
 }

@@ -10,18 +10,6 @@ namespace RDumont.Frankie.Tests
             set { base.Io = value; }
         }
 
-        public new string BasePath
-        {
-            get { return base.BasePath; }
-            set { base.BasePath = value; }
-        }
-
-        public new string SitePath
-        {
-            get { return base.SitePath; }
-            set { base.SitePath = value; }
-        }
-
         public new SiteConfiguration Configuration
         {
             get { return base.Configuration; }
