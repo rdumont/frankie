@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 
 namespace RDumont.Frankie.Core.Handlers
 {
@@ -15,7 +16,8 @@ namespace RDumont.Frankie.Core.Handlers
 
         public bool Matches(string path)
         {
-            return path.EndsWith(".html");
+            return _configuration.TransformExtensions
+                .Any(extension => path.EndsWith("." + extension));
         }
 
         public void Handle(string path)

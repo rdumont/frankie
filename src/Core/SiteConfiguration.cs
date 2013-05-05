@@ -18,13 +18,21 @@ namespace RDumont.Frankie.Core
 
         public string[] Excludes { get; set; }
 
+        public string[] TransformExtensions { get; set; }
+
+        [YamlIgnore]
         public string SitePath { get; set; }
 
+        [YamlIgnore]
         public string SourcePath { get; set; }
 
         public SiteConfiguration()
         {
             Excludes = new string[0];
+            TransformExtensions = new[]
+                {
+                    "html"
+                };
         }
 
         public static SiteConfiguration Load(string filePath)
