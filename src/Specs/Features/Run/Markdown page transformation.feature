@@ -11,7 +11,7 @@ Scenario: Page with default template
 	Given the '_page' template
 		"""
 		This is a page.
-		{{ contents }}
+		{{ content }}
 		"""
 	 And the 'my-page.md' text file
 		"""
@@ -29,7 +29,7 @@ Scenario: Page with custom template
 	Given the 'layout' template
 		"""
 		This is the layout.
-		{{ contents }}
+		{{ content }}
 		"""
 	 And the 'my-page.md' text file
 		"""
@@ -47,7 +47,7 @@ Scenario: Page with custom template
 Scenario: Page inside folder
 	Given the '_page' template
 		"""
-		{{ contents }}
+		{{ content }}
 		"""
 	 And the 'about/me.md' text file
 		"""
@@ -63,7 +63,7 @@ Scenario: Page inside folder
 Scenario: Page with embedded liquid syntax
 	Given the '_page' template
 		"""
-		{{ contents }}
+		{{ content }}
 		"""
 	 And the 'gravatar' template
 		"""
@@ -86,7 +86,7 @@ Scenario: Page with embedded liquid syntax
 Scenario: Code block with language
 	Given the '_page' template
 		"""
-		{{ contents }}
+		{{ content }}
 		"""
 	And the 'code-page.md' text file
 		"""

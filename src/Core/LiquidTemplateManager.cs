@@ -58,7 +58,7 @@ namespace RDumont.Frankie.Core
         {
             var bodyWriter = new StringWriter();
             bodyWriter.WriteLine("{{% extends {0} -%}}", templateName);
-            bodyWriter.WriteLine("{{% block {0}_contents -%}}", templateName);
+            bodyWriter.WriteLine("{{% block {0}_content -%}}", templateName);
             bodyWriter.WriteLine(model.Body);
             bodyWriter.WriteLine("{% endblock -%}");
 
@@ -116,12 +116,12 @@ namespace RDumont.Frankie.Core
             templatesByName.Remove(name);
         }
 
-        public override string PrepareTemplateContents(string contents, Context context, string templateName)
+        public override string PrepareTemplateContents(string content, Context context, string templateName)
         {
-            var templatePage = new TemplatePage(contents);
+            var templatePage = new TemplatePage(content);
 
-            templatePage.Body = templatePage.Body.Replace("{{ contents }}",
-                string.Format("{{% block {0}_contents -%}}{{% endblock -%}}", templateName));
+            templatePage.Body = templatePage.Body.Replace("{{ content }}",
+                string.Format("{{% block {0}_content -%}}{{% endblock -%}}", templateName));
 
             WrapWithTemplate(templatePage);
 

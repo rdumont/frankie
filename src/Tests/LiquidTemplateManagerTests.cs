@@ -23,7 +23,7 @@ namespace RDumont.Frankie.Tests
 
             // Assert
             Assert.That(page.Body, Is.EqualTo(@"{% extends some_template -%}
-{% block some_template_contents -%}
+{% block some_template_content -%}
 Some body
 {% endblock -%}
 "));
@@ -38,12 +38,12 @@ Some body
 
             // Act
             var result = manager.PrepareTemplateContents(@"a
-{{ contents }}
+{{ content }}
 b", context, "layout");
 
             // Assert
             Assert.That(result, Is.EqualTo(@"a
-{% block layout_contents -%}{% endblock -%}
+{% block layout_content -%}{% endblock -%}
 b"));
         }
 
@@ -57,14 +57,14 @@ b"));
             // Act
             var result = manager.PrepareTemplateContents(@"@template base
 a
-{{ contents }}
+{{ content }}
 b", context, "layout");
 
             // Assert
             Assert.That(result, Is.EqualTo(@"{% extends base -%}
-{% block base_contents -%}
+{% block base_content -%}
 a
-{% block layout_contents -%}{% endblock -%}
+{% block layout_content -%}{% endblock -%}
 b
 {% endblock -%}
 "));

@@ -86,7 +86,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 11
- testRunner.Given("the \'_page\' template", "This is a page.\r\n{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the \'_page\' template", "This is a page.\r\n{{ content }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 16
   testRunner.And("the \'my-page.md\' text file", "**My page**", ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -112,7 +112,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 29
- testRunner.Given("the \'layout\' template", "This is the layout.\r\n{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the \'layout\' template", "This is the layout.\r\n{{ content }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 34
   testRunner.And("the \'my-page.md\' text file", "@template layout\r\n**My page**", ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -138,7 +138,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 48
- testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the \'_page\' template", "{{ content }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 52
   testRunner.And("the \'about/me.md\' text file", "# About me", ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -164,7 +164,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 64
- testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the \'_page\' template", "{{ content }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 68
   testRunner.And("the \'gravatar\' template", "This is a **gravatar** include", ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -193,7 +193,7 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
 #line 87
- testRunner.Given("the \'_page\' template", "{{ contents }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the \'_page\' template", "{{ content }}", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 91
  testRunner.And("the \'code-page.md\' text file", "Some code.\r\n\r\n```csharp\r\npublic class Foo { }\r\n```", ((TechTalk.SpecFlow.Table)(null)), "And ");
