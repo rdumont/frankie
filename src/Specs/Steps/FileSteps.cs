@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using TechTalk.SpecFlow;
 
 namespace RDumont.Frankie.Specs.Steps
@@ -17,6 +18,15 @@ namespace RDumont.Frankie.Specs.Steps
         #endregion
 
         #region When
+
+        [When(@"I edit the file '(.+)'")]
+        public void When_I_edit_the_file(string path, string contents)
+        {
+            if (!FileExists(path))
+                throw new InvalidOperationException(
+                    string.Format("File \"{0}\" cannot be edited because it does not exist.", path));
+            WriteFile(path, contents);
+        }
 
         [When(@"I create the file '(.+)'")]
         public void When_I_create_the_file(string path, string contents)

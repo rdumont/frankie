@@ -63,6 +63,12 @@ namespace RDumont.Frankie.Specs.Steps
             File.Delete(fullPath);
         }
 
+        public bool FileExists(string path)
+        {
+            var fullPath = Path.Combine(BasePath, path);
+            return File.Exists(fullPath);
+        }
+
         public string Trimmed(string contents)
         {
             return contents.Replace("\r\n", "\n").Trim('\r', '\n', ' ');

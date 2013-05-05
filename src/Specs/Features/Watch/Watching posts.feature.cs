@@ -111,6 +111,34 @@ this.FeatureBackground();
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Edit a post")]
+        public virtual void EditAPost()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Edit a post", ((string[])(null)));
+#line 30
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 31
+ testRunner.Given("the \'_posts/2013-04-25-some-nice-post.md\' text file", "Cool post.", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 35
+  testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 36
+ testRunner.When("I edit the file \'_posts/2013-04-25-some-nice-post.md\'", "This has been edited.", ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 40
+  testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 41
+ testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 42
+  testRunner.And("there should be a \'_site/2013/04/25/some-nice-post/index.html\' text file", "<p>This has been edited.</p>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore
