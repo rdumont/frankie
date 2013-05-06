@@ -59,7 +59,6 @@ namespace RDumont.Frankie.CommandLine.Commands
                     Logger.Current.LogError("'{0}' is not a valid verbosity level");
                     Environment.Exit(1);
                     return default(LoggingLevel);
-                    break;
             }
         }
 

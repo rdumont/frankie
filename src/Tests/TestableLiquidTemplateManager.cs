@@ -4,7 +4,7 @@ namespace RDumont.Frankie.Tests
 {
     public class TestableLiquidTemplateManager : LiquidTemplateManager
     {
-        public new void WrapWithTemplate(Page model)
+        public void WrapWithTemplate(Page model)
         {
             base.WrapWithTemplate(model);
         }
