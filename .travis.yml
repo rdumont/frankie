@@ -1,7 +1,7 @@
 language: c
 
 before_install:
-  - sudo apt-get install -qq mono-devel mono-gmcs nunit-consolescript
+  - sudo apt-get install -qq mono-devel mono-gmcs nunit-consolescript:
 
 install:
   - sudo npm install
