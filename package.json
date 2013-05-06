@@ -1,7 +1,8 @@
 {
 	"name": "frankie",
 	"scripts": {
-		"preinstall": "npm install -g jake"
+		"preinstall": "npm install -g jake",
+		"test": ""
 	},
 	"dependencies": {
 		"coffee-script": "1.6.x",
