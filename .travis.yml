@@ -1,6 +1,8 @@
 language: c
 
+before_install:
+  - sudo apt-get install -qq mono-devel mono-gmcs nunit-consolescript
+
 install:
-	- sudo apt-get install mono-devel mono-gmcs nunit-consolescript:
-	- sudo npm install
-	- jake build
+  - sudo npm install
+  - jake build
