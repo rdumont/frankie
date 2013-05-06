@@ -1,7 +1,7 @@
-language: node_js
+language: c
 
 before_install:
   - sudo apt-get install -qq mono-devel mono-gmcs nunit-console
 
 script:
-  - jake build
+  - xbuild src/Frankie.sln /verbosity:minimal /t:Clean /t:Build /p:Configuration=Release
