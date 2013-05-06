@@ -1,4 +1,5 @@
-﻿using DotLiquid;
+﻿using System.IO;
+using DotLiquid;
 
 namespace RDumont.Frankie.Core
 {
@@ -23,7 +24,7 @@ namespace RDumont.Frankie.Core
 
         public static string GetFullPath(string name)
         {
-            return TEMPLATES_FOLDER + "\\" + name + ".html";
+            return TEMPLATES_FOLDER + Path.DirectorySeparatorChar + name + ".html";
         }
 
         public abstract string PrepareTemplateContents(string contents, Context context, string templateName);
