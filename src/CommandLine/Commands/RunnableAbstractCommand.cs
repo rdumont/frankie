@@ -16,8 +16,6 @@ namespace RDumont.Frankie.CommandLine.Commands
                 Post.POSTS_FOLDER,
                 "_site",
                 "_templates",
-                ".gitignore",
-                ".hgignore",
                 "config.yaml"
             };
 
@@ -92,7 +90,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         private IEnumerable<string> FindPostPaths(string root)
         {
             var folder = Path.Combine(root, Post.POSTS_FOLDER);
-            return Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories);
+            return FindAllEntries(folder);
         }
 
         private IEnumerable<string> FindAllEntries(string root)
