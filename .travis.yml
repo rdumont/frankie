@@ -5,5 +5,5 @@ before_install:
 
 script:
   - xbuild src/Frankie.sln /verbosity:minimal /t:Clean /t:Build /p:Configuration=Release
-  - nunit-console src/Tests/bin/Release/RDumont.Frankie.Tests.dll -result=UnitTestsResult.xml
-  - nunit-console src/Specs/bin/Release/RDumont.Frankie.Specs.dll -result=SpecFlowTestsResult.xml
+  - nunit-console src/Tests/bin/Release/RDumont.Frankie.Tests.dll -xml=UnitTestsResult.xml
+  - nunit-console src/Specs/bin/Release/RDumont.Frankie.Specs.dll -xml=SpecFlowTestsResult.xml
