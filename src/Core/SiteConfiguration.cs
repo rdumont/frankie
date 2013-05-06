@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -66,7 +65,7 @@ namespace RDumont.Frankie.Core
             _compiledExcludes = _compiledExcludes ?? CompileExcludes().ToArray();
 
             for (var i = 0; i < _compiledExcludes.Length; i++)
-                if (_compiledExcludes[i].IsMatch(path)) return true;
+                if (_compiledExcludes[i].IsMatch(path.Replace('\\', '/'))) return true;
 
             return false;
         }
@@ -91,12 +90,8 @@ namespace RDumont.Frankie.Core
             {
                 var prePattern = Excludes[i];
                 if (prePattern.StartsWith("*.") || prePattern.StartsWith("."))
-                    prePattern = "**" + Path.DirectorySeparatorChar + prePattern;
+                    prePattern = "**/" + prePattern;
                 var pattern = new StringBuilder(prePattern);
-
-                // The '\' character is a special character in regular expressions
-                // and must be escaped before doing anything else.
-                pattern.Replace(@"\", @"\\");
                 
                 // Escape the rest of the regular expression special characters.
                 pattern.Replace(".", @"\.");
@@ -108,30 +103,25 @@ namespace RDumont.Frankie.Core
                 pattern.Replace(")", @"\)");
                 pattern.Replace("+", @"\+");
 
-                // Special case directory seperator string under Windows.
-                string seperator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-                if (seperator == @"\")
-                    seperator = @"\\";
-
                 // Start with ? - it's used below
-                pattern.Replace("?", "[^" + seperator + "]?");
+                pattern.Replace("?", "[^/]?");
 
                 // SPECIAL CASE: any *'s directory between slashes or at the end of the
                 // path are replaced with a 1..n pattern instead of 0..n: (?<=\\)\*(?=($|\\))
                 // This ensures that C:\*foo* matches C:\foo and C:\* won't match C:.
-                pattern = new StringBuilder(Regex.Replace(pattern.ToString(), "(?<=" + seperator + ")\\*(?=($|" + seperator + "))", "[^" + seperator + "]+"));
+                pattern = new StringBuilder(Regex.Replace(pattern.ToString(), "(?<=/)\\*(?=($|/))", "[^/]+"));
 
                 // SPECIAL CASE: to match subdirectory OR current directory, If
                 // we do this then we can write something like 'src/**/*.cs'
                 // to match all the files ending in .cs in the src directory OR
                 // subdirectories of src.
-                pattern.Replace(seperator + "**" + seperator, seperator + "(.|?" + seperator + ")?");
-                pattern.Replace("**" + seperator, ".|(?<=^|" + seperator + ")");
-                pattern.Replace(seperator + "**", "(?=$|" + seperator + ").|");
+                pattern.Replace("/**/", "/(.|?/)?");
+                pattern.Replace("**/", ".|(?<=^|/)");
+                pattern.Replace("/**", "(?=$|/).|");
 
                 // .| is a place holder for .* to prevent it from being replaced in next line
                 pattern.Replace("**", ".|");
-                pattern.Replace("*", "[^" + seperator + "]*");
+                pattern.Replace("*", "[^/]*");
                 pattern.Replace(".|", ".*"); // replace place holder string
 
                 // Help speed up the search
