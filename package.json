@@ -1,0 +1,10 @@
+{
+	"name": "frankie",
+	"scripts": {
+		"preinstall": "npm install -g jake"
+	},
+	"dependencies": {
+		"coffee-script": "1.6.x",
+		"shelljs": ">= 0.1.3"
+	}
+}
