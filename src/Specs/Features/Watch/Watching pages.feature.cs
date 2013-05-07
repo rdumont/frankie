@@ -101,10 +101,10 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Delete a page")]
-        public virtual void DeleteAPage()
+        [NUnit.Framework.DescriptionAttribute("Edit a page")]
+        public virtual void EditAPage()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a page", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Edit a page", ((string[])(null)));
 #line 25
 this.ScenarioSetup(scenarioInfo);
 #line 6
@@ -114,14 +114,71 @@ this.FeatureBackground();
  testRunner.Given("the \'about.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 30
   testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 31
- testRunner.When("I delete the file \'about.html\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 32
+ testRunner.When("I edit the file \'about.html\'", "<h1>About me changed</h1>", ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 35
   testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 33
+#line 36
  testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line 34
- testRunner.And("the file \'_site/about.html\' should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 37
+ testRunner.And("there should be an \'_site/about.html\' text file", "<h1>About me changed</h1>", ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Delete a page")]
+        public virtual void DeleteAPage()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Delete a page", ((string[])(null)));
+#line 42
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 43
+ testRunner.Given("the \'about.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 47
+  testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 48
+ testRunner.When("I delete the file \'about.html\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 49
+  testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 50
+ testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 51
+  testRunner.And("the file \'_site/about.html\' should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Rename a page")]
+        public virtual void RenameAPage()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Rename a page", ((string[])(null)));
+#line 53
+this.ScenarioSetup(scenarioInfo);
+#line 6
+this.FeatureBackground();
+#line hidden
+#line 54
+ testRunner.Given("the \'about.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 58
+  testRunner.And("that Frankie is watching my folder", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 59
+ testRunner.When("I rename the file \'about.html\' to \'me.html\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 60
+  testRunner.And("wait for the watcher to finish", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 61
+ testRunner.Then("no errors should be logged", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 62
+  testRunner.And("the file \'_site/about.html\' should not exist", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 63
+  testRunner.And("there should be a \'_site/me.html\' text file", "<h1>About me</h1>", ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }
