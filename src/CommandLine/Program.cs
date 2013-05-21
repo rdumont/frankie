@@ -10,16 +10,6 @@ namespace RDumont.Frankie.CommandLine
 {
     class Program
     {
-        public const string Art = @"
-   __________
-   |  :  :  /
-   |/¨´'`´¨|     Frankie v{version}
-   |- () ()|     http://frankie.org
-   | _____ <
-  () \___/ |
-    \___,_/
-";
-
         private static readonly IList<ICommand> Commands = new List<ICommand>
             {
                 new RunCommand(),
@@ -43,10 +33,6 @@ namespace RDumont.Frankie.CommandLine
                 WriteError("Command '{0}' is not recognized", args[0]);
                 Environment.Exit(1);
             }
-
-            var assembly = Assembly.GetExecutingAssembly();
-            var version = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Console.WriteLine(Art.Replace("{version}", version.FileVersion));
 
             command.ExecuteCommand(args.Skip(1).ToArray());
         }
