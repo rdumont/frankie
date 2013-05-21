@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -63,7 +64,17 @@ namespace RDumont.Frankie.CommandLine.Commands
         public static SiteConfiguration LoadConfiguration(BaseOptions options)
         {
             var configurationFilePath = Path.Combine(options.SourcePath, "config.yaml");
-            var configuration = SiteConfiguration.Load(configurationFilePath);
+            SiteConfiguration configuration = null;
+            try
+            {
+                configuration = SiteConfiguration.Load(configurationFilePath);
+            }
+            catch (IOException e)
+            {
+                Logger.Current.LogError(e.Message);
+                Environment.Exit(1);
+            }
+
             configuration.SourcePath = options.SourcePath.TrimEnd(Path.DirectorySeparatorChar);
             configuration.SitePath = options.OutputPath.TrimEnd(Path.DirectorySeparatorChar);
 
