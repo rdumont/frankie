@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata minClientVersion="2.5">
+        <id>Frankie.CommandLine</id>
+        <version>$version$</version>
+        <authors>Rodrigo Dumont</authors>
+        <owners>Rodrigo Dumont</owners>
+        <title>Frankie Command Line</title>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Command line utility for running Frankie</description>
+        <licenseUrl>https://raw.github.com/rdumont/frankie/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://raw.github.com/rdumont/frankie</projectUrl>
+    </metadata>
+</package>
