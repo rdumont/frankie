@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RDumont.Frankie.Core.Handlers
 {
@@ -14,9 +16,10 @@ namespace RDumont.Frankie.Core.Handlers
         public TransformableContentHandler TransformableContentHandler { get; private set; }
         public StaticContentHandler StaticContentHandler { get; private set; }
 
-        private readonly IAssetHandler[] _allHandlers;
+        private readonly List<IAssetHandler> _allHandlers;
 
-        public AssetHandlerManager(SiteConfiguration configuration, Io io)
+        public AssetHandlerManager(SiteConfiguration configuration, Io io,
+            IEnumerable<IHandlerPlugin> customHandlerPlugins)
         {
             _configuration = configuration;
             _io = io;
@@ -27,15 +30,19 @@ namespace RDumont.Frankie.Core.Handlers
             TransformableContentHandler = new TransformableContentHandler(configuration, io);
             StaticContentHandler = new StaticContentHandler(configuration, io);
 
-            _allHandlers = new IAssetHandler[]
+            _allHandlers = new List<IAssetHandler>
                 {
                     TemplateHandler,
                     PostHandler,
                     GeneratedContentHandler,
                     MarkdownPageHandler,
-                    TransformableContentHandler,
-                    StaticContentHandler
+                    TransformableContentHandler
                 };
+
+            var customHandlers = customHandlerPlugins.Select(plugin => plugin.CreateHandler(configuration, io));
+            _allHandlers.AddRange(customHandlers);
+
+            _allHandlers.Add(StaticContentHandler);
         }
 
         public IAssetHandler FindMatchingHandler(string path)

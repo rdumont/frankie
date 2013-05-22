@@ -67,13 +67,16 @@
     <Compile Include="Handlers\StaticContentHandler.cs" />
     <Compile Include="Handlers\TemplateHandler.cs" />
     <Compile Include="Handlers\TransformableContentHandler.cs" />
+    <Compile Include="IHandlerPlugin.cs" />
     <Compile Include="Io.cs" />
+    <Compile Include="IPluginDescriptor.cs" />
     <Compile Include="Liquid\LiquidFilters.cs" />
     <Compile Include="LiquidTemplateManager.cs" />
     <Compile Include="Liquid\FrankieDrop.cs" />
     <Compile Include="Liquid\SiteDrop.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PageModel.cs" />
+    <Compile Include="PluginManager.cs" />
     <Compile Include="Post.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SiteConfiguration.cs" />

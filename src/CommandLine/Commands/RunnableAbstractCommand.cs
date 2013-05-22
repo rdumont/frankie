@@ -23,6 +23,7 @@ namespace RDumont.Frankie.CommandLine.Commands
         protected SiteConfiguration Configuration { get; private set; }
         protected Io Io { get; private set; }
         protected AssetHandlerManager Handlers { get; private set; }
+        protected PluginManager Plugins { get; private set; }
 
         protected RunnableAbstractCommand()
         {
@@ -37,7 +38,11 @@ namespace RDumont.Frankie.CommandLine.Commands
             Profile("Initialization", () =>
                 {
                     Configuration = LoadConfiguration(options);
-                    Handlers = new AssetHandlerManager(Configuration, Io);
+
+                    Plugins = new PluginManager();
+                    Plugins.LoadPlugins();
+
+                    Handlers = new AssetHandlerManager(Configuration, Io, Plugins.CustomHandlerPlugins);
 
                     this.CleanDirectory(output);
 
