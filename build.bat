@@ -24,5 +24,5 @@ set nunit="tools\nunit\nunit-console.exe"
 
 mkdir Build
 
-%nuget% pack src\Core\Core.csproj -verbosity detailed -o Build -Version %version%
-%nuget% pack src\CommandLine\CommandLine.csproj -IncludeReferencedProjects -verbosity detailed -o Build -Version %version%
+call %nuget% pack src\Core\Core.csproj -verbosity detailed -o Build -Version %version%
+call %nuget% pack src\CommandLine\CommandLine.csproj -IncludeReferencedProjects -verbosity detailed -o Build -Version %version%
