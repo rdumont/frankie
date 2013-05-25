@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -72,7 +73,17 @@ namespace RDumont.Frankie.Core
 
         public string GetRelativePath(string fullPath)
         {
-            return fullPath.Remove(0, SourcePath.Length + 1);
+            var sourcePathWithTrailingSlash = SourcePath.EndsWith("/") || SourcePath.EndsWith("\\")
+                ? SourcePath
+                : SourcePath + Path.DirectorySeparatorChar;
+
+            var fromUri = new Uri("file://" + sourcePathWithTrailingSlash);
+            var toUri = new Uri("file://" + fullPath);
+
+            var relativeUri = fromUri.MakeRelativeUri(toUri);
+            var relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+
+            return relativePath.Replace("/", Path.DirectorySeparatorChar.ToString());
         }
 
         public string GetFullPath(string relativePath)

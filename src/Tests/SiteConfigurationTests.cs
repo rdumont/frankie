@@ -64,5 +64,47 @@ namespace RDumont.Frankie.Tests
                     };
             }
         }
+
+        public class GetRelativePath
+        {
+            [TestCase(@"C:\documents\blog\source\_site\index.html", @"_site\index.html")]
+            [TestCase(@"C:\documents\blog\source\_site\file with spaces.html", @"_site\file with spaces.html")]
+            [TestCase(@"C:\documents\blog\site\index.html", @"..\site\index.html")]
+            [TestCase(@"C:\some\other\path\bla.txt", @"..\..\..\some\other\path\bla.txt")]
+            public void Windows_paths(string toPath, string expectedRelativePath)
+            {
+                // Arrange
+                var configuration = new SiteConfiguration
+                {
+                    SourcePath = @"C:\documents\blog\source"
+                };
+                expectedRelativePath = expectedRelativePath.Replace("\\", Path.DirectorySeparatorChar.ToString());
+
+                // Act
+                var relativePath = configuration.GetRelativePath(toPath);
+
+                // Assert
+                Assert.That(relativePath, Is.EqualTo(expectedRelativePath));
+            }
+
+            [TestCase(@"/home/blog/source/_site/index.html", @"_site/index.html")]
+            [TestCase(@"/home/blog/site/index.html", @"../site/index.html")]
+            [TestCase(@"/some/other/path/bla.txt", @"../../../some/other/path/bla.txt")]
+            public void Unix_paths(string toPath, string expectedRelativePath)
+            {
+                // Arrange
+                var configuration = new SiteConfiguration
+                {
+                    SourcePath = @"/home/blog/source"
+                };
+                expectedRelativePath = expectedRelativePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+
+                // Act
+                var relativePath = configuration.GetRelativePath(toPath);
+
+                // Assert
+                Assert.That(relativePath, Is.EqualTo(expectedRelativePath));
+            }
+        }
     }
 }
