@@ -94,6 +94,12 @@ namespace RDumont.Frankie.CommandLine.Commands
 
         private void CleanDirectory(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                return;
+            }
+
             var folders = Directory.GetDirectories(path);
             foreach (var folder in folders)
                 Directory.Delete(folder, true);
