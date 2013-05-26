@@ -73,11 +73,14 @@ namespace RDumont.Frankie.Core
 
         public string GetRelativePath(string fullPath)
         {
-            var sourcePathWithTrailingSlash = SourcePath.EndsWith("/") || SourcePath.EndsWith("\\")
+            var normalizedSourcePath = SourcePath.EndsWith("/") || SourcePath.EndsWith("\\")
                 ? SourcePath
                 : SourcePath + Path.DirectorySeparatorChar;
 
-            var fromUri = new Uri("file://" + sourcePathWithTrailingSlash);
+            if (Path.DirectorySeparatorChar == '/')
+                normalizedSourcePath += "mono";
+
+            var fromUri = new Uri("file://" + normalizedSourcePath);
             var toUri = new Uri("file://" + fullPath);
 
             var relativeUri = fromUri.MakeRelativeUri(toUri);

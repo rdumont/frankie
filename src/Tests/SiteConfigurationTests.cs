@@ -67,6 +67,7 @@ namespace RDumont.Frankie.Tests
 
         public class GetRelativePath
         {
+            [Category("windows_only")]
             [TestCase(@"C:\documents\blog\source\_site\index.html", @"_site\index.html")]
             [TestCase(@"C:\documents\blog\source\_site\file with spaces.html", @"_site\file with spaces.html")]
             [TestCase(@"C:\documents\blog\site\index.html", @"..\site\index.html")]
